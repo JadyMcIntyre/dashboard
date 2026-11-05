@@ -1,0 +1,92 @@
+:root {
+  color-scheme: light;
+  --ui-subtle: #faf8f5;
+  --ui-raised: #f2ede7;
+  --ui-accent-soft: #fff0e5;
+  --ui-accent-line: #e6b69c;
+  --ui-body: #4d4843;
+  --ui-warning: #fff4e8;
+  --ui-warning-text: #78502f;
+  --ui-chip: #f5f0e9;
+  --ui-button: #24211e;
+  --ui-button-text: #fffaf5;
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #151719;
+  --surface: #1d2023;
+  --surface-strong: #22262a;
+  --text: #f0ede8;
+  --muted: #b1ada7;
+  --line: #393d40;
+  --primary: #ffb58c;
+  --primary-strong: #ffd0b5;
+  --brand-orange: #ff915a;
+  --brand-cream: #292522;
+  --shadow: none;
+  --ui-subtle: #23272b;
+  --ui-raised: #2a2e32;
+  --ui-accent-soft: #382a23;
+  --ui-accent-line: #ae7656;
+  --ui-body: #d1cdc7;
+  --ui-warning: #30271f;
+  --ui-warning-text: #e4bd96;
+  --ui-chip: #2b3034;
+  --ui-button: #ffc19d;
+  --ui-button-text: #251b15;
+}
+[hidden] { display: none !important; }
+body { color: var(--text); background: var(--bg); }
+.theme-toggle { border: 1px solid var(--line); color: var(--text); background: var(--surface); border-radius: 9px; min-height: 40px; padding: 8px 12px; font: inherit; font-size: .78rem; cursor: pointer; }
+.theme-toggle:hover { background: var(--ui-accent-soft); }
+.panel, .message-card, .voicemail-card, .hours-card, .modal-dialog, .insurance-table-card, .vitamin-card, .menu-toolbar { background: var(--surface); border-color: var(--line); }
+.message-body, .voicemail-body, .financing-option p, .financing-script, .script-markdown, .vitamin-card { color: var(--ui-body); }
+.script-reading h3, .vitamin-card h2, .vitamin-card h3, .message-card h3, .voicemail-card h3 { color: var(--text); }
+.button { background: var(--ui-button); color: var(--ui-button-text); }
+.button:hover, .button:focus-visible { background: var(--primary); color: var(--ui-button-text); }
+.button-secondary { background: transparent; color: var(--text); border-color: var(--line); }
+.button-secondary:hover, .button-secondary:focus-visible { background: var(--ui-accent-soft); border-color: var(--ui-accent-line); }
+.field input, .field select, .travel-form select, .menu-toolbar input[type="search"], .menu-toolbar select { background: var(--ui-subtle); color: var(--text); border-color: var(--line); }
+.field span, .hero-time { color: var(--text); }
+input::placeholder { color: var(--muted); opacity: 1; }
+input:focus, select:focus { outline: 2px solid var(--primary); outline-offset: 2px; }
+.summary-icon { background: var(--ui-subtle); border-color: var(--line); }
+.insurance-table th { background: var(--ui-subtle); color: var(--text); border-color: var(--line); }
+.insurance-table td { background: var(--surface); border-color: var(--line); color: var(--ui-body); }
+.insurance-table th:first-child { border-top-color: #8e9c81; }
+.insurance-table th:nth-child(2) { border-top-color: #cfa470; }
+.insurance-table th:nth-child(3) { border-top-color: #dd825f; }
+.insurance-table-note, .transport-policy, .treatment-note { background: var(--ui-warning); color: var(--ui-warning-text); border-color: var(--ui-accent-line); }
+.insurance-empty, .fl-service-toggle, .resource-card, .travel-clinic, .transport-support { background: var(--ui-subtle); border-color: var(--line); }
+.fl-service-btn { color: var(--muted); }
+.fl-service-btn.active, .flow-state-option input:checked + span, .menu-filters input:checked + span { background: var(--ui-button); color: var(--ui-button-text); border-color: var(--ui-button); }
+.flow-state-picker-compact .flow-state-option span { background: var(--ui-subtle); color: var(--text); border-color: var(--line); }
+.flow-state-picker-compact .flow-state-option input:checked + span { background: var(--ui-button); color: var(--ui-button-text); }
+.financing-script, .vitamin-hero { background: var(--brand-cream); color: var(--ui-body); border-color: var(--line); }
+.financing-option { background: var(--surface); border-color: var(--line); }
+.resource-card p, .transport-area, .transport-support-details, .hours-time, .hours-address, .workspace-description, .clock-label, .clock-note { color: var(--muted); }
+.message-body a, .resource-url, .clinic-phone, .transport-links a, .clinic-reference a, .brochure-links a, .workspace-footer a, .financing-label { color: var(--primary); text-decoration-color: var(--ui-accent-line); }
+.hours-row, .workspace-footer, .brand-bar, .clinic-reference, .treatment-description { border-color: var(--line); }
+.menu-counts span, .treatment-ingredients li { background: var(--ui-chip); color: var(--ui-body); border-color: var(--line); }
+.menu-source-note { background: var(--ui-subtle); border-color: var(--line); color: var(--muted); }
+.menu-source-note strong { color: var(--text); }
+.treatment-description summary { color: var(--text); }
+.menu-empty { background: var(--surface); border-color: var(--line); }
+.poc-badge { background: var(--ui-accent-soft); color: var(--primary); border-color: var(--ui-accent-line); }
+.menu-filters span { border-color: var(--line); color: var(--text); }
+[data-theme="dark"] .treatment-category { background: #382b21; color: #ffc199; }
+[data-theme="dark"] .category-shot .treatment-category { background: #362931; color: #eeb7cd; }
+[data-theme="dark"] .category-addon .treatment-category { background: #27342b; color: #b5d4af; }
+[data-theme="dark"] .vitamin-card.category-iv { border-top-color: #d89b71; }
+[data-theme="dark"] .vitamin-card.category-shot { border-top-color: #bc88a1; }
+[data-theme="dark"] .vitamin-card.category-addon { border-top-color: #8baa82; }
+[data-theme="dark"] .card-actions .button::after { filter: brightness(.4); }
+[data-theme="dark"] .modal-backdrop { background: rgba(0, 0, 0, .65); }
+:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+.vitamin-hero { padding-top: 24px; padding-bottom: 24px; }
+.vitamin-hero h1 { font-size: clamp(1.8rem, 2.5vw, 2.5rem); }
+.vitamin-hero .vitamin-intro { margin-top: 12px; }
+.vitamin-hero .menu-counts { margin-top: 14px; }
+.menu-toolbar { position: sticky; top: 10px; z-index: 5; box-shadow: var(--shadow); }
+.workspace-sidebar .workspace-nav a { color: var(--ui-body); }
+.workspace-sidebar .workspace-nav a:hover, .workspace-sidebar .workspace-nav a[aria-current="page"] { color: var(--primary); background: var(--ui-accent-soft); }

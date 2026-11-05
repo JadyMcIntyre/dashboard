@@ -1,0 +1,26 @@
+# macOS and editor files
+.DS_Store
+.AppleDouble
+._*
+.vscode/
+.idea/
+
+# Local agent state, review notes and browser captures
+.claude/
+.codex/
+.playwright-mcp/
+DESKTOP_REVIEW.md
+playwright-report/
+test-results/
+
+# Local dependencies, output and logs
+node_modules/
+coverage/
+*.log
+*.tmp
+*.swp
+
+# Secrets and local configuration
+.env
+.env.*
+!.env.example

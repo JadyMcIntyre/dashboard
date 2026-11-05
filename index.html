@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/><title>Renue Wellness · Care workspace</title><meta content="Renue Wellness clinic reference, patient messages and intake tools." name="description"/><link href="./resources/brand/renue-mark.svg" rel="icon" type="image/svg+xml"/><script src="./theme.js?v=ux-final"></script><link as="font" crossorigin="" href="./resources/brand/fonts/gotham-book.woff2" rel="preload" type="font/woff2"/><link href="./styles.css?v=ux2" rel="stylesheet"/><link href="./brand.css?v=ux2" rel="stylesheet"/><link href="./vitamins.css?v=workspace-integrated" rel="stylesheet"/><link href="./workspace.css?v=compact-nav-groups" rel="stylesheet"/><link href="./theme.css?v=ux-final" rel="stylesheet"/></head><body class="workspace-page"><a class="skip-link" href="#workspace-main">Skip to content</a><div class="shell workspace-shell">
+<aside class="workspace-sidebar"><a aria-label="Renue Wellness insurance reference" class="brand-home" href="#insurance-title"><img alt="Renue Wellness" height="37" src="./resources/brand/renue-logo.svg" width="169"/></a><nav aria-label="Workspace tools" class="section-nav workspace-nav"><div aria-label="During a call" class="workspace-nav-group" role="group"><h2 class="nav-group-label">During a call</h2><a href="#insurance-title">Insurance</a><a href="#treatment-title">Treatment guide</a><a href="#travel-title">Travel &amp; transport</a><a href="#hours-title">Hours &amp; contacts</a><a href="#financing-title">Financing</a><a href="#vitamins-title">Vitamins &amp; IV</a></div><div aria-label="Follow-up" class="workspace-nav-group" role="group"><h2 class="nav-group-label">Follow-up</h2><a href="#messages-title">Messages</a><a href="#voicemail-title">Voicemail scripts</a><a href="#resources-title">Resources</a></div></nav><div class="sidebar-bottom"><button class="theme-toggle" data-theme-toggle="" type="button">Dark mode</button><a href="https://www.renuewellness.com/" rel="noreferrer" target="_blank">Company website ↗</a><span class="sidebar-footnote">Renue Wellness · Staff reference</span></div></aside>
+<div class="workspace-content"><header class="workspace-topbar"><div><h1 id="workspace-view-title">Insurance</h1></div><div class="workspace-search"><label class="visually-hidden" for="workspace-search">Search the workspace</label><input aria-controls="workspace-search-results" autocomplete="off" id="workspace-search" placeholder="Search insurance, scripts, resources…" type="search"/><kbd aria-hidden="true">/</kbd></div></header>
+<section aria-label="Current clinic" class="clinic-context"><div class="clinic-selection"><span class="context-label">Working with</span><fieldset class="flow-state-picker flow-state-picker-compact">
+<legend>Call location</legend>
+<label class="flow-state-option">
+<input name="call-state" type="radio" value="NY"/>
+<span>NY · New Hyde Park</span>
+</label>
+<label class="flow-state-option">
+<input name="call-state" type="radio" value="CHELSEA"/>
+<span>NYC · Chelsea</span>
+</label>
+<label class="flow-state-option">
+<input name="call-state" type="radio" value="NJ"/>
+<span>NJ · Paramus</span>
+</label>
+<label class="flow-state-option">
+<input name="call-state" type="radio" value="FL"/>
+<span>FL · Crestview</span>
+</label>
+</fieldset></div><div class="clinic-context-details"><div><span class="context-label">Clinic contact</span><a hidden="" id="context-phone"></a><span id="context-address">Select a clinic to see its contact details.</span></div><div class="workspace-clock"><span class="clock-label">NYC · Chelsea</span><p class="hero-time" id="hero-time">--</p><p class="fab-hours" id="fab-hours"></p></div></div></section>
+<section aria-label="Search results" class="workspace-search-results" hidden="" id="workspace-search-results"><div class="search-results-heading"><h2>Search results</h2><button class="button-secondary" id="workspace-search-close" type="button">Close search</button></div><p id="workspace-search-status" role="status"></p><div id="workspace-search-items"></div></section>
+<div id="workspace-main" tabindex="-1"><main class="dashboard">
+<section aria-label="Customer travel" aria-labelledby="travel-title" class="panel panel-full travel-panel" data-workspace-view="travel-title" hidden="">
+<div class="section-heading"><div><p class="section-kicker">Plan the journey</p><h2 id="travel-title">Customer travel</h2></div></div>
+<p class="travel-description">Enter the customer's starting point, then open a clinic's route in Google Maps to see distance and estimated travel time.</p>
+<p class="transport-policy"><strong>Patients must not drive themselves.</strong> Arrange transport and confirm the clinic’s pickup and escort requirements before the appointment.</p>
+<form class="travel-form" id="travel-form">
+<label class="field travel-origin-field"><span>Customer address or ZIP code</span><input aria-describedby="travel-help" id="travel-origin" maxlength="300" placeholder="e.g. 10001 or a full street address" required="" type="text"/></label>
+<label class="field"><span>Travel by</span><select id="travel-mode"><option value="driving">Car (with a driver)</option><option value="transit">Public transit</option><option value="walking">Walking</option></select></label>
+<button class="button" type="submit">Find directions <span aria-hidden="true">↗</span></button>
+<button class="button-secondary" type="reset">Clear</button>
+</form>
+<p class="travel-help" id="travel-help">Routes open in a new Google Maps tab. A full address gives a more precise starting point than a ZIP code.</p>
+<aside aria-labelledby="transport-support-title" class="transport-support">
+<div><p class="section-kicker">Transport support</p><h3 id="transport-support-title">Access-A-Ride</h3><span class="transport-area">NYC area · Eligibility required</span></div>
+<div class="transport-support-details"><p>For people whose disability prevents them from using public buses or subways for some or all trips. MTA assessment and approval are required; age 65+ or Medicare alone does not establish eligibility.</p><p>Confirm that the patient is enrolled, the pickup and clinic addresses are covered, and the arrangement meets the clinic’s transport requirements.</p><div class="transport-links"><a href="https://access.nyc.gov/programs/access-a-ride/" rel="noopener noreferrer" target="_blank">Eligibility &amp; application ↗</a><a href="tel:8773372017">877-337-2017</a></div></div>
+</aside><aside aria-labelledby="mass-transport-title" class="transport-support"><div><p class="section-kicker">Transport support</p><h3 id="mass-transport-title">MASS</h3><span class="transport-area">Medicaid insurance patients only</span></div><div class="transport-support-details"><p>Transport option for patients with Medicaid insurance only.</p><p>Confirm booking arrangements and the clinic’s pickup and escort requirements before the appointment.</p></div></aside>
+<div class="travel-results" hidden="" id="travel-results"><p class="travel-summary" id="travel-summary" role="status"></p><div class="travel-clinics" id="travel-clinics"></div></div>
+</section>
+<section aria-label="Insurance" aria-labelledby="insurance-title" class="panel panel-full" data-workspace-view="insurance-title" hidden="">
+<div class="section-heading">
+<div>
+<p class="section-kicker">Reference</p>
+<h2 id="insurance-title">Insurance</h2>
+</div>
+</div>
+<div class="insurance-find"><label for="insurance-search">Find an insurer</label><input id="insurance-search" placeholder="Search this clinic’s insurance lists…" type="search"/><p id="insurance-search-status" role="status"></p></div><div class="insurance-table-container" id="insurance-table-container"></div>
+</section>
+<section aria-label="Text Messages" aria-labelledby="messages-title" class="panel workspace-panel" data-workspace-view="messages-title" hidden=""><div class="section-heading"><div>
+<p class="section-kicker">Quick Send</p>
+<h2 id="messages-title">Text Messages</h2>
+</div></div>
+<div class="message-filter-bar"><p id="messages-filter-note" role="status"></p><label class="message-filter-toggle"><input id="show-all-messages" type="checkbox"/> Show all clinics</label></div>
+<div class="content-find-bar"><label class="content-search-field">Find a template<input id="message-search" placeholder="Search wording or template name…" type="search"/></label><label>Template type<select id="message-category"><option value="all">All templates</option><option value="Clinic callback">Clinic callbacks</option><option value="Appointments">Appointments</option><option value="Follow-up">Follow-up</option><option value="Treatment information">Treatment information</option><option value="Financing">Financing</option></select></label><button class="button-secondary" id="message-clear" type="button">Clear filters</button></div><div class="card-grid" id="messages-grid"></div>
+</section>
+<section aria-label="Voicemail Scripts" aria-labelledby="voicemail-title" class="panel workspace-panel" data-workspace-view="voicemail-title" hidden=""><div class="section-heading"><div>
+<p class="section-kicker">Readouts</p>
+<h2 id="voicemail-title">Voicemail Scripts</h2>
+</div></div>
+<div class="voicemail-grid" id="voicemail-list"></div>
+</section>
+<section aria-label="Testimonials / Resources" aria-labelledby="resources-title" class="panel workspace-panel" data-workspace-view="resources-title" hidden=""><div class="section-heading"><div>
+<p class="section-kicker">Links</p>
+<h2 id="resources-title">Testimonials / Resources</h2>
+</div></div>
+<div class="content-find-bar"><label class="content-search-field">Find a resource<input id="resource-search" placeholder="Search title, treatment or when to send…" type="search"/></label><label>Resource type<select id="resource-category"><option value="all">All resources</option><option value="Education">Education &amp; preparation</option><option value="IVK testimonials">IVK testimonials</option><option value="Spravato testimonials">Spravato testimonials</option><option value="TMS testimonials">TMS testimonials</option><option value="Other">Other links</option></select></label><button class="button-secondary" id="resource-clear" type="button">Clear filters</button></div><p class="content-result-count" id="resource-count" role="status"></p><div class="stack" id="resources-list"></div>
+</section>
+<section aria-label="Financing Options" aria-labelledby="financing-title" class="panel workspace-panel" data-workspace-view="financing-title" hidden=""><div class="section-heading"><div>
+<p class="section-kicker">Reference</p>
+<h2 id="financing-title">Financing Options</h2>
+</div></div>
+<article class="financing-card" id="financing-content"></article>
+</section>
+<section aria-label="Clinic hours and contacts" class="panel workspace-panel" data-workspace-view="hours-title" hidden=""><div class="section-heading"><div><p class="section-kicker">Clinic reference</p><h2 id="hours-title">Hours &amp; contacts</h2></div></div><p class="view-description">All times are local to the clinic. Crestview uses Central time; New York and New Jersey use Eastern time.</p><div class="shared-contact"><div><span class="context-label">Fax · All locations</span><strong>516-744-5760</strong></div><button class="button-secondary" data-copy-contact="516-744-5760" type="button">Copy fax number</button></div><div class="hours-grid hero-hours-grid" id="hours-list"></div><details class="company-emails" id="company-emails"><summary><span>Company emails</span><span class="email-count">10 contacts</span><span aria-hidden="true" class="summary-icon"></span></summary><div class="company-email-table-wrap"><table class="company-email-table"><caption class="visually-hidden">Company email directory</caption><thead><tr><th scope="col">Team / Purpose</th><th scope="col">Email address</th></tr></thead><tbody><tr><th scope="row">Connecteam · Time errors</th><td><a href="mailto:ap@renuewellness.com">ap@renuewellness.com</a></td></tr><tr><th scope="row">Auth · Malky / Kim</th><td><a href="mailto:Auth@renuewellness.com">Auth@renuewellness.com</a></td></tr><tr><th scope="row">Front desk · Brittany / Lauren</th><td><a href="mailto:frontdesk@renuewellness.com">frontdesk@renuewellness.com</a></td></tr><tr><th scope="row">Info · Chanie / Avi</th><td><a href="mailto:Info@renuewellness.com">Info@renuewellness.com</a></td></tr><tr><th scope="row">Intake · Naomi / Saphire / Kasey</th><td><a href="mailto:intake@renuewellness.com">intake@renuewellness.com</a></td></tr><tr><th scope="row">New Hyde Park · All providers and admin staff</th><td><a href="mailto:NewHyde@renuewellness.com">NewHyde@renuewellness.com</a></td></tr><tr><th scope="row">Nurse practitioners · All locations</th><td><a href="mailto:NursePractitioner@renuewellness.com">NursePractitioner@renuewellness.com</a></td></tr><tr><th scope="row">Nurses · All locations</th><td><a href="mailto:nurses@renuewellness.com">nurses@renuewellness.com</a></td></tr><tr><th scope="row">Paramus · All providers and admin staff</th><td><a href="mailto:Paramus@renuewellness.com">Paramus@renuewellness.com</a></td></tr><tr><th scope="row">Payroll · Expense reimbursements; payroll deductions, withholding and direct deposit updates; pay-stub portal access and payroll documentation</th><td><a href="mailto:payroll@renuewellness.com">payroll@renuewellness.com</a></td></tr></tbody></table></div></details></section><section aria-label="Vitamins and IV menu" class="panel workspace-panel vitamins-panel" data-workspace-view="vitamins-title" hidden=""><div class="section-heading"><div><p class="section-kicker">New Jersey · Paramus</p><h2 id="vitamins-title">Vitamins &amp; IV</h2></div></div><p class="view-description">Available at the Paramus clinic, New Jersey. Browse 8 IV therapies, 4 vitamin shots and 1 add-on by treatment, ingredient or price.</p>
+<div class="menu-toolbar">
+<div class="menu-search"><label for="menu-search">Find a treatment or ingredient</label><input id="menu-search" placeholder="Try B12, magnesium or hydration…" type="search"/></div>
+<fieldset class="menu-filters"><legend>Show</legend><label><input checked="" name="menu-category" type="radio" value="all"/><span>All options</span></label><label><input name="menu-category" type="radio" value="iv"/><span>IV therapies</span></label><label><input name="menu-category" type="radio" value="shot"/><span>Vitamin shots</span></label><label><input name="menu-category" type="radio" value="addon"/><span>Add-on</span></label></fieldset>
+<div class="menu-sort"><label for="menu-sort">Sort by</label><select id="menu-sort"><option value="menu">Menu order</option><option value="price-low">Price: low to high</option><option value="price-high">Price: high to low</option></select></div>
+</div>
+<div class="menu-results-bar"><p id="menu-count" role="status"></p><div class="menu-results-actions"><span>Prices in USD</span><button aria-pressed="false" id="menu-expand" type="button">Expand descriptions</button></div></div>
+<div class="vitamin-grid" id="vitamin-grid"></div>
+<div class="menu-empty" hidden="" id="menu-empty"><h2>No matching options</h2><p>Try another name, ingredient or category.</p><button class="button-secondary" id="menu-reset" type="button">Show the full menu</button></div>
+<aside class="menu-source-note"><strong>Vitamins &amp; IV treatment information.</strong><p>Confirm treatment suitability, dosage and infusion time with the clinician.</p>
+<details><summary>View original brochure pages</summary><div class="brochure-links"><a href="./resources/vitamins/brochure-1.png" rel="noopener" target="_blank">Shots ↗</a><a href="./resources/vitamins/brochure-2.png" rel="noopener" target="_blank">Recovery, hydration &amp; add-on ↗</a><a href="./resources/vitamins/brochure-3.png" rel="noopener" target="_blank">NAD+, migraine &amp; alpha lipoic acid ↗</a><a href="./resources/vitamins/brochure-4.png" rel="noopener" target="_blank">Immunity, beauty &amp; Myer’s ↗</a></div></details>
+</aside>
+<noscript><p>Enable JavaScript to view and search the menu. The original brochure links above remain available.</p></noscript>
+</section><section aria-label="Treatment guide" class="panel workspace-panel" data-workspace-view="treatment-title" hidden=""><div class="section-heading"><div><p class="section-kicker">During a call</p><h2 id="treatment-title">Treatment guide</h2></div></div><p class="view-description">Practical clinic reference for treatment schedules, payment and preparation. Confirm suitability and the individual treatment plan with the provider.</p><div aria-label="Choose a treatment" class="treatment-guide-tabs" role="group"><button aria-pressed="true" class="button-secondary" data-treatment-guide="ivk" type="button">IV ketamine</button><button aria-pressed="false" class="button-secondary" data-treatment-guide="spravato" type="button">Spravato</button><button aria-pressed="false" class="button-secondary" data-treatment-guide="tms" type="button">TMS</button></div><div id="treatment-guide-content"></div></section></main></div><footer class="workspace-note">Renue Wellness · Care team reference</footer></div></div><div aria-hidden="true" class="modal" id="appointment-modal">
+<div class="modal-backdrop" data-close-appointment-modal=""></div>
+<div aria-labelledby="appointment-modal-title" aria-modal="true" class="modal-dialog" role="dialog">
+<div class="modal-header">
+<div>
+<p class="section-kicker">Appointment Confirmation</p>
+<h2 id="appointment-modal-title">Customize message</h2>
+</div>
+<button aria-label="Close message form" class="button-secondary icon-button" data-close-appointment-modal="" type="button">
+<svg aria-hidden="true" viewbox="0 0 24 24">
+<path d="M7 7l10 10M17 7L7 17" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"></path>
+</svg>
+</button>
+</div>
+<form class="modal-form" id="appointment-form">
+<label class="field">
+<span>Patient name</span>
+<input id="appointment-client-name" name="clientName" required="" type="text"/>
+</label>
+<label class="field" hidden="" id="message-staff-field"><span>Your name</span><input disabled="" id="message-staff-name" type="text"/></label><div class="field-row">
+<label class="field">
+<span>Date</span>
+<input id="appointment-date" name="appointmentDate" required="" type="date"/>
+</label>
+<label class="field">
+<span>Time</span>
+<input id="appointment-time" name="appointmentTime" required="" type="time"/>
+</label>
+</div>
+<div class="modal-actions">
+<button class="button-secondary" data-close-appointment-modal="" type="button">
+              Cancel
+            </button>
+<button class="button" type="submit">Copy Message</button>
+</div>
+</form>
+</div>
+</div><div aria-live="polite" class="toast" id="toast" role="status"></div><script src="./vitamins-data.js?v=1"></script><script src="./care-content.js?v=clinic-ivk-prices"></script><script src="./app.js?v=oon-header-note"></script><script src="./vitamins.js?v=direct-copy"></script><script src="./care-tools.js?v=clinic-ivk-prices"></script><script src="./workspace.js?v=transport-financing-cleanup"></script></body></html>
