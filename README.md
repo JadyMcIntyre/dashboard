@@ -1,4 +1,4 @@
-# Renue Wellness dashboard
+# Renue Wellness dashboard.
 
 Desktop staff-reference prototype for clinic information, treatment guidance, patient communication templates and resources.
 
