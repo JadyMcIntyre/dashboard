@@ -1,7 +1,19 @@
 <!DOCTYPE html>
 
-<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/><title>Renue Wellness · Care workspace</title><meta content="Renue Wellness clinic reference, patient messages and intake tools." name="description"/><link href="./resources/brand/renue-mark.svg" rel="icon" type="image/svg+xml"/><script src="./theme.js?v=ux-final"></script><link as="font" crossorigin="" href="./resources/brand/fonts/gotham-book.woff2" rel="preload" type="font/woff2"/><link href="./styles.css?v=ux2" rel="stylesheet"/><link href="./brand.css?v=ux2" rel="stylesheet"/><link href="./vitamins.css?v=workspace-integrated" rel="stylesheet"/><link href="./workspace.css?v=compact-nav-groups" rel="stylesheet"/><link href="./theme.css?v=ux-final" rel="stylesheet"/></head><body class="workspace-page"><a class="skip-link" href="#workspace-main">Skip to content</a><div class="shell workspace-shell">
-<aside class="workspace-sidebar"><a aria-label="Renue Wellness insurance reference" class="brand-home" href="#insurance-title"><img alt="Renue Wellness" height="37" src="./resources/brand/renue-logo.svg" width="169"/></a><nav aria-label="Workspace tools" class="section-nav workspace-nav"><div aria-label="During a call" class="workspace-nav-group" role="group"><h2 class="nav-group-label">During a call</h2><a href="#insurance-title">Insurance</a><a href="#treatment-title">Treatment guide</a><a href="#travel-title">Travel &amp; transport</a><a href="#hours-title">Hours &amp; contacts</a><a href="#financing-title">Financing</a><a href="#vitamins-title">Vitamins &amp; IV</a></div><div aria-label="Follow-up" class="workspace-nav-group" role="group"><h2 class="nav-group-label">Follow-up</h2><a href="#messages-title">Messages</a><a href="#voicemail-title">Voicemail scripts</a><a href="#resources-title">Resources</a></div></nav><div class="sidebar-bottom"><button class="theme-toggle" data-theme-toggle="" type="button">Dark mode</button><a href="https://www.renuewellness.com/" rel="noreferrer" target="_blank">Company website ↗</a><span class="sidebar-footnote">Renue Wellness · Staff reference</span></div></aside>
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/><title>Renue Wellness · Care workspace</title><meta content="Renue Wellness clinic reference, patient messages and intake tools." name="description"/><link href="./resources/brand/renue-mark.svg" rel="icon" type="image/svg+xml"/><script src="./theme.js?v=ux-final"></script><link as="font" crossorigin="" href="./resources/brand/fonts/gotham-book.woff2" rel="preload" type="font/woff2"/><link href="./styles.css?v=ux2" rel="stylesheet"/><link href="./brand.css?v=ux2" rel="stylesheet"/><link href="./vitamins.css?v=workspace-integrated" rel="stylesheet"/><link href="./workspace.css?v=template-library" rel="stylesheet"/><link href="./theme.css?v=ux-final" rel="stylesheet"/><link rel="stylesheet" href="./staff-access.css?v=template-library"/></head><body class="workspace-page"><a class="skip-link" href="#workspace-main">Skip to content</a><main id="staff-access" class="staff-access">
+  <section class="panel staff-sign-in-panel" aria-labelledby="staff-access-title">
+    <img alt="Renue Wellness" width="169" src="./resources/brand/renue-logo.svg"/>
+    <h1 id="staff-access-title">Staff sign-in</h1>
+    <form id="staff-sign-in" method="post">
+      <label class="field">Email<input name="email" type="email" autocomplete="username" required/></label>
+      <label class="field">Password<input name="password" type="password" autocomplete="current-password" required/></label>
+      <button class="button" type="submit" disabled>Sign in</button>
+      <p id="staff-sign-in-status" role="status">Checking your session…</p>
+    </form>
+  </section>
+</main>
+<div class="shell workspace-shell" hidden>
+<aside class="workspace-sidebar"><div class="staff-account"><span id="staff-account"></span><button id="staff-sign-out" type="button" class="button-secondary">Sign out</button></div><a aria-label="Renue Wellness insurance reference" class="brand-home" href="#insurance-title"><img alt="Renue Wellness" height="37" src="./resources/brand/renue-logo.svg" width="169"/></a><nav aria-label="Workspace tools" class="section-nav workspace-nav"><div aria-label="During a call" class="workspace-nav-group" role="group"><h2 class="nav-group-label">During a call</h2><a href="#insurance-title">Insurance</a><a href="#treatment-title">Treatment guide</a><a href="#travel-title">Travel &amp; transport</a><a href="#hours-title">Hours &amp; contacts</a><a href="#financing-title">Financing</a><a href="#vitamins-title">Vitamins &amp; IV</a></div><div aria-label="Follow-up" class="workspace-nav-group" role="group"><h2 class="nav-group-label">Follow-up</h2><a href="#messages-title">Messages</a><a href="#voicemail-title">Voicemail scripts</a><a href="#resources-title">Resources</a></div><div aria-label="Workspace settings" class="workspace-nav-group" role="group"><h2 class="nav-group-label">Workspace settings</h2><a href="#templates-title">Manage templates</a></div></nav><div class="sidebar-bottom"><button class="theme-toggle" data-theme-toggle="" type="button">Dark mode</button><a id="organization-website" rel="noreferrer" target="_blank">Company website ↗</a><span class="sidebar-footnote">Renue Wellness · Staff reference</span></div></aside>
 <div class="workspace-content"><header class="workspace-topbar"><div><h1 id="workspace-view-title">Insurance</h1></div><div class="workspace-search"><label class="visually-hidden" for="workspace-search">Search the workspace</label><input aria-controls="workspace-search-results" autocomplete="off" id="workspace-search" placeholder="Search insurance, scripts, resources…" type="search"/><kbd aria-hidden="true">/</kbd></div></header>
 <section aria-label="Current clinic" class="clinic-context"><div class="clinic-selection"><span class="context-label">Working with</span><fieldset class="flow-state-picker flow-state-picker-compact">
 <legend>Call location</legend>
@@ -37,7 +49,7 @@
 <p class="travel-help" id="travel-help">Routes open in a new Google Maps tab. A full address gives a more precise starting point than a ZIP code.</p>
 <aside aria-labelledby="transport-support-title" class="transport-support">
 <div><p class="section-kicker">Transport support</p><h3 id="transport-support-title">Access-A-Ride</h3><span class="transport-area">NYC area · Eligibility required</span></div>
-<div class="transport-support-details"><p>For people whose disability prevents them from using public buses or subways for some or all trips. MTA assessment and approval are required; age 65+ or Medicare alone does not establish eligibility.</p><p>Confirm that the patient is enrolled, the pickup and clinic addresses are covered, and the arrangement meets the clinic’s transport requirements.</p><div class="transport-links"><a href="https://access.nyc.gov/programs/access-a-ride/" rel="noopener noreferrer" target="_blank">Eligibility &amp; application ↗</a><a href="tel:8773372017">877-337-2017</a></div></div>
+<div class="transport-support-details"><p>For people whose disability prevents them from using public buses or subways for some or all trips. MTA assessment and approval are required; age 65+ or Medicare alone does not establish eligibility.</p><p>Confirm that the patient is enrolled, the pickup and clinic addresses are covered, and the arrangement meets the clinic’s transport requirements.</p><div class="transport-links"><a id="access-a-ride-link" rel="noopener noreferrer" target="_blank">Eligibility &amp; application ↗</a><a id="access-a-ride-phone"></a></div></div>
 </aside><aside aria-labelledby="mass-transport-title" class="transport-support"><div><p class="section-kicker">Transport support</p><h3 id="mass-transport-title">MASS</h3><span class="transport-area">Medicaid insurance patients only</span></div><div class="transport-support-details"><p>Transport option for patients with Medicaid insurance only.</p><p>Confirm booking arrangements and the clinic’s pickup and escort requirements before the appointment.</p></div></aside>
 <div class="travel-results" hidden="" id="travel-results"><p class="travel-summary" id="travel-summary" role="status"></p><div class="travel-clinics" id="travel-clinics"></div></div>
 </section>
@@ -54,6 +66,7 @@
 <p class="section-kicker">Quick Send</p>
 <h2 id="messages-title">Text Messages</h2>
 </div></div>
+<div class="personal-templates" data-personal-copy-list="message" hidden><h3>My templates</h3><ul></ul></div>
 <div class="message-filter-bar"><p id="messages-filter-note" role="status"></p><label class="message-filter-toggle"><input id="show-all-messages" type="checkbox"/> Show all clinics</label></div>
 <div class="content-find-bar"><label class="content-search-field">Find a template<input id="message-search" placeholder="Search wording or template name…" type="search"/></label><label>Template type<select id="message-category"><option value="all">All templates</option><option value="Clinic callback">Clinic callbacks</option><option value="Appointments">Appointments</option><option value="Follow-up">Follow-up</option><option value="Treatment information">Treatment information</option><option value="Financing">Financing</option></select></label><button class="button-secondary" id="message-clear" type="button">Clear filters</button></div><div class="card-grid" id="messages-grid"></div>
 </section>
@@ -61,9 +74,68 @@
 <p class="section-kicker">Readouts</p>
 <h2 id="voicemail-title">Voicemail Scripts</h2>
 </div></div>
+<div class="personal-templates" data-personal-copy-list="voicemail" hidden><h3>My templates</h3><ul></ul></div>
 <div class="voicemail-grid" id="voicemail-list"></div>
 </section>
-<section aria-label="Testimonials / Resources" aria-labelledby="resources-title" class="panel workspace-panel" data-workspace-view="resources-title" hidden=""><div class="section-heading"><div>
+<section class="panel workspace-panel template-settings" data-workspace-view="templates-title" aria-labelledby="templates-title" hidden>
+<h2 id="templates-title" class="visually-hidden">Manage templates</h2>
+<div class="template-tabs" role="group" aria-label="Template management">
+<button class="button-secondary" type="button" data-template-tab="message" aria-pressed="true">Messages</button>
+<button class="button-secondary" type="button" data-template-tab="voicemail" aria-pressed="false">Voicemail scripts</button>
+<button class="button-secondary" type="button" data-template-tab="community" aria-pressed="false">Community</button>
+</div>
+<div data-template-pane="message">
+<section class="template-card" aria-labelledby="company-messages-heading">
+<div class="template-card-heading"><div><h3 id="company-messages-heading">Company messages</h3><p>Choose a message to preview or save your own wording.</p></div></div>
+<div class="template-library">
+<div class="template-library-sidebar">
+<label class="field">Find a message<input id="company-message-search" type="search" placeholder="Search company messages"/></label>
+<div id="company-message-picker" class="script-list" role="group" aria-label="Company messages"></div>
+</div>
+<div id="company-message-editor" class="script-reading"></div>
+</div>
+</section>
+<div class="personal-templates template-card" data-personal-templates="message">
+<div class="template-card-heading"><div><h3>My messages</h3><p>Templates saved to your library.</p></div>
+<div class="template-toolbar"><button class="button-secondary" type="button" data-refresh-templates>Refresh</button>
+<button class="button" type="button" data-new-template>New template</button></div></div>
+<ul></ul>
+<form method="post" hidden>
+<fieldset disabled>
+<label class="field">Title<input name="title" maxlength="160" required/></label>
+<label class="field">Template text<textarea name="body" rows="5" maxlength="20000" required></textarea></label>
+<p class="muted">Use <code>{{staffName}}</code> for your name and <code>&lt;&gt;</code> for the patient name.</p>
+<button class="button" type="submit">Add template</button>
+<button class="button-secondary" type="reset">Cancel</button>
+</fieldset>
+</form>
+<p role="status"></p>
+</div></div>
+<div data-template-pane="voicemail" hidden>
+<div class="personal-templates template-card" data-personal-templates="voicemail">
+<div class="template-card-heading"><div><h3>My voicemail scripts</h3><p>Templates saved to your library.</p></div>
+<div class="template-toolbar"><button class="button-secondary" type="button" data-refresh-templates>Refresh</button>
+<button class="button" type="button" data-new-template>New template</button></div></div>
+<ul></ul>
+<form method="post" hidden>
+<fieldset disabled>
+<label class="field">Title<input name="title" maxlength="160" required/></label>
+<label class="field">Template text<textarea name="body" rows="5" maxlength="20000" required></textarea></label>
+<p class="muted">Use <code>{{staffName}}</code> for your name and <code>&lt;&gt;</code> for the patient name.</p>
+<button class="button" type="submit">Add template</button>
+<button class="button-secondary" type="reset">Cancel</button>
+</fieldset>
+</form>
+<p role="status"></p>
+</div></div>
+<div data-template-pane="community" class="template-card" hidden>
+<div class="template-card-heading"><div><h3>Shared by staff</h3><p>Browse staff templates and save a copy to your library.</p></div><div class="template-toolbar">
+<label class="field">Template type<select id="community-template-kind"><option value="all">All templates</option><option value="message">Messages</option><option value="voicemail">Voicemail scripts</option></select></label>
+<button class="button-secondary" type="button" id="community-template-refresh">Refresh</button></div></div>
+<p id="community-template-status" role="status"></p>
+<div id="community-template-list"></div>
+</div>
+</section><section aria-label="Testimonials / Resources" aria-labelledby="resources-title" class="panel workspace-panel" data-workspace-view="resources-title" hidden=""><div class="section-heading"><div>
 <p class="section-kicker">Links</p>
 <h2 id="resources-title">Testimonials / Resources</h2>
 </div></div>
@@ -75,7 +147,7 @@
 </div></div>
 <article class="financing-card" id="financing-content"></article>
 </section>
-<section aria-label="Clinic hours and contacts" class="panel workspace-panel" data-workspace-view="hours-title" hidden=""><div class="section-heading"><div><p class="section-kicker">Clinic reference</p><h2 id="hours-title">Hours &amp; contacts</h2></div></div><p class="view-description">All times are local to the clinic. Crestview uses Central time; New York and New Jersey use Eastern time.</p><div class="shared-contact"><div><span class="context-label">Fax · All locations</span><strong>516-744-5760</strong></div><button class="button-secondary" data-copy-contact="516-744-5760" type="button">Copy fax number</button></div><div class="hours-grid hero-hours-grid" id="hours-list"></div><details class="company-emails" id="company-emails"><summary><span>Company emails</span><span class="email-count">10 contacts</span><span aria-hidden="true" class="summary-icon"></span></summary><div class="company-email-table-wrap"><table class="company-email-table"><caption class="visually-hidden">Company email directory</caption><thead><tr><th scope="col">Team / Purpose</th><th scope="col">Email address</th></tr></thead><tbody><tr><th scope="row">Connecteam · Time errors</th><td><a href="mailto:ap@renuewellness.com">ap@renuewellness.com</a></td></tr><tr><th scope="row">Auth · Malky / Kim</th><td><a href="mailto:Auth@renuewellness.com">Auth@renuewellness.com</a></td></tr><tr><th scope="row">Front desk · Brittany / Lauren</th><td><a href="mailto:frontdesk@renuewellness.com">frontdesk@renuewellness.com</a></td></tr><tr><th scope="row">Info · Chanie / Avi</th><td><a href="mailto:Info@renuewellness.com">Info@renuewellness.com</a></td></tr><tr><th scope="row">Intake · Naomi / Saphire / Kasey</th><td><a href="mailto:intake@renuewellness.com">intake@renuewellness.com</a></td></tr><tr><th scope="row">New Hyde Park · All providers and admin staff</th><td><a href="mailto:NewHyde@renuewellness.com">NewHyde@renuewellness.com</a></td></tr><tr><th scope="row">Nurse practitioners · All locations</th><td><a href="mailto:NursePractitioner@renuewellness.com">NursePractitioner@renuewellness.com</a></td></tr><tr><th scope="row">Nurses · All locations</th><td><a href="mailto:nurses@renuewellness.com">nurses@renuewellness.com</a></td></tr><tr><th scope="row">Paramus · All providers and admin staff</th><td><a href="mailto:Paramus@renuewellness.com">Paramus@renuewellness.com</a></td></tr><tr><th scope="row">Payroll · Expense reimbursements; payroll deductions, withholding and direct deposit updates; pay-stub portal access and payroll documentation</th><td><a href="mailto:payroll@renuewellness.com">payroll@renuewellness.com</a></td></tr></tbody></table></div></details></section><section aria-label="Vitamins and IV menu" class="panel workspace-panel vitamins-panel" data-workspace-view="vitamins-title" hidden=""><div class="section-heading"><div><p class="section-kicker">New Jersey · Paramus</p><h2 id="vitamins-title">Vitamins &amp; IV</h2></div></div><p class="view-description">Available at the Paramus clinic, New Jersey. Browse 8 IV therapies, 4 vitamin shots and 1 add-on by treatment, ingredient or price.</p>
+<section aria-label="Clinic hours and contacts" class="panel workspace-panel" data-workspace-view="hours-title" hidden=""><div class="section-heading"><div><p class="section-kicker">Clinic reference</p><h2 id="hours-title">Hours &amp; contacts</h2></div></div><p class="view-description">All times are local to the clinic. Crestview uses Central time; New York and New Jersey use Eastern time.</p><div class="shared-contact"><div><span class="context-label">Fax · All locations</span><strong id="organization-fax"></strong></div><button class="button-secondary" data-copy-contact type="button">Copy fax number</button></div><div class="hours-grid hero-hours-grid" id="hours-list"></div><details class="company-emails" id="company-emails"><summary><span>Company emails</span><span class="email-count"></span><span aria-hidden="true" class="summary-icon"></span></summary><div class="company-email-table-wrap"><table class="company-email-table"><caption class="visually-hidden">Company email directory</caption><thead><tr><th scope="col">Team / Purpose</th><th scope="col">Email address</th></tr></thead><tbody></tbody></table></div></details></section><section aria-label="Vitamins and IV menu" class="panel workspace-panel vitamins-panel" data-workspace-view="vitamins-title" hidden=""><div class="section-heading"><div><p class="section-kicker">New Jersey · Paramus</p><h2 id="vitamins-title">Vitamins &amp; IV</h2></div></div><p class="view-description">Available at the Paramus clinic, New Jersey. Browse 8 IV therapies, 4 vitamin shots and 1 add-on by treatment, ingredient or price.</p>
 <div class="menu-toolbar">
 <div class="menu-search"><label for="menu-search">Find a treatment or ingredient</label><input id="menu-search" placeholder="Try B12, magnesium or hydration…" type="search"/></div>
 <fieldset class="menu-filters"><legend>Show</legend><label><input checked="" name="menu-category" type="radio" value="all"/><span>All options</span></label><label><input name="menu-category" type="radio" value="iv"/><span>IV therapies</span></label><label><input name="menu-category" type="radio" value="shot"/><span>Vitamin shots</span></label><label><input name="menu-category" type="radio" value="addon"/><span>Add-on</span></label></fieldset>
@@ -125,4 +197,4 @@
 </div>
 </form>
 </div>
-</div><div aria-live="polite" class="toast" id="toast" role="status"></div><script src="./vitamins-data.js?v=1"></script><script src="./care-content.js?v=clinic-ivk-prices"></script><script src="./app.js?v=oon-header-note"></script><script src="./vitamins.js?v=direct-copy"></script><script src="./care-tools.js?v=clinic-ivk-prices"></script><script src="./workspace.js?v=transport-financing-cleanup"></script></body></html>
+</div><div aria-live="polite" class="toast" id="toast" role="status"></div><script src="./vitamins-data.js?v=1"></script><script src="./care-content.js?v=template-library"></script><script src="./contact-directory.js?v=1"></script><script src="./app.js?v=template-library"></script><script src="./vitamins.js?v=direct-copy"></script><script src="./care-tools.js?v=clinic-ivk-prices"></script><script src="./workspace.js?v=template-library"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.89.0/dist/umd/supabase.js"></script><script src="./personal-templates.js?v=template-library"></script><script src="./staff-access.js?v=template-library"></script></body></html>

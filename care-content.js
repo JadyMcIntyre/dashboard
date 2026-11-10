@@ -1,59 +1,70 @@
 const quickMessageTemplates = [
   {
+    "key": "reschedule-consultation",
     "subtitle": "Reschedule a consultation",
     "category": "Appointments",
     "body": "Hi <>,\n\nLet me know if you'd like to reschedule your consult with the doctor and I'd be happy to assist. Whenever you're ready, we're here to help!"
   },
   {
+    "key": "missed-first-treatment",
     "subtitle": "Missed first treatment",
     "category": "Appointments",
     "body": "Hi <>,\n\nWe missed you for your first treatment. I hope everything is okay. If anything came up or you need to adjust the timing, we’re here and happy to help you get rescheduled. Please feel free to reach out whenever you’re ready — we’re here for you."
   },
   {
+    "key": "missed-consultation",
     "subtitle": "Missed consultation",
     "category": "Appointments",
     "body": "Hi <>,\n\nWe missed you for your consultation. I hope everything is okay. If anything came up or you need to adjust the timing, we’re here and happy to help you get rescheduled. Please feel free to reach out whenever you’re ready — we’re here for you."
   },
   {
+    "key": "evaluation-reschedule",
     "subtitle": "Evaluation reschedule follow-up",
     "category": "Follow-up",
     "body": "Good afternoon, <>!\n\nWe haven't been able to reach you to reschedule your eval, but I wanted to let you know we're still here as a resource. If you'd like to discuss next steps, feel free to give us a call or reply to this text anytime."
   },
   {
+    "key": "previous-conversation",
     "subtitle": "Previous conversation check-in",
     "category": "Follow-up",
-    "body": "Good afternoon, <>! This is {{staffName}} with Renue Wellness.\nhttps://www.renuewellness.com/\n\nWe spoke last week about our mental health treatments. I was just reaching out to say hi and see if it's still something you're interested in."
+    "body": "Good afternoon, <>! This is {{staffName}} with Renue Wellness.\n{{org:website}}\n\nWe spoke last week about our mental health treatments. I was just reaching out to say hi and see if it's still something you're interested in."
   },
   {
+    "key": "ready-for-treatment",
     "subtitle": "Ready for treatment check-in",
     "category": "Follow-up",
     "body": "Hi <>,\n\nJust checking in to see how you're doing. We’d love to support you in taking the next step toward healing. If you're ready, we can help you schedule your treatment at a time that works best for you. No pressure — just know we’re here when you need us!"
   },
   {
+    "key": "not-ready",
     "subtitle": "Not ready yet · Supportive check-in",
     "category": "Follow-up",
     "body": "Hi <>,\n\nJust wanted to check in and see how you've been doing. I know you mentioned not feeling ready, and I was wondering if there's anything I can do or talk through with you to help you feel more supported in making this decision. I don't want uncertainty to stand in the way of you feeling better if this could help. No pressure at all — I'm just here to support you however I can."
   },
   {
+    "key": "ivk-spravato-overview",
     "subtitle": "IVK & Spravato overview",
     "category": "Treatment information",
     "body": "Hi <>,\n\nIV ketamine (IVK) and Spravato are two of our treatment options. Our provider can help determine which is appropriate for you.\n\n• IVK infusions: the clinic’s initial protocol is 6 infusions over 3 weeks — twice a week for 3 consecutive weeks. IVK is self-pay under the clinic’s guidance, and payment options are available.\n\n• Spravato: a prescription nasal spray for eligible adults with treatment-resistant depression. The initial schedule is twice a week for 4 weeks, then once a week for 4 weeks, followed by maintenance directed by the provider. Insurance coverage depends on the plan, clinical criteria and authorisation.\n\nWe can help arrange an evaluation and check the next steps.",
     "note": "Confirm clinic availability and the provider’s treatment plan. Previous antidepressant trials alone do not guarantee insurance coverage."
   },
   {
+    "key": "integration-therapy",
     "subtitle": "Integration therapy between sessions",
     "category": "Treatment information",
     "body": "Hi <>,\n\nWe do not offer integration therapy during the treatment session. Therapy between ketamine sessions can provide time to reflect on the emotions, insights or shifts in perspective that came up during treatment.\n\nYour provider or therapist can help you plan appropriate support between sessions and discuss how to build on your treatment experience.",
     "note": "Discuss integration support and timing with the treating provider."
   },
   {
+    "key": "chelsea-ivk-sale",
     "subtitle": "Chelsea · IV ketamine opening sale",
     "locationId": "CHELSEA",
     "category": "Financing",
-    "body": "Hi <>,\n\nThe initial IV ketamine protocol is 6 infusions over 3 weeks — twice a week for 3 consecutive weeks. Chelsea’s opening-sale rate is $400 per session.\n\nWe accept HSA and FSA funds for eligible expenses. CareCredit and Advance Care are financing options you can explore, subject to approval and the offer’s terms.\n\nAdvance Care: https://advancecarecard.com/",
+    "body": "Hi <>,\n\nThe initial IV ketamine protocol is 6 infusions over 3 weeks — twice a week for 3 consecutive weeks. Chelsea’s opening-sale rate is $400 per session.\n\nWe accept HSA and FSA funds for eligible expenses. CareCredit and Advance Care are financing options you can explore, subject to approval and the offer’s terms.\n\nAdvance Care: {{org:advancecare}}",
     "note": "Chelsea opening sale only. Advance Care applications involve a hard credit inquiry; promotional financing offers vary."
   },
   {
+    "key": "no-response-after-consult",
     "subtitle": "No response after consult / evaluation",
     "category": "Follow-up",
     "body": "Hi <>! This is {{staffName}} from Renue just checking in one last time! We haven’t seen you in the clinic lately and wanted to make sure you’re doing okay. We’d love to help you continue your treatment journey if you’re ready to get back on schedule or need to make any adjustments.\n\nYour provider can advise you on continuing treatment and maintaining your progress.\n\nWe also wanted to let you know that insurance authorisations can expire if treatment is paused for too long, which may require restarting the approval process. If we don’t hear back from you, your account will be inactivated for now, but you’re always welcome to reconnect with us in the future.",
@@ -171,13 +182,13 @@ const careResources = [
   {
     "title": "Renue Wellness website",
     "category": "Other",
-    "url": "https://www.renuewellness.com/",
+    "url": "{{org:website}}",
     "note": "Company website"
   },
   {
     "title": "Advance Care financing",
     "category": "Other",
-    "url": "https://advancecarecard.com/",
+    "url": "{{org:advancecare}}",
     "note": "Financing information to send to a patient"
   }
 ];

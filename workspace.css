@@ -113,8 +113,8 @@
 
 .company-emails { scroll-margin-top: 200px; }
 
-.financing-client-link { display: flex; align-items: center; gap: 12px; margin-top: auto; padding-top: 16px; border-top: 1px solid var(--line); }
-.financing-url { font-size: .8rem; color: var(--ui-body); overflow-wrap: anywhere; user-select: text; line-height: 1.6; }
+.financing-option-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.financing-option-heading h3 { margin: 0; }
 .workspace-page .financing-options-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 @media (max-width: 850px) { .workspace-page .financing-options-grid { grid-template-columns: 1fr; } }
 

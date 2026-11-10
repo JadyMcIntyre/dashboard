@@ -1,24 +1,29 @@
+let staffDisplayName = "";
+
 const messageTemplates = [
   {
+    key: "initial-follow-up",
     title: "Message 3",
     subtitle: "Initial Follow-Up",
     body: `Hi <>,
 
-this is Kaylin with Renue Wellness! I tried reaching you earlier regarding your request for information about our treatment options. When you have a moment, feel free to call or text me back at this number. I'm happy to help.`,
+this is {{staffName}} with Renue Wellness! I tried reaching you earlier regarding your request for information about our treatment options. When you have a moment, feel free to call or text me back at this number. I'm happy to help.`,
   },
   {
+    key: "lead-follow-up",
     title: "Message 4",
     subtitle: "Lead Follow-Up",
     body: `Hi <>,
 
-this is Kaylin with Renue Wellness. You previously submitted a form looking for information on our mental health treatments. I was following up to see if you were still interested in learning more about how we can help. Please know that you can reach out to us anytime. We're here to support you. Wishing you nothing but the best.`,
+this is {{staffName}} with Renue Wellness. You previously submitted a form looking for information on our mental health treatments. I was following up to see if you were still interested in learning more about how we can help. Please know that you can reach out to us anytime. We're here to support you. Wishing you nothing but the best.`,
   },
   {
+    key: "inactive-status",
     title: "Message 5",
     subtitle: "Inactive Status Message",
     body: `Hi <>,
 
-this is Kaylin with Renue Wellness. I hope today is treating you kindly.
+this is {{staffName}} with Renue Wellness. I hope today is treating you kindly.
 
 We have attempted to reach you on multiple occasions but have been unable to connect. We will be moving your chart to an inactive status. Please know this does not close doors on your treatment - you are ALWAYS welcome to return whenever you're ready.
 
@@ -29,6 +34,7 @@ Always believe in the good things coming. Wishing you nothing but the best today
 - The Renue Wellness Team`,
   },
   {
+    key: "appointment-confirmation",
     title: "Message 6",
     subtitle: "Appointment Confirmation",
     body: `Hi <>,
@@ -45,25 +51,23 @@ const resources = careResources;
 
 
 const financingClientLinks = {
-  carecredit: { name: "CareCredit", url: "https://www.carecredit.com/" },
-  advancecare: { name: "Advance Care", url: "https://advancecarecard.com/" },
+  carecredit: { name: "CareCredit", url: "" },
+  advancecare: { name: "Advance Care", url: "" },
 };
 
 const financingOptionsContent = `
   <div class="financing-options-grid">
     <article class="financing-option">
-      <h3>CareCredit</h3>
+      <div class="financing-option-heading"><h3>CareCredit</h3><button class="button-secondary copy-link-icon" type="button" data-copy-financing="carecredit" aria-label="Copy CareCredit link" title="Copy CareCredit link"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M15 4H6a2 2 0 0 0-2 2v9"/></svg></button></div>
       <p><strong>What it is:</strong> A healthcare credit card issued by Synchrony Bank and used to pay for medical expenses.</p>
       <p><strong>How it works:</strong> Patients apply like a credit card. Approval is required.</p>
       <p><strong>Terms:</strong> Financing and promotional offers are subject to credit approval. Patients should review the offer’s repayment and interest terms.</p>
-      <div class="financing-client-link"><span class="financing-url">${financingClientLinks.carecredit.url}</span><button class="button-secondary copy-link-icon" type="button" data-copy-financing="carecredit" aria-label="Copy CareCredit link" title="Copy CareCredit link"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M15 4H6a2 2 0 0 0-2 2v9"/></svg></button></div>
     </article>
     <article class="financing-option">
-      <h3>Advance Care</h3>
+      <div class="financing-option-heading"><h3>Advance Care</h3><button class="button-secondary copy-link-icon" type="button" data-copy-financing="advancecare" aria-label="Copy Advance Care link" title="Copy Advance Care link"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M15 4H6a2 2 0 0 0-2 2v9"/></svg></button></div>
       <p><strong>What it is:</strong> Medical financing for procedures and expenses that insurance may not cover.</p>
       <p><strong>How it works:</strong> Patients apply online and receive a credit decision. Co-signers may be used.</p>
       <p><strong>Terms:</strong> Approval and financing offers depend on the application. Patients should review the available offer and repayment terms.</p>
-      <div class="financing-client-link"><span class="financing-url">${financingClientLinks.advancecare.url}</span><button class="button-secondary copy-link-icon" type="button" data-copy-financing="advancecare" aria-label="Copy Advance Care link" title="Copy Advance Care link"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M15 4H6a2 2 0 0 0-2 2v9"/></svg></button></div>
     </article>
     <article class="financing-option">
       <h3>HSA</h3>
@@ -81,25 +85,26 @@ const financingOptionsContent = `
 `;
 
 const clinicLocations = {
-  NY: { state: "NY", timeZone: "America/New_York", name: "New York · New Hyde Park", address: "1 Hollow Ln, Suite 201A, North New Hyde Park, NY 11042, USA", hoursName: "New Hyde Park", phone: "(516) 266-2339" },
-  CHELSEA: { state: "NY", timeZone: "America/New_York", name: "NYC · Chelsea", address: "147 W 25th St, 10th Floor, New York, NY 10001, USA", hoursName: "NYC Chelsea", phone: "(212) 660-4660" },
-  NJ: { state: "NJ", timeZone: "America/New_York", name: "New Jersey · Paramus", address: "6 Forest Ave, Suite 204, Paramus, NJ 07652, USA", hoursName: "New Jersey", phone: "(551) 212-5411" },
-  FL: { state: "FL", timeZone: "America/Chicago", name: "Florida · Crestview", address: "1299 Industrial Dr, Crestview, FL 32539, USA", hoursName: "Florida", phone: "(850) 655-6525" },
+  NY: { state: "NY", timeZone: "America/New_York", name: "", address: "", hoursName: "New Hyde Park", phone: "" },
+  CHELSEA: { state: "NY", timeZone: "America/New_York", name: "", address: "", hoursName: "NYC Chelsea", phone: "" },
+  NJ: { state: "NJ", timeZone: "America/New_York", name: "", address: "", hoursName: "New Jersey", phone: "" },
+  FL: { state: "FL", timeZone: "America/Chicago", name: "", address: "", hoursName: "Florida", phone: "" },
 };
 
 const clinicFollowUpBody = `Hi <>,
 
-this is Kaylin with Renue Wellness!
+this is {{staffName}} with Renue Wellness!
 
 We called you earlier and were unable to connect.
-Please call **{{phone}}** to get in touch with one of our team members or reply to this message with a good time to reach you.
+Please call {{phone}} to get in touch with one of our team members or reply to this message with a good time to reach you.
 
-[https://renuewellness.com/](https://renuewellness.com/)`;
+{{org:website}}`;
 
-messageTemplates.unshift(...Object.entries(clinicLocations).map(([locationId, clinic]) => ({
+messageTemplates.unshift(...Object.entries(clinicLocations).map(([locationId]) => ({
+  key: "clinic-callback-" + locationId,
   locationId,
-  subtitle: clinic.name,
-  body: clinicFollowUpBody.replace("{{phone}}", clinic.phone.replace(/[()]/g, "").replace(" ", "-")),
+  subtitle: "",
+  body: clinicFollowUpBody.replace("{{phone}}", "@"+ locationId + "-number"),
 })));
 
 const messagesGrid = document.querySelector("#messages-grid");
@@ -124,19 +129,19 @@ const markdownLinkPattern = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g;
 
 const fallbackVoicemailScriptsRaw = `Online Form
 
-Hi [Name], this is Kaylin calling from Renue Wellness. I'm just reaching out because I saw that you completed our online form, and I wanted to personally follow up to see how we can help. I'd be happy to answer any questions you may have and talk through the treatment options we offer. Please feel free to give me a call back whenever it's convenient for you.
+Hi [Name], this is {{staffName}} calling from Renue Wellness. I'm just reaching out because I saw that you completed our online form, and I wanted to personally follow up to see how we can help. I'd be happy to answer any questions you may have and talk through the treatment options we offer. Please feel free to give me a call back whenever it's convenient for you.
 
 Returning a Call - Patient Requested Information
 
-Hi [Name], this is Kaylin calling from Renue Wellness. I'm just returning your call as you had reached out to learn more about the treatments we offer. I would be more than happy to answer any questions you may have and walk you through the options available. Please feel free to give me a call back whenever it's convenient for you.
+Hi [Name], this is {{staffName}} calling from Renue Wellness. I'm just returning your call as you had reached out to learn more about the treatments we offer. I would be more than happy to answer any questions you may have and walk you through the options available. Please feel free to give me a call back whenever it's convenient for you.
 
 Missed Ketamine Appointment
 
-Hi [Name], this is Kaylin from Renue Wellness. I'm just calling to check in as it looks like we missed you for your ketamine treatment appointment today. I wanted to make sure everything is okay and see if you would like help rescheduling. Please feel free to call us back when you have a moment. We're here to help.
+Hi [Name], this is {{staffName}} from Renue Wellness. I'm just calling to check in as it looks like we missed you for your ketamine treatment appointment today. I wanted to make sure everything is okay and see if you would like help rescheduling. Please feel free to call us back when you have a moment. We're here to help.
 
 Missed Consultation
 
-Hi [Name], this is Kaylin calling from Renue Wellness. I just wanted to check in as it looks like we missed you at your consultation with the doctor today. I hope everything is okay. Whenever you're ready, we'd be more than happy to help you reschedule. Please feel free to give us a call back at your convenience. We're here to help. Take care.`;
+Hi [Name], this is {{staffName}} calling from Renue Wellness. I just wanted to check in as it looks like we missed you at your consultation with the doctor today. I hope everything is okay. Whenever you're ready, we'd be more than happy to help you reschedule. Please feel free to give us a call back at your convenience. We're here to help. Take care.`;
 
 const fallbackOfficeHours = [
   {
@@ -376,15 +381,6 @@ function escapeHtml(value) {
     .replaceAll("'", "&#39;");
 }
 
-function formatMessageForDisplay(value) {
-  const escaped = escapeHtml(value).replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
-  return escaped
-    .replace(markdownLinkPattern, '<a href="$2" target="_blank" rel="noreferrer">$1</a>')
-    .split(/\n{2,}/)
-    .map((paragraph) => `<p>${paragraph.replace(/\n/g, "<br />")}</p>`)
-    .join("");
-}
-
 function formatVoicemailForDisplay(value) {
   const escaped = escapeHtml(value);
   const lines = escaped
@@ -525,11 +521,11 @@ async function loadNewInfo() {
 }
 
 function applyClientName(template, clientName) {
-  return template.replaceAll("<>", clientName.trim());
+  return template.replaceAll("<>", () => clientName.trim());
 }
 
 function applyAppointmentDateTime(template, appointmentDateTime) {
-  return template.replace("{{appointmentDateTime}}", appointmentDateTime);
+  return template.replaceAll("{{appointmentDateTime}}", appointmentDateTime);
 }
 
 function isAppointmentConfirmationTemplate(template) {
@@ -594,7 +590,7 @@ function openAppointmentModal(template) {
   staffField.hidden = !template.body.includes("{{staffName}}");
   staffInput.disabled = staffField.hidden;
   staffInput.required = !staffField.hidden;
-  staffInput.value = "";
+  staffInput.value = staffDisplayName;
   appointmentModal.querySelector(".field-row").hidden = !hasAppointment;
   appointmentDateInput.disabled = !hasAppointment;
   appointmentTimeInput.disabled = !hasAppointment;
@@ -618,10 +614,26 @@ function openAppointmentModal(template) {
   });
 }
 
+function plainMessageText(body) {
+  return normalizeTemplateForCopy(body)
+    .replaceAll("{{staffName}}", () => staffDisplayName || "[Your name]")
+    .replaceAll("{{appointmentDateTime}}", "@appointment")
+    .replaceAll("<>", "@patient");
+}
+
+function messageForPersonalisation(template) {
+  return {
+    ...template,
+    body: resolveContactReferences(plainMessageText(template.body))
+      .replace(/(?<![\w@.+-])@patient(?![\w@])/gi, "<>")
+      .replace(/(?<![\w@.+-])@appointment(?![\w@])/gi, "{{appointmentDateTime}}")
+  };
+}
+
 async function buildMessageForCopy(template) {
   const details = await openAppointmentModal(template);
   if (!details) return null;
-  const message = applyClientName(normalizeTemplateForCopy(template.body), details.clientName).replaceAll("{{staffName}}", details.staffName);
+  const message = applyClientName(normalizeTemplateForCopy(template.body), details.clientName).replaceAll("{{staffName}}", () => details.staffName);
   return isAppointmentConfirmationTemplate(template)
     ? applyAppointmentDateTime(message, details.appointmentDateTime)
     : message;
@@ -704,13 +716,20 @@ function updateHeroTime() {
 let selectedMessageIndex = 0;
 let selectedVoicemailIndex = 0;
 
+let messageOverrides = new Map();
+
+function messageWithPersonalEdit(template) {
+  const body = messageOverrides.get(template.key);
+  return body === undefined ? template : { ...template, body };
+}
+
 function renderMessages() {
   const showAll = showAllMessagesInput.checked || !selectedLocationId;
   const category = document.querySelector("#message-category").value;
   const query = document.querySelector("#message-search").value.trim().toLocaleLowerCase();
-  const visible = messageTemplates.map((template, index) => ({ ...template, index }))
+  const visible = messageTemplates.map((template, index) => ({ ...messageWithPersonalEdit(template), index }))
     .filter((template) => {
-      const type = template.category || (template.locationId ? "Clinic callback" : isAppointmentConfirmationTemplate(template) ? "Appointments" : "Follow-up");
+      const type = template.category || (template.locationId ? "Clinic callback" : isAppointmentConfirmationTemplate(messageTemplates[template.index]) ? "Appointments" : "Follow-up");
       return (showAll || !template.locationId || template.locationId === selectedLocationId)
         && (category === "all" || type === category)
         && `${template.subtitle} ${template.body}`.toLocaleLowerCase().includes(query);
@@ -723,10 +742,14 @@ function renderMessages() {
     messagesGrid.innerHTML = '<p class="insurance-empty">No matching templates. Clear the filters or try different wording.</p>';
     return;
   }
-  const selected = messageTemplates[selectedMessageIndex];
+  const selected = messageWithPersonalEdit(messageTemplates[selectedMessageIndex]);
   messagesGrid.innerHTML = `<div class="script-list" aria-label="Message templates">${visible.map((template) => `
-    <button type="button" class="script-choice" data-select-message="${template.index}" aria-pressed="${template.index === selectedMessageIndex}">${escapeHtml(template.subtitle)}<span>${escapeHtml(template.category || (template.locationId ? "Clinic callback" : isAppointmentConfirmationTemplate(template) ? "Appointments" : "Follow-up"))}</span></button>`).join("")}</div>
-    <article class="script-reading" aria-label="Selected message"><p class="script-reading-label">Message preview</p><h3>${escapeHtml(selected.subtitle)}</h3><div class="message-body">${formatMessageForDisplay(selected.body.replaceAll("<>", "[Patient name]").replace("{{appointmentDateTime}}", "[Appointment date & time]").replaceAll("{{staffName}}", "[Your name]"))}</div>${selected.note ? `<p class="template-note">${escapeHtml(selected.note)}</p>` : ""}<div class="card-actions"><button class="button" type="button" data-copy-message="${selectedMessageIndex}">Personalise &amp; copy</button></div></article>`;
+    <button type="button" class="script-choice" data-select-message="${template.index}" aria-pressed="${template.index === selectedMessageIndex}">${escapeHtml(template.subtitle)}<span>${escapeHtml(template.category || (template.locationId ? "Clinic callback" : isAppointmentConfirmationTemplate(messageTemplates[template.index]) ? "Appointments" : "Follow-up"))}</span></button>`).join("")}</div>
+    <article class="script-reading" aria-label="Selected message"><p class="script-reading-label">Message preview</p><h3>${escapeHtml(selected.subtitle)}</h3><div class="message-body plain-message">${escapeHtml(resolveContactReferences(plainMessageText(selected.body)))}</div>${selected.note ? `<p class="template-note">${escapeHtml(selected.note)}</p>` : ""}<div class="card-actions"><button class="button" type="button" data-copy-message="${selectedMessageIndex}">Personalise &amp; copy</button></div></article>`;
+}
+
+function voicemailWithStaffName(body) {
+  return body.replace(/\bKaylin\b|{{staffName}}/g, () => staffDisplayName || "[Your name]");
 }
 
 function renderVoicemails() {
@@ -737,7 +760,7 @@ function renderVoicemails() {
   const selected = voicemailScripts[selectedVoicemailIndex] || voicemailScripts[0];
   voicemailList.innerHTML = `<div class="script-list" aria-label="Voicemail scripts">${voicemailScripts.map((script, index) => `
     <button type="button" class="script-choice" data-select-voicemail="${index}" aria-pressed="${index === selectedVoicemailIndex}">${escapeHtml(script.title)}<span>Readout script</span></button>`).join("")}</div>
-    <article class="script-reading" aria-label="Selected voicemail"><p class="script-reading-label">Read aloud</p><h3>${escapeHtml(selected.title)}</h3><div class="voicemail-body">${formatVoicemailForDisplay(selected.body)}</div></article>`;
+    <article class="script-reading" aria-label="Selected voicemail"><p class="script-reading-label">Read aloud</p><h3>${escapeHtml(selected.title)}</h3><div class="voicemail-body">${formatVoicemailForDisplay(voicemailWithStaffName(selected.body))}</div><div class="card-actions"><button class="button" type="button" data-copy-default-voicemail>Copy script</button></div></article>`;
 }
 
 function renderHours() {
@@ -762,7 +785,7 @@ function renderHours() {
           <div class="hours-card-header">
             <div>
               <h3>${escapeHtml(clinic?.name || office.location)}</h3>
-              <p class="hours-address">${office.addressLines
+              <p class="hours-address">${(clinic?.address ? [clinic.address.replace(/, USA$/, "")] : office.addressLines)
                 .map((line) => escapeHtml(line))
                 .join("<br />")}</p>
               ${clinic ? `<a class="clinic-phone" href="tel:${clinic.phone.replace(/\D/g, "")}">${escapeHtml(clinic.phone)}</a>` : ""}
@@ -965,7 +988,7 @@ document.addEventListener("click", async (event) => {
   const contactButton = event.target.closest("[data-copy-contact]");
   if (contactButton) {
     try {
-      await copyText(contactButton.dataset.copyContact);
+      await copyText(organizationContacts.fax);
       showToast("Fax number copied to clipboard.");
     } catch {
       showToast("Copy failed. Please try again.");
@@ -977,6 +1000,16 @@ document.addEventListener("click", async (event) => {
     selectedMessageIndex = Number(messageChoice.dataset.selectMessage);
     renderMessages();
     document.querySelector(`[data-select-message="${selectedMessageIndex}"]`)?.focus();
+    return;
+  }
+  if (event.target.closest("[data-copy-default-voicemail]")) {
+    const script = voicemailScripts[selectedVoicemailIndex] || voicemailScripts[0];
+    try {
+      await copyText(voicemailWithStaffName(script.body));
+      showToast("Voicemail script copied.");
+    } catch {
+      showToast("Copy failed. Please try again.");
+    }
     return;
   }
   const voicemailChoice = event.target.closest("[data-select-voicemail]");
@@ -1002,8 +1035,8 @@ document.addEventListener("click", async (event) => {
 
   const messageButton = event.target.closest("[data-copy-message]");
   if (messageButton) {
-    const template = messageTemplates[Number(messageButton.dataset.copyMessage)];
-    const messageToCopy = await buildMessageForCopy(template);
+    const template = messageWithPersonalEdit(messageTemplates[Number(messageButton.dataset.copyMessage)]);
+    const messageToCopy = await buildMessageForCopy(messageForPersonalisation(template));
     if (!messageToCopy) {
       return;
     }

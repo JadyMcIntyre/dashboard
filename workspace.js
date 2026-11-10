@@ -3,6 +3,7 @@ const viewNames = {
   "treatment-title": "Treatment guide",
   "vitamins-title": "Vitamins & IV",
   "messages-title": "Messages",
+  "templates-title": "Manage templates",
   "voicemail-title": "Voicemail scripts",
   "travel-title": "Travel & transport",
   "hours-title": "Hours & contacts",
@@ -56,13 +57,13 @@ function buildWorkspaceSearchEntries() {
   }
   messageTemplates.forEach((template, index) => {
     if (selectedLocationId && template.locationId && template.locationId !== selectedLocationId) return;
-    add(template.subtitle, "Message template", template.body, "messages-title", { message: index });
+    add(template.subtitle, "Message template", resolveContactReferences(messageWithPersonalEdit(template).body), "messages-title", { message: index });
   });
   voicemailScripts.forEach((script, index) => add(script.title, "Voicemail script", script.body, "voicemail-title", { voicemail: index }));
   resources.forEach((resource, index) => add(resource.title, `${resource.category} · ${resource.stage || resource.note}`, resource.url, "resources-title", { resource: index }));
   treatmentGuides.forEach((guide) => add(guide.name, "Treatment guide", `${guide.summary} ${guide.facts.flat().join(" ")} ${guide.sections.flat().join(" ")} ${guide.id === "ivk" && ivkPricingByClinic[selectedLocationId] ? JSON.stringify(ivkPricingByClinic[selectedLocationId]) : ""}`, "treatment-title", { treatment: guide.id }));
-  officeHours.forEach((office) => add(office.location, office.addressLines.join(", "), `${office.schedule.map((entry) => `${entry.day} ${entry.hours}`).join(" ")} ${Object.values(clinicLocations).find((clinic) => clinic.hoursName === office.location)?.phone || ""}`, "hours-title"));
-  add("Shared fax number", "All locations · 516-744-5760", "fax 5167445760", "hours-title");
+  officeHours.forEach((office) => add(office.location, Object.values(clinicLocations).find((clinic) => clinic.hoursName === office.location)?.address || office.addressLines.join(", "), `${office.schedule.map((entry) => `${entry.day} ${entry.hours}`).join(" ")} ${Object.values(clinicLocations).find((clinic) => clinic.hoursName === office.location)?.phone || ""}`, "hours-title"));
+  if (organizationContacts) add("Shared fax number", "All locations · " + organizationContacts.fax, "fax " + organizationContacts.fax.replace(/\D/g, ""), "hours-title");
   document.querySelectorAll(".company-email-table tbody tr").forEach((row) => {
     const label = row.querySelector("th").textContent;
     const email = row.querySelector("a").textContent;
