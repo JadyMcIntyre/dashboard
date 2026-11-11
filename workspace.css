@@ -201,6 +201,12 @@
   color: var(--muted);
   cursor: pointer;
 }
+.workspace-shell:not(.sidebar-collapsed) .sidebar-header { padding-top: 18px; }
+.workspace-shell:not(.sidebar-collapsed) .sidebar-toggle {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}
 .sidebar-toggle:hover { background: var(--ui-accent-soft); color: var(--primary); }
 .sidebar-icon, .sidebar-toggle-icon { width: 18px; height: 18px; flex: none; }
 #staff-sign-out { display: flex; justify-content: center; align-items: center; gap: 8px; }
