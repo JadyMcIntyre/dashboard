@@ -68,6 +68,22 @@ function createPersonalTemplateEditors(client) {
     attachTemplateMentions(form);
     let rows = [];
 
+    panel.closest(".template-settings").append(dialog);
+
+    function editRow(row) {
+      editingRow = row;
+      form.elements.title.value = row.title;
+      form.elements.body.value = templateEditorText(row.body);
+      form.elements.clinic_id.value = row.clinic_id || "";
+      form.elements.tag.value = row.tag || "";
+      form.elements.body.dispatchEvent(new Event("template-body-changed"));
+      form.querySelector("[type=submit]").textContent = "Save changes";
+      dialog.querySelector("h4").textContent = "Edit template";
+      editorStatus.textContent = "";
+      dialog.showModal();
+      form.elements.title.focus();
+    }
+
     function resetForm() {
       editingRow = undefined;
       form.reset();
@@ -171,19 +187,7 @@ function createPersonalTemplateEditors(client) {
               await writeRow(row, { shared_with_staff: true, company_template: true }, "Company template published.");
             }
           } : {}),
-          Edit: () => {
-            editingRow = row;
-            form.elements.title.value = row.title;
-            form.elements.body.value = templateEditorText(row.body);
-            form.elements.clinic_id.value = row.clinic_id || "";
-            form.elements.tag.value = row.tag || "";
-            form.elements.body.dispatchEvent(new Event("template-body-changed"));
-            form.querySelector("[type=submit]").textContent = "Save changes";
-            dialog.querySelector("h4").textContent = "Edit template";
-            editorStatus.textContent = "";
-            dialog.showModal();
-            form.elements.title.focus();
-          },
+          Edit: () => editRow(row),
           Delete: async () => {
             if (!window.confirm("Delete this personal template?")) return;
             await removeRow(row);
@@ -265,6 +269,9 @@ function createPersonalTemplateEditors(client) {
         render();
         if (message === "Template saved." || (editingRow && editingRow === previous)) resetForm();
         status.textContent = message;
+        if (previous?.shared_with_staff || data.shared_with_staff) {
+          document.dispatchEvent(new Event("shared-templates-updated"));
+        }
         return true;
       } catch {
         if (request === revision) {
@@ -341,7 +348,7 @@ function createPersonalTemplateEditors(client) {
       }, "Template saved.");
     });
 
-    return (owner, role) => {
+    function setOwner(owner, role) {
       ++revision;
       userId = owner;
       canPublish = role === "manager" || role === "owner";
@@ -354,13 +361,34 @@ function createPersonalTemplateEditors(client) {
       refreshButton.disabled = !owner;
       status.textContent = "";
       if (owner) void refresh();
-    };
+    }
+
+    function manageSharedTemplate(id, action) {
+      const row = rows.find((item) => item.id === id && item.shared_with_staff && !item.removed_from_library);
+      if (!userId || fields.disabled || !row) {
+        showToast("Your template is unavailable. Try refreshing your library.");
+        return;
+      }
+      if (action === "edit") {
+        editRow(row);
+        return;
+      }
+      return writeRow(row, { shared_with_staff: false, company_template: false }, "Sharing stopped.")
+        .then((saved) => showToast(saved ? "Sharing stopped." : "Could not stop sharing. Try again."));
+    }
+
+    return { kind, setOwner, manageSharedTemplate };
   });
   const tagOptions = document.querySelector("#template-tags");
   const standardTags = Array.from(tagOptions.options, (option) => option.value);
-  return (owner, role) => {
-    tagOptions.replaceChildren(...standardTags.map((tag) => new Option(tag, tag)));
-    editors.forEach((setOwner) => setOwner(owner, role));
+  return {
+    setOwner(owner, role) {
+      tagOptions.replaceChildren(...standardTags.map((tag) => new Option(tag, tag)));
+      editors.forEach((editor) => editor.setOwner(owner, role));
+    },
+    manageSharedTemplate(template, action) {
+      return editors.find((editor) => editor.kind === template.kind)?.manageSharedTemplate(template.id, action);
+    }
   };
 }
 
@@ -482,10 +510,11 @@ function attachTemplateMentions(form) {
 
 }
 
-function createTemplateCommunity(client) {
+function createTemplateCommunity(client, manageSharedTemplate) {
   const list = document.querySelector("#community-template-list");
   const status = document.querySelector("#community-template-status");
   const filter = document.querySelector("#community-template-kind");
+  const pane = list.closest("[data-template-pane]");
   const refreshButton = document.querySelector("#community-template-refresh");
   let owner = null;
   let revision = 0;
@@ -501,7 +530,7 @@ function createTemplateCommunity(client) {
     status.textContent = "Loading templates…";
     try {
       let query = client.from("personal_templates").select("id, user_id, kind, title, body, clinic_id, tag, company_template, shared_by, default_message_key")
-        .eq("shared_with_staff", true).neq("user_id", owner).order("title");
+        .eq("shared_with_staff", true).eq("removed_from_library", false).order("title");
       if (filter.value !== "all") query = query.eq("kind", filter.value);
       const [shared, personal] = await Promise.all([
         query,
@@ -516,7 +545,10 @@ function createTemplateCommunity(client) {
         .filter((row) => !retiredStarterKeys.has(row.default_message_key))
         .map((row) => ({ ...row, default_message_key: null }));
       const libraries = new Map([["company", { name: "Company default", templates: [...starters] }]]);
+      const mine = sharedTemplates.filter((template) => template.user_id === owner);
+      if (mine.length) libraries.set("mine", { name: "Shared by me", templates: mine });
       for (const template of sharedTemplates) {
+        if (template.user_id === owner && !template.company_template) continue;
         const key = template.company_template ? "company" : template.user_id;
         if (!libraries.has(key)) libraries.set(key, { name: template.shared_by || "Renue staff", templates: [] });
         libraries.get(key).templates.push(template);
@@ -578,6 +610,27 @@ function createTemplateCommunity(client) {
           const preview = document.createElement("p");
           preview.className = "plain-message";
           renderTemplateContactPreview(preview, template.body);
+          card.append(heading, kind, preview);
+          if (template.user_id === owner) {
+            const actions = document.createElement("div");
+            actions.className = "template-toolbar";
+            for (const [action, label] of [["edit", "Edit"], ["stop", "Stop sharing"]]) {
+              const button = document.createElement("button");
+              button.type = "button";
+              button.className = "button-secondary";
+              button.textContent = label;
+              button.addEventListener("click", async () => {
+                if (request !== revision || template.user_id !== owner) return;
+                button.disabled = true;
+                try { await manageSharedTemplate(template, action); }
+                finally { button.disabled = false; }
+              });
+              actions.append(button);
+            }
+            card.append(actions);
+            list.append(card);
+            continue;
+          }
           const copy = document.createElement("button");
           copy.type = "button";
           copy.className = "button-secondary";
@@ -609,7 +662,7 @@ function createTemplateCommunity(client) {
               }
             }
           });
-          card.append(heading, kind, preview, copy);
+          card.append(copy);
           list.append(card);
         }
       };
@@ -619,6 +672,7 @@ function createTemplateCommunity(client) {
     }
   }
 
+  document.addEventListener("shared-templates-updated", () => { if (!pane.hidden) void refresh(); });
   filter.addEventListener("change", refresh);
   refreshButton.addEventListener("click", refresh);
   document.querySelectorAll("[data-template-tab]").forEach((tab) => {
@@ -640,7 +694,7 @@ function createTemplateCommunity(client) {
     ++revision;
     list.replaceChildren();
     status.textContent = "";
-    if (owner && !document.querySelector('[data-template-pane="community"]').hidden) void refresh();
+    if (owner && !pane.hidden) void refresh();
   };
 }
 

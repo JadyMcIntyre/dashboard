@@ -13,8 +13,8 @@ if (!window.supabase) {
     "https://xzpgodvdffpazhcvzxkq.supabase.co",
     "sb_publishable_A-tlM6YuoENyosTMzY0mqQ_aNj7iWqM"
   );
-  const setTemplateOwner = createPersonalTemplateEditors(client);
-  const setCommunityOwner = createTemplateCommunity(client);
+  const templateEditors = createPersonalTemplateEditors(client);
+  const setCommunityOwner = createTemplateCommunity(client, templateEditors.manageSharedTemplate);
   let revision = 0;
   let submitting = false;
   let visibleUserId = null;
@@ -40,7 +40,7 @@ if (!window.supabase) {
     const role = data.role.charAt(0).toUpperCase() + data.role.slice(1);
     visibleUserId = session.user.id;
     staffDisplayName = data.display_name;
-    setTemplateOwner(visibleUserId, data.role);
+    templateEditors.setOwner(visibleUserId, data.role);
     setCommunityOwner(visibleUserId);
     renderVoicemails();
     account.textContent = data.display_name + " · " + role;
@@ -56,7 +56,7 @@ if (!window.supabase) {
     const currentRevision = ++revision;
     visibleUserId = null;
     staffDisplayName = "";
-    setTemplateOwner(null);
+    templateEditors.setOwner(null);
     setCommunityOwner(null);
     closeAppointmentModal(null);
     workspace.hidden = true;

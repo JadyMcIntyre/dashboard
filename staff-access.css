@@ -57,14 +57,14 @@
   flex: 1 0 12rem;
 }
 
-.personal-templates fieldset {
+.template-dialog fieldset {
   border: 0;
   margin: 0;
   padding: 0;
   min-width: 0;
 }
 
-.personal-templates textarea {
+.template-dialog textarea {
   font: inherit;
   color: inherit;
   background: transparent;
@@ -243,7 +243,7 @@
   margin-bottom: 0;
 }
 
-.template-settings .personal-templates form {
+.template-settings .template-dialog form {
   max-width: 46rem;
   padding: 1rem;
   border: 1px solid var(--line);
@@ -251,7 +251,7 @@
   background: var(--ui-subtle);
 }
 
-.template-settings .personal-templates textarea,
+.template-settings .template-dialog textarea,
 .template-toolbar select {
   padding: 0.65rem 0.75rem;
   border: 1px solid var(--line);
@@ -283,7 +283,7 @@
   margin-block: 0.75rem;
 }
 
-.template-settings .personal-templates .message-mention-editor textarea {
+.template-settings .template-dialog .message-mention-editor textarea {
   color: transparent;
   background: transparent;
   line-height: 1.55;
