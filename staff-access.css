@@ -35,26 +35,10 @@
   margin-bottom: 1rem;
 }
 
-.personal-templates summary {
-  cursor: pointer;
-  font-weight: 600;
-  margin-bottom: 0.75rem;
-}
-
 .personal-templates ul {
+  display: grid;
+  gap: 0.55rem;
   padding: 0;
-}
-
-.personal-templates li {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.5rem;
-}
-
-.personal-templates li strong {
-  flex: 1 0 12rem;
 }
 
 .template-dialog fieldset {
@@ -291,11 +275,6 @@
   resize: none;
 }
 
-.template-settings .personal-templates li small {
-  color: var(--muted);
-  font-weight: normal;
-}
-
 .template-selection {
   padding: 0.65rem 0.85rem;
   background: var(--ui-subtle);
@@ -307,32 +286,90 @@
   display: none;
 }
 
-.personal-templates li {
-  align-items: start;
-  flex-wrap: nowrap;
-  padding: 0.45rem 0.15rem;
-  margin: 0;
-  border-bottom: 1px solid var(--line);
+.template-library-row {
+  --tag-color: var(--muted);
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.3rem 0.65rem;
+  border: 1px solid var(--line);
+  border-inline-start: 3px solid color-mix(in srgb, var(--tag-color) 55%, var(--line));
+  border-radius: 0.7rem;
+  background: var(--surface);
 }
 
-.personal-templates li > input {
-  margin: 0.95rem 0.25rem;
-}
+.template-library-row[data-template-tag="clinic callback"] { --tag-color: #a95128; }
+.template-library-row[data-template-tag="follow-up"] { --tag-color: #4d52a5; }
+.template-library-row[data-template-tag="appointments"] { --tag-color: #217360; }
+.template-library-row[data-template-tag="treatment information"] { --tag-color: #8a4272; }
+.template-library-row[data-template-tag="financing"] { --tag-color: #84621d; }
+[data-theme="dark"] .template-library-row[data-template-tag="clinic callback"] { --tag-color: #ffb68f; }
+[data-theme="dark"] .template-library-row[data-template-tag="follow-up"] { --tag-color: #bec3ff; }
+[data-theme="dark"] .template-library-row[data-template-tag="appointments"] { --tag-color: #9bdac5; }
+[data-theme="dark"] .template-library-row[data-template-tag="treatment information"] { --tag-color: #eeb7d6; }
+[data-theme="dark"] .template-library-row[data-template-tag="financing"] { --tag-color: #ebcc82; }
+
+.template-library-row:hover,
+.template-library-row:has(details[open]) { background: var(--ui-subtle); }
+
+.template-library-row > input { margin: 1rem 0 0 0.25rem; }
+.template-library-row > .template-actions-trigger { margin-block-start: 0.35rem; }
 
 .template-row-preview {
   flex: 1;
   min-width: 0;
 }
 
-.personal-templates .template-row-preview summary {
-  padding: 0.4rem;
-  margin: 0;
+.template-row-preview summary {
+  display: grid;
+  grid-template-columns: 0.55rem minmax(0, 1fr);
+  align-items: center;
+  gap: 0.25rem 0.7rem;
+  min-height: 3rem;
+  padding: 0.55rem 0.3rem;
+  list-style: none;
+  cursor: pointer;
 }
-
-.template-row-preview summary strong {
-  display: inline-grid;
-  vertical-align: middle;
-  gap: 0.15rem;
+.template-row-preview summary::-webkit-details-marker { display: none; }
+.template-row-preview summary::before {
+  content: "";
+  width: 0.38rem;
+  height: 0.38rem;
+  border: solid var(--muted);
+  border-width: 0 1.5px 1.5px 0;
+  transform: rotate(-45deg);
+}
+.template-row-preview[open] summary::before { transform: rotate(45deg); }
+.template-row-title { overflow-wrap: anywhere; font-weight: 600; }
+.template-row-metadata {
+  grid-column: 2;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.65rem;
+  font-size: 0.75rem;
+}
+.template-row-clinic { color: var(--muted); }
+.template-row-tag {
+  padding: 0.12rem 0.5rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--tag-color) 13%, var(--surface));
+  color: var(--tag-color);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.template-row-reading {
+  margin: 0.2rem 0 0.5rem;
+  padding: 0.9rem 1.1rem;
+  border: 1px solid var(--line);
+  border-radius: 0.55rem;
+  background: var(--surface);
+}
+.template-row-reading .plain-message {
+  max-width: 76ch;
+  margin: 0;
+  color: var(--ui-body);
+  line-height: 1.65;
 }
 
 .template-actions-trigger {

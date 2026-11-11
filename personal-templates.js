@@ -120,19 +120,34 @@ function createPersonalTemplateEditors(client) {
       }
       for (const row of available) {
         const item = document.createElement("li");
+        item.className = "template-library-row";
         const preview = document.createElement("details");
         preview.className = "template-row-preview";
         const summary = document.createElement("summary");
         const title = document.createElement("strong");
+        title.className = "template-row-title";
         title.textContent = row.title;
-        const details = document.createElement("small");
-        details.textContent = [row.clinic_id ? clinicLocations[row.clinic_id]?.name : "All clinics", row.tag].filter(Boolean).join(" · ");
-        title.append(details);
-        summary.append(title);
+        const metadata = document.createElement("span");
+        metadata.className = "template-row-metadata";
+        const clinic = document.createElement("span");
+        clinic.className = "template-row-clinic";
+        clinic.textContent = row.clinic_id ? clinicLocations[row.clinic_id]?.name || row.clinic_id : "All clinics";
+        metadata.append(clinic);
+        if (row.tag) {
+          const tag = document.createElement("span");
+          tag.className = "template-row-tag";
+          tag.textContent = row.tag;
+          metadata.append(tag);
+          item.dataset.templateTag = row.tag.toLowerCase();
+        }
+        summary.append(title, metadata);
+        const reading = document.createElement("div");
+        reading.className = "template-row-reading";
         const body = document.createElement("p");
         body.className = "plain-message";
         renderTemplateContactPreview(body, row.body);
-        preview.append(summary, body);
+        reading.append(body);
+        preview.append(summary, reading);
         if (!selectionBar.hidden) {
           const checkbox = document.createElement("input");
           checkbox.type = "checkbox";
