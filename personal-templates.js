@@ -148,16 +148,18 @@ function createPersonalTemplateEditors(client) {
           actions.style.bottom = above ? window.innerHeight - rect.top + 4 + "px" : "auto";
         });
         for (const [label, action] of Object.entries({
-          Copy: async () => {
-            const owner = userId;
-            const template = messageForPersonalisation({ subtitle: row.title, body: row.body });
-            if (!template) return;
-            const needsDetails = template.body.includes("<>") || isAppointmentConfirmationTemplate(template);
-            const value = needsDetails ? await buildMessageForCopy(template) : template.body;
-            if (!value || owner !== userId) return;
-            await copyText(value);
-            if (owner === userId) showToast("Template copied.");
-          },
+          ...(kind === "message" ? {
+            Copy: async () => {
+              const owner = userId;
+              const template = messageForPersonalisation({ subtitle: row.title, body: row.body });
+              if (!template) return;
+              const needsDetails = template.body.includes("<>") || isAppointmentConfirmationTemplate(template);
+              const value = needsDetails ? await buildMessageForCopy(template) : template.body;
+              if (!value || owner !== userId) return;
+              await copyText(value);
+              if (owner === userId) showToast("Template copied.");
+            },
+          } : {}),
           [row.shared_with_staff ? "Stop sharing" : "Share"]: async () => {
             if (!row.shared_with_staff && !window.confirm("Share this template with Renue staff? Check that it contains no patient information.")) return;
             await writeRow(row, { shared_with_staff: !row.shared_with_staff, company_template: false },

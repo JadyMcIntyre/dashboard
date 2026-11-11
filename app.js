@@ -808,7 +808,7 @@ function renderVoicemails() {
   const selected = activeVoicemails[selectedVoicemailIndex];
   voicemailList.innerHTML = `<div class="script-list" aria-label="Voicemail scripts">${visible.map((script) => `
     <button type="button" class="script-choice" data-select-voicemail="${script.index}" aria-pressed="${script.index === selectedVoicemailIndex}">${escapeHtml(script.title)}<span>${escapeHtml(script.category || "Readout script")}</span></button>`).join("")}</div>
-    <article class="script-reading" aria-label="Selected voicemail"><p class="script-reading-label">Read aloud</p><h3>${escapeHtml(selected.title)}</h3><div class="voicemail-body">${formatVoicemailForDisplay(messagePreviewText(voicemailWithStaffName(selected.body)))}</div><div class="card-actions"><button class="button" type="button" data-copy-default-voicemail>Copy script</button></div></article>`;
+    <article class="script-reading" aria-label="Selected voicemail"><p class="script-reading-label">Read aloud</p><h3>${escapeHtml(selected.title)}</h3><div class="voicemail-body">${formatVoicemailForDisplay(messagePreviewText(voicemailWithStaffName(selected.body)))}</div></article>`;
 }
 
 function renderHours() {
@@ -1046,22 +1046,6 @@ document.addEventListener("click", async (event) => {
     selectedMessageIndex = Number(messageChoice.dataset.selectMessage);
     renderMessages();
     document.querySelector(`[data-select-message="${selectedMessageIndex}"]`)?.focus();
-    return;
-  }
-  if (event.target.closest("[data-copy-default-voicemail]")) {
-    const script = activeVoicemails[selectedVoicemailIndex] || activeVoicemails[0];
-    try {
-      const template = messageForPersonalisation({ subtitle: script.title, body: voicemailWithStaffName(script.body) });
-      if (!template) return;
-      const value = template.body.includes("<>") || isAppointmentConfirmationTemplate(template)
-        ? await buildMessageForCopy(template)
-        : template.body;
-      if (!value) return;
-      await copyText(value);
-      showToast("Voicemail script copied.");
-    } catch {
-      showToast("Copy failed. Please try again.");
-    }
     return;
   }
   const voicemailChoice = event.target.closest("[data-select-voicemail]");
