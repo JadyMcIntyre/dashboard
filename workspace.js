@@ -4,6 +4,7 @@ const viewNames = {
   "vitamins-title": "Vitamins & IV",
   "messages-title": "Messages",
   "templates-title": "Manage templates",
+  "advisor-hours-title": "Advisor hours",
   "voicemail-title": "Voicemail scripts",
   "travel-title": "Travel & transport",
   "hours-title": "Hours & contacts",
@@ -53,6 +54,7 @@ function showWorkspaceView(id, updateUrl = false) {
   document.querySelector("#workspace-view-title").textContent = viewNames[view];
   document.title = `${viewNames[view]} · Renue Wellness`;
   window.scrollTo(0, 0);
+  document.dispatchEvent(new Event("workspace-view-change"));
 }
 function closeWorkspaceSearch() {
   workspaceSearch.value = "";

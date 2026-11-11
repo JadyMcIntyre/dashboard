@@ -298,3 +298,22 @@
 @media (prefers-reduced-motion: reduce) {
   .sidebar-theme-thumb { transition: none; }
 }
+
+.advisor-hours-heading { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.advisor-hours-table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 0.75rem; }
+.advisor-hours-table-wrap:has(table[hidden]) { display: none; }
+.advisor-hours-table { width: 100%; min-width: 52rem; border-collapse: collapse; font-size: .8rem; }
+.advisor-hours-table th,
+.advisor-hours-table td { padding: .75rem .65rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+.advisor-hours-table thead,
+.advisor-hours-own { background: var(--ui-subtle); }
+.advisor-hours-table tbody tr:last-child > * { border-bottom: 0; }
+.advisor-hours-table small { display: block; margin-top: .25rem; color: var(--muted); }
+.advisor-hours-off,
+.advisor-hours-status { color: var(--muted); }
+.advisor-hours-status:empty { display: none; }
+.advisor-hours-dialog h3 { margin: 0 0 .4rem; }
+.advisor-hours-field-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr); align-items: center; gap: .6rem; padding: .4rem 0; border-bottom: 1px solid var(--line); }
+.advisor-hours-field-row .field { margin: 0; }
+.advisor-hours-field-row input { min-width: 0; }
+.advisor-hours-dialog .template-toolbar { margin-top: 1rem; }

@@ -13,6 +13,7 @@ if (!window.supabase) {
     "https://xzpgodvdffpazhcvzxkq.supabase.co",
     "sb_publishable_A-tlM6YuoENyosTMzY0mqQ_aNj7iWqM"
   );
+  const setAdvisorHoursOwner = createAdvisorHours(client);
   const templateEditors = createPersonalTemplateEditors(client);
   const setCommunityOwner = createTemplateCommunity(client, templateEditors.manageSharedTemplate);
   let revision = 0;
@@ -42,6 +43,7 @@ if (!window.supabase) {
     staffDisplayName = data.display_name;
     templateEditors.setOwner(visibleUserId, data.role);
     setCommunityOwner(visibleUserId);
+    setAdvisorHoursOwner(visibleUserId, data.role);
     renderVoicemails();
     account.textContent = data.display_name + " · " + role;
     signIn.reset();
@@ -58,6 +60,7 @@ if (!window.supabase) {
     staffDisplayName = "";
     templateEditors.setOwner(null);
     setCommunityOwner(null);
+    setAdvisorHoursOwner(null);
     closeAppointmentModal(null);
     workspace.hidden = true;
     account.textContent = "";
