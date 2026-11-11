@@ -15,6 +15,31 @@ const searchResults = document.querySelector("#workspace-search-results");
 const workspaceMain = document.querySelector("#workspace-main");
 let currentSearchEntries = [];
 
+const sidebarToggle = document.querySelector("#sidebar-toggle");
+const workspaceShell = sidebarToggle.closest(".workspace-shell");
+const sidebarPreferenceKey = "renue-sidebar-collapsed";
+
+function setSidebarCollapsed(collapsed) {
+  workspaceShell.classList.toggle("sidebar-collapsed", collapsed);
+  sidebarToggle.setAttribute("aria-expanded", String(!collapsed));
+  sidebarToggle.setAttribute("aria-label", collapsed ? "Expand sidebar" : "Collapse sidebar");
+  sidebarToggle.title = sidebarToggle.getAttribute("aria-label");
+}
+
+try { setSidebarCollapsed(localStorage.getItem(sidebarPreferenceKey) === "true"); }
+catch { /* The sidebar still works for this page. */ }
+
+document.querySelectorAll(".workspace-nav a").forEach((link) => {
+  link.dataset.label = link.textContent.trim();
+});
+
+sidebarToggle.addEventListener("click", () => {
+  const collapsed = !workspaceShell.classList.contains("sidebar-collapsed");
+  setSidebarCollapsed(collapsed);
+  try { localStorage.setItem(sidebarPreferenceKey, String(collapsed)); }
+  catch { /* Keep the selection for this page. */ }
+});
+
 function showWorkspaceView(id, updateUrl = false) {
   const view = Object.hasOwn(viewNames, id) ? id : "insurance-title";
   if (updateUrl && window.location.hash !== `#${view}`) history.pushState(null, "", `#${view}`);

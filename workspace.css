@@ -179,3 +179,69 @@
 @media (max-width: 850px) { .guide-sections { grid-template-columns: 1fr; } }
 
 .copy-link-icon { width: 36px; height: 36px; min-height: 36px; padding: 0; flex: 0 0 36px; border-radius: 50%; }
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+}
+.workspace-sidebar .sidebar-header .brand-home { padding: 0; min-width: 0; }
+.workspace-sidebar .sidebar-header .sidebar-logo { display: block; width: 100%; max-width: 155px; height: auto; }
+.workspace-sidebar .sidebar-header .sidebar-mark { display: none; width: 28px; height: 28px; }
+.sidebar-toggle {
+  display: grid;
+  place-items: center;
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--muted);
+  cursor: pointer;
+}
+.sidebar-toggle:hover { background: var(--ui-accent-soft); color: var(--primary); }
+.sidebar-icon, .sidebar-toggle-icon { width: 18px; height: 18px; flex: none; }
+#staff-sign-out { display: flex; justify-content: center; align-items: center; gap: 8px; }
+.sidebar-bottom { gap: 12px; padding-top: 24px; }
+.workspace-page .workspace-shell.sidebar-collapsed { grid-template-columns: 64px minmax(0, 1fr); }
+.sidebar-collapsed .workspace-sidebar { padding: 16px 8px; }
+.sidebar-collapsed .sidebar-header { flex-direction: column; gap: 10px; }
+.sidebar-collapsed .workspace-sidebar .sidebar-logo { display: none; }
+.sidebar-collapsed .workspace-sidebar .sidebar-mark { display: block; }
+.sidebar-collapsed .sidebar-toggle-icon { transform: scaleX(-1); }
+.sidebar-collapsed .workspace-nav { margin-top: 12px; }
+.sidebar-collapsed .nav-group-label,
+.sidebar-collapsed #staff-account { display: none; }
+.sidebar-collapsed .workspace-nav-group + .workspace-nav-group {
+  margin-top: 3px;
+  padding-top: 5px;
+  border-top: 1px solid var(--line);
+}
+.sidebar-collapsed .workspace-nav a { justify-content: center; min-height: 34px; padding: 6px; }
+.sidebar-collapsed .sidebar-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.sidebar-collapsed .workspace-nav a:is(:hover, :focus-visible)::after {
+  content: attr(data-label);
+  position: fixed;
+  left: 58px;
+  z-index: 30;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 5px 9px;
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 0 3px 12px #0002;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.sidebar-collapsed .sidebar-bottom { padding-inline: 0; }
+.sidebar-collapsed .theme-toggle,
+.sidebar-collapsed #staff-sign-out { min-height: 36px; padding: 6px; }

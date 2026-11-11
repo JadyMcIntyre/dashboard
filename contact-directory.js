@@ -54,7 +54,6 @@ function applyContactDirectory({ organization, clinicsById, emails }) {
     resource.url = resolveContactReferences(resource.sourceUrl ??= resource.url);
   }
 
-  document.querySelector("#organization-website").href = organization.website_url;
   document.querySelector("#organization-fax").textContent = organization.fax;
   document.querySelector("#access-a-ride-link").href = organization.access_a_ride_url;
   const transportPhone = document.querySelector("#access-a-ride-phone");

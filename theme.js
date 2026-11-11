@@ -10,8 +10,17 @@
     document.documentElement.dataset.theme = theme;
     document.documentElement.style.colorScheme = theme;
     document.querySelectorAll("[data-theme-toggle]").forEach((button) => {
-      button.textContent = theme === "dark" ? "☀  Light mode" : "☾  Dark mode";
+      const icon = theme === "dark" ? "☀" : "☾";
+      const label = theme === "dark" ? "Light mode" : "Dark mode";
+      const iconSlot = button.querySelector("[data-theme-icon]");
+      if (iconSlot) {
+        iconSlot.textContent = icon;
+        button.querySelector("[data-theme-label]").textContent = label;
+      } else {
+        button.textContent = `${icon}  ${label}`;
+      }
       button.setAttribute("aria-label", `Switch to ${theme === "dark" ? "light" : "dark"} mode`);
+      button.title = button.getAttribute("aria-label");
       button.setAttribute("aria-pressed", String(theme === "dark"));
     });
   }
