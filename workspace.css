@@ -18,8 +18,6 @@
 .sidebar-bottom { display: grid; gap: 18px; margin-top: auto; padding: 36px 10px 0; }
 .sidebar-bottom > a { color: var(--muted); font-size: .72rem; text-decoration: none; }
 .sidebar-footnote { font-size: .6rem; color: var(--muted); line-height: 1.8; }
-.theme-toggle { display: inline-flex; gap: 8px; align-items: center; justify-content: center; border: 1px solid var(--line); border-radius: 9px; background: var(--surface); color: var(--text); min-height: 40px; padding: 8px 12px; font: inherit; font-size: .78rem; cursor: pointer; }
-.theme-toggle:hover { background: var(--ui-accent-soft); }
 .workspace-content { min-width: 0; padding: 0 30px 24px; }
 .workspace-topbar { display: flex; justify-content: space-between; align-items: center; gap: 24px; min-height: 104px; }
 .workspace-topbar .eyebrow { margin-bottom: 7px; font-size: .58rem; }
@@ -255,5 +253,40 @@
   pointer-events: none;
 }
 .sidebar-collapsed .sidebar-bottom { padding-inline: 0; }
-.sidebar-collapsed .theme-toggle,
 .sidebar-collapsed #staff-sign-out { min-height: 36px; padding: 6px; }
+
+.sidebar-theme-switch {
+  display: grid;
+  place-items: center;
+  justify-self: center;
+  min-width: 44px;
+  min-height: 36px;
+  cursor: pointer;
+}
+.sidebar-theme-track {
+  display: block;
+  width: 46px;
+  height: 25px;
+  padding: 3px;
+  border-radius: 999px;
+  background: var(--text);
+}
+.sidebar-theme-thumb {
+  display: grid;
+  place-items: center;
+  width: 19px;
+  height: 19px;
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--text);
+  transition: transform 180ms ease;
+}
+.sidebar-theme-thumb svg { width: 13px; height: 13px; }
+.sidebar-theme-moon,
+.sidebar-theme-switch input:checked + .sidebar-theme-track .sidebar-theme-sun { display: none; }
+.sidebar-theme-switch input:checked + .sidebar-theme-track .sidebar-theme-moon { display: block; }
+.sidebar-theme-switch input:checked + .sidebar-theme-track .sidebar-theme-thumb { transform: translateX(21px); }
+.sidebar-theme-switch input:focus-visible + .sidebar-theme-track { outline: 2px solid var(--primary); outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) {
+  .sidebar-theme-thumb { transition: none; }
+}

@@ -9,26 +9,14 @@
     const theme = preference || (systemTheme.matches ? "dark" : "light");
     document.documentElement.dataset.theme = theme;
     document.documentElement.style.colorScheme = theme;
-    document.querySelectorAll("[data-theme-toggle]").forEach((button) => {
-      const icon = theme === "dark" ? "☀" : "☾";
-      const label = theme === "dark" ? "Light mode" : "Dark mode";
-      const iconSlot = button.querySelector("[data-theme-icon]");
-      if (iconSlot) {
-        iconSlot.textContent = icon;
-        button.querySelector("[data-theme-label]").textContent = label;
-      } else {
-        button.textContent = `${icon}  ${label}`;
-      }
-      button.setAttribute("aria-label", `Switch to ${theme === "dark" ? "light" : "dark"} mode`);
-      button.title = button.getAttribute("aria-label");
-      button.setAttribute("aria-pressed", String(theme === "dark"));
-    });
+    const toggle = document.querySelector("[data-theme-switch]");
+    if (toggle) toggle.checked = theme === "dark";
   }
   applyTheme();
   document.addEventListener("DOMContentLoaded", applyTheme);
-  document.addEventListener("click", (event) => {
-    if (!event.target.closest("[data-theme-toggle]")) return;
-    preference = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+  document.addEventListener("change", (event) => {
+    if (!event.target.matches("[data-theme-switch]")) return;
+    preference = event.target.checked ? "dark" : "light";
     try { localStorage.setItem(key, preference); } catch { /* Keep the selection for this page. */ }
     applyTheme();
   });
