@@ -1,5 +1,9 @@
 const signIn = document.querySelector("#staff-sign-in");
 const signInButton = signIn.querySelector("button");
+const setPassword = document.querySelector("#staff-set-password");
+const setPasswordButton = setPassword.querySelector("button");
+const setPasswordStatus = setPassword.querySelector("[role=status]");
+const accessTitle = document.querySelector("#staff-access-title");
 const signInStatus = document.querySelector("#staff-sign-in-status");
 const accessScreen = document.querySelector("#staff-access");
 const workspace = document.querySelector(".workspace-shell");
@@ -9,6 +13,21 @@ const signOutButton = document.querySelector("#staff-sign-out");
 if (!window.supabase) {
   signInStatus.textContent = "Sign-in could not load. Refresh the page to try again.";
 } else {
+  const authRedirect = new URLSearchParams(window.location.hash.slice(1));
+  let inviteToken = authRedirect.get("type") === "invite" ? authRedirect.get("access_token") : null;
+  const inviteError = authRedirect.has("error_code") || authRedirect.has("error");
+  const pendingInviteKey = "renue-pending-invite";
+  let pendingInviteId = null;
+  try { pendingInviteId = sessionStorage.getItem(pendingInviteKey); } catch { /* Continue without reload support. */ }
+
+  function rememberInvite(id) {
+    pendingInviteId = id;
+    try {
+      if (id) sessionStorage.setItem(pendingInviteKey, id);
+      else sessionStorage.removeItem(pendingInviteKey);
+    } catch { /* Keep this invitation open for this page. */ }
+  }
+
   const client = window.supabase.createClient(
     "https://xzpgodvdffpazhcvzxkq.supabase.co",
     "sb_publishable_A-tlM6YuoENyosTMzY0mqQ_aNj7iWqM"
@@ -19,6 +38,7 @@ if (!window.supabase) {
   let revision = 0;
   let submitting = false;
   let visibleUserId = null;
+  let inviteSession = null;
 
   async function loadProfile(session, currentRevision) {
     const { data, error } = await client.from("staff_profiles")
@@ -52,7 +72,29 @@ if (!window.supabase) {
     workspace.hidden = false;
   }
 
-  client.auth.onAuthStateChange((event, session) => {
+  function handleAuthState(event, session) {
+    if (inviteToken && session?.access_token === inviteToken) {
+      inviteToken = null;
+      rememberInvite(session.user.id);
+    }
+    if (session && session.user.id === pendingInviteId) {
+      inviteSession = session;
+      accessScreen.hidden = false;
+      workspace.hidden = true;
+      accessTitle.textContent = "Set your password";
+      signIn.hidden = true;
+      if (setPassword.hidden) {
+        setPassword.hidden = false;
+        setPassword.elements.password.focus();
+      }
+      return;
+    }
+    if (inviteSession || event === "SIGNED_OUT") rememberInvite(null);
+    inviteSession = null;
+    setPassword.hidden = true;
+    accessTitle.textContent = "Staff sign-in";
+    signIn.hidden = false;
+
     if (session && session.user.id === visibleUserId &&
         (event === "TOKEN_REFRESHED" || event === "SIGNED_IN")) return;
     const currentRevision = ++revision;
@@ -67,7 +109,15 @@ if (!window.supabase) {
     accessScreen.hidden = false;
     if (!session) {
       signInButton.disabled = submitting;
-      if (event === "INITIAL_SESSION") signInStatus.textContent = "";
+      if (event === "INITIAL_SESSION" || event === "SIGNED_OUT") {
+        signInStatus.textContent = (inviteError || inviteToken)
+          ? "This invitation link is invalid or has expired. Ask your manager for a fresh invitation."
+          : "";
+        if (inviteError || inviteToken) {
+          history.replaceState(history.state, "", window.location.pathname + window.location.search);
+          inviteToken = null;
+        }
+      }
       return;
     }
 
@@ -83,6 +133,45 @@ if (!window.supabase) {
         if (currentRevision === revision) signInButton.disabled = submitting;
       }
     }, 0);
+  }
+  client.auth.onAuthStateChange(handleAuthState);
+
+  setPassword.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (!inviteSession || setPasswordButton.disabled) return;
+    const password = setPassword.elements.password.value;
+    if (password !== setPassword.elements.confirmation.value) {
+      setPasswordStatus.textContent = "Passwords do not match.";
+      setPassword.elements.confirmation.focus();
+      return;
+    }
+
+    const invitedUserId = inviteSession.user.id;
+    setPasswordButton.disabled = true;
+    setPasswordStatus.textContent = "Saving your password…";
+    try {
+      const { data: { session }, error: sessionError } = await client.auth.getSession();
+      if (sessionError || session?.user.id !== invitedUserId || inviteSession?.user.id !== invitedUserId) {
+        setPasswordStatus.textContent = "Your invitation session has ended. Ask your manager for a fresh invitation.";
+        return;
+      }
+      const { data, error } = await client.auth.updateUser({ password });
+      if (error) {
+        setPasswordStatus.textContent = error.message || "Could not save your password. Try again.";
+        return;
+      }
+      if (inviteSession?.user.id !== invitedUserId || data.user?.id !== invitedUserId) return;
+      const completedSession = inviteSession;
+      rememberInvite(null);
+      inviteSession = null;
+      setPassword.reset();
+      setPasswordStatus.textContent = "";
+      handleAuthState("SIGNED_IN", completedSession);
+    } catch {
+      setPasswordStatus.textContent = "Could not save your password. Try again.";
+    } finally {
+      setPasswordButton.disabled = false;
+    }
   });
 
   signIn.addEventListener("submit", async (event) => {
