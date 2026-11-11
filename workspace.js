@@ -48,21 +48,40 @@ function updateClinicContext() {
 function buildWorkspaceSearchEntries() {
   const entries = [];
   const add = (title, subtitle, body, view, extra = {}) => entries.push({ title, subtitle, body, view, ...extra });
-  for (const [state, catalog] of Object.entries(insuranceCatalogByState)) {
-    if (selectedState && state !== selectedState) continue;
-    const groups = { inNetwork: "In network", outOfNetwork: "Out of network · Schedule evaluation", outOfNetworkWithBenefits: "OON benefits: evaluation · No OON benefits: IVK consultation / SCA", consultOnly: "IVK consultation only", doNotSchedule: "Do not schedule evaluation" };
+  const groups = { inNetwork: "In network", outOfNetwork: "Out of network · Schedule evaluation", outOfNetworkWithBenefits: "OON benefits: evaluation · No OON benefits: IVK consultation / SCA", consultOnly: "IVK consultation only", doNotSchedule: "Do not schedule evaluation" };
+  for (const [clinicId, clinic] of Object.entries(clinicLocations)) {
+    const catalog = insuranceCatalogByState[clinic.state];
+    const name = clinic.name || clinic.hoursName;
     for (const [group, label] of Object.entries(groups)) {
-      (catalog[group] || []).forEach((name) => add(name, `${state} · ${label}`, name, "insurance-title", { insurer: name, clinic: selectedLocationId || state }));
+      (catalog[group] || []).forEach((insurer) =>
+        add(insurer, `${name} · ${label}`, insurer, "insurance-title", { insurer, clinic: clinicId }));
+    }
+    const office = officeHours.find((entry) => entry.location === clinic.hoursName);
+    if (office) {
+      const schedule = office.schedule.map(({ day, hours }) => `${day} ${hours}`).join(" ");
+      add(name, [clinic.address || office.addressLines.join(", "), clinic.phone].filter(Boolean).join(" · "),
+        `hours ${clinic.hoursName} ${schedule} ${clinic.phone.replace(/\D/g, "")}`, "hours-title", { clinic: clinicId });
+    }
+    const pricing = ivkPricingByClinic[clinicId];
+    if (pricing) {
+      add("IV ketamine pricing", name, Object.values(pricing).map((price) => `$${price}`).join(" "),
+        "treatment-title", { treatment: "ivk", clinic: clinicId });
     }
   }
-  messageTemplates.forEach((template, index) => {
-    if (selectedLocationId && template.locationId && template.locationId !== selectedLocationId) return;
-    add(template.subtitle, "Message template", resolveContactReferences(messageWithPersonalEdit(template).body), "messages-title", { message: index });
+  activeMessages.forEach((template, index) => {
+    const clinic = clinicLocations[template.locationId];
+    const subtitle = clinic ? `Message template · ${clinic.name || clinic.hoursName}` : "Message template";
+    add(template.subtitle, subtitle, messagePreviewText(template.body, template.locationId || selectedLocationId),
+      "messages-title", { message: index, clinic: template.locationId });
   });
-  voicemailScripts.forEach((script, index) => add(script.title, "Voicemail script", script.body, "voicemail-title", { voicemail: index }));
+  activeVoicemails.forEach((script, index) => {
+    const clinic = clinicLocations[script.locationId];
+    const subtitle = clinic ? `Voicemail script · ${clinic.name || clinic.hoursName}` : "Voicemail script";
+    add(script.title, subtitle, messagePreviewText(voicemailWithStaffName(script.body), script.locationId || selectedLocationId),
+      "voicemail-title", { voicemail: index, clinic: script.locationId });
+  });
   resources.forEach((resource, index) => add(resource.title, `${resource.category} · ${resource.stage || resource.note}`, resource.url, "resources-title", { resource: index }));
-  treatmentGuides.forEach((guide) => add(guide.name, "Treatment guide", `${guide.summary} ${guide.facts.flat().join(" ")} ${guide.sections.flat().join(" ")} ${guide.id === "ivk" && ivkPricingByClinic[selectedLocationId] ? JSON.stringify(ivkPricingByClinic[selectedLocationId]) : ""}`, "treatment-title", { treatment: guide.id }));
-  officeHours.forEach((office) => add(office.location, Object.values(clinicLocations).find((clinic) => clinic.hoursName === office.location)?.address || office.addressLines.join(", "), `${office.schedule.map((entry) => `${entry.day} ${entry.hours}`).join(" ")} ${Object.values(clinicLocations).find((clinic) => clinic.hoursName === office.location)?.phone || ""}`, "hours-title"));
+  treatmentGuides.forEach((guide) => add(guide.name, "Treatment guide", `${guide.summary} ${guide.facts.flat().join(" ")} ${guide.sections.flat().join(" ")}`, "treatment-title", { treatment: guide.id }));
   if (organizationContacts) add("Shared fax number", "All locations · " + organizationContacts.fax, "fax " + organizationContacts.fax.replace(/\D/g, ""), "hours-title");
   document.querySelectorAll(".company-email-table tbody tr").forEach((row) => {
     const label = row.querySelector("th").textContent;
@@ -71,7 +90,7 @@ function buildWorkspaceSearchEntries() {
   });
   add("Travel & transport", "Directions · Access-A-Ride · MASS", "transport travel route address ZIP car public transit disability access-a-ride MASS Medicaid insurance patients only", "travel-title");
   add("Financing options", "CareCredit · Advance Care · HSA · FSA", financingContentContainer.textContent, "financing-title");
-  vitaminMenu.forEach((item) => add(item.name, `NJ vitamins · $${item.price}`, `${item.summary} ${item.ingredients.join(" ")} ${item.benefits.join(" ")}`, "vitamins-title", { vitaminQuery: item.name }));
+  vitaminMenu.forEach((item) => add(item.name, `NJ vitamins · $${item.price}`, `${item.summary} ${item.ingredients.join(" ")} ${item.benefits.join(" ")}`, "vitamins-title", { vitaminQuery: item.name, clinic: "NJ" }));
   return entries;
 }
 function renderWorkspaceSearch() {
@@ -81,16 +100,30 @@ function renderWorkspaceSearch() {
     workspaceMain.hidden = false;
     return;
   }
-  currentSearchEntries = buildWorkspaceSearchEntries().filter((entry) => `${entry.title} ${entry.subtitle} ${entry.body}`.toLocaleLowerCase().includes(query));
+  const matches = buildWorkspaceSearchEntries().filter((entry) =>
+    `${entry.title} ${entry.subtitle} ${entry.body}`.toLocaleLowerCase().includes(query));
+  const clinic = clinicLocations[selectedLocationId];
+  const groups = [
+    [clinic?.name || clinic?.hoursName, matches.filter((entry) => entry.clinic && entry.clinic === selectedLocationId)],
+    [clinic ? "Other clinics" : "All clinics", matches.filter((entry) => entry.clinic && entry.clinic !== selectedLocationId)],
+    ["Shared resources and templates", matches.filter((entry) => !entry.clinic)]
+  ];
+  currentSearchEntries = [];
   searchResults.hidden = false;
   workspaceMain.hidden = true;
-  document.querySelector("#workspace-search-status").textContent = currentSearchEntries.length
-    ? `${currentSearchEntries.length} ${currentSearchEntries.length === 1 ? "result" : "results"}${selectedLocationId ? ` · ${clinicLocations[selectedLocationId].name} insurance and messages` : " · all clinics"}`
+  document.querySelector("#workspace-search-status").textContent = matches.length
+    ? `${matches.length} ${matches.length === 1 ? "result" : "results"}`
     : "No results. Try an insurer, template name, ingredient or resource.";
-  document.querySelector("#workspace-search-items").innerHTML = currentSearchEntries.map((entry, index) => {
-    const content = `<span>${escapeHtml(entry.title)}<small>${escapeHtml(entry.subtitle)}</small></span><span class="search-result-category">${escapeHtml(viewNames[entry.view])} →</span>`;
-    return `<button type="button" class="search-result" data-search-result="${index}">${content}</button>`;
+  const items = document.querySelector("#workspace-search-items");
+  items.innerHTML = groups.filter(([, entries]) => entries.length).map(([label, entries]) => {
+    const buttons = entries.map((entry) => {
+      const index = currentSearchEntries.push(entry) - 1;
+      const content = `<span>${escapeHtml(entry.title)}<small>${escapeHtml(entry.subtitle)}</small></span><span class="search-result-category">${escapeHtml(viewNames[entry.view])} →</span>`;
+      return `<button type="button" class="search-result" data-search-result="${index}">${content}</button>`;
+    }).join("");
+    return `<h3 class="search-result-group">${escapeHtml(label)}</h3>${buttons}`;
   }).join("");
+  items.scrollTop = 0;
 }
 
 document.querySelectorAll('.workspace-nav a[href^="#"], .workspace-sidebar .brand-home').forEach((link) => {
@@ -115,7 +148,7 @@ document.addEventListener("click", (event) => {
     document.querySelector("#message-search").value = "";
     document.querySelector("#message-category").value = "all";
     selectedMessageIndex = entry.message;
-    if (messageTemplates[entry.message].locationId && messageTemplates[entry.message].locationId !== selectedLocationId) showAllMessagesInput.checked = true;
+    if (activeMessages[entry.message].locationId && activeMessages[entry.message].locationId !== selectedLocationId) showAllMessagesInput.checked = true;
     renderMessages();
   }
   if (entry.voicemail !== undefined) { selectedVoicemailIndex = entry.voicemail; renderVoicemails(); }

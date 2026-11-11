@@ -46,7 +46,7 @@
 .workspace-page .section-kicker { font-size: .6rem; margin-bottom: 7px; }
 .workspace-note { color: var(--muted); font-size: .62rem; margin: 18px 2px 0; line-height: 1.7; }
 .view-description { font-size: .8rem; line-height: 1.7; color: var(--muted); margin-bottom: 20px; }
-.workspace-page .hours-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+#hours-list { max-width: 38rem; margin-block: 1rem 1.5rem; }
 .workspace-page .hours-card { padding: 18px; gap: 20px; }
 .workspace-page .hours-card-header { min-height: 100px; }
 .insurance-find { display: grid; grid-template-columns: auto minmax(200px, 440px) 1fr; align-items: center; gap: 12px; margin-bottom: 18px; }
@@ -75,14 +75,15 @@
 .search-results-heading h2 { font-size: 1.1rem; font-weight: 500; }
 #workspace-search-status { margin: 12px 0; color: var(--muted); font-size: .75rem; }
 #workspace-search-items { display: grid; gap: 6px; max-height: 55vh; overflow-y: auto; }
+.search-result-group { margin: 0.65rem 0 0.2rem; font-size: .8rem; color: var(--muted); }
 .search-result { display: flex; justify-content: space-between; gap: 20px; width: 100%; text-align: left; text-decoration: none; font: inherit; font-size: .82rem; border: 1px solid var(--line); border-radius: 9px; padding: 14px; background: var(--ui-subtle); color: var(--text); cursor: pointer; line-height: 1.6; }
 .search-result:hover { border-color: var(--ui-accent-line); }
 .search-result small { display: block; font-size: .7rem; color: var(--muted); }
 .search-result-category { font-size: .65rem; color: var(--primary); flex-shrink: 0; }
 #workspace-main:focus { outline: none; }
-@media (min-width: 1700px) { .workspace-content { padding-left: 44px; padding-right: 44px; } .workspace-page .hours-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (min-width: 1700px) { .workspace-content { padding-left: 44px; padding-right: 44px; } }
 @media (max-width: 1100px) { .workspace-page .workspace-shell { grid-template-columns: 190px minmax(0, 1fr); } .workspace-sidebar { padding: 25px 12px 18px; } .workspace-sidebar .brand-home img { width: 150px; } .workspace-content { padding-left: 20px; padding-right: 20px; } .workspace-sidebar .workspace-nav a { font-size: .74rem; padding: 8px 10px; gap: 10px; } .workspace-topbar h1 { font-size: 1.4rem; } .clinic-context-details { gap: 14px; } #context-address { display: block; margin-left: 0; margin-top: 5px; } .script-workspace { grid-template-columns: minmax(180px, .4fr) minmax(0, 1fr); gap: 12px; } .workspace-page .panel { padding: 20px; } .insurance-find { grid-template-columns: auto minmax(0, 1fr); } #insurance-search-status { grid-column: 2; } }
-@media (max-width: 850px) { .workspace-page .workspace-shell { grid-template-columns: 168px minmax(0, 1fr); } .workspace-sidebar .brand-home { padding: 0 4px; } .workspace-sidebar .brand-home img { width: 135px; } .workspace-content { padding-left: 14px; padding-right: 14px; } .workspace-search { width: 46%; } .workspace-topbar { gap: 12px; } .script-workspace { grid-template-columns: 1fr; } .script-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } .workspace-page .hours-grid { grid-template-columns: 1fr; } .workspace-page .insurance-table { min-width: 520px; } }
+@media (max-width: 850px) { .workspace-page .workspace-shell { grid-template-columns: 168px minmax(0, 1fr); } .workspace-sidebar .brand-home { padding: 0 4px; } .workspace-sidebar .brand-home img { width: 135px; } .workspace-content { padding-left: 14px; padding-right: 14px; } .workspace-search { width: 46%; } .workspace-topbar { gap: 12px; } .script-workspace { grid-template-columns: 1fr; } .script-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } .workspace-page .insurance-table { min-width: 520px; } }
 .clinic-context { position: sticky; top: 0; z-index: 10; }
 
 .workspace-nav-group { display: grid; gap: 2px; }

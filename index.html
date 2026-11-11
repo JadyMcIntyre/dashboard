@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/><title>Renue Wellness · Care workspace</title><meta content="Renue Wellness clinic reference, patient messages and intake tools." name="description"/><link href="./resources/brand/renue-mark.svg" rel="icon" type="image/svg+xml"/><script src="./theme.js?v=ux-final"></script><link as="font" crossorigin="" href="./resources/brand/fonts/gotham-book.woff2" rel="preload" type="font/woff2"/><link href="./styles.css?v=ux2" rel="stylesheet"/><link href="./brand.css?v=ux2" rel="stylesheet"/><link href="./vitamins.css?v=workspace-integrated" rel="stylesheet"/><link href="./workspace.css?v=template-library" rel="stylesheet"/><link href="./theme.css?v=ux-final" rel="stylesheet"/><link rel="stylesheet" href="./staff-access.css?v=template-library"/></head><body class="workspace-page"><a class="skip-link" href="#workspace-main">Skip to content</a><main id="staff-access" class="staff-access">
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/><title>Renue Wellness · Care workspace</title><meta content="Renue Wellness clinic reference, patient messages and intake tools." name="description"/><link href="./resources/brand/renue-mark.svg" rel="icon" type="image/svg+xml"/><script src="./theme.js?v=ux-final"></script><link as="font" crossorigin="" href="./resources/brand/fonts/gotham-book.woff2" rel="preload" type="font/woff2"/><link href="./styles.css?v=ux2" rel="stylesheet"/><link href="./brand.css?v=ux2" rel="stylesheet"/><link href="./vitamins.css?v=workspace-integrated" rel="stylesheet"/><link href="./workspace.css?v=clinic-views" rel="stylesheet"/><link href="./theme.css?v=ux-final" rel="stylesheet"/><link rel="stylesheet" href="./staff-access.css?v=template-library"/></head><body class="workspace-page"><a class="skip-link" href="#workspace-main">Skip to content</a><main id="staff-access" class="staff-access">
   <section class="panel staff-sign-in-panel" aria-labelledby="staff-access-title">
     <img alt="Renue Wellness" width="169" src="./resources/brand/renue-logo.svg"/>
     <h1 id="staff-access-title">Staff sign-in</h1>
@@ -66,7 +66,7 @@
 <p class="section-kicker">Quick Send</p>
 <h2 id="messages-title">Text Messages</h2>
 </div></div>
-<div class="personal-templates" data-personal-copy-list="message" hidden><h3>My templates</h3><ul></ul></div>
+
 <div class="message-filter-bar"><p id="messages-filter-note" role="status"></p><label class="message-filter-toggle"><input id="show-all-messages" type="checkbox"/> Show all clinics</label></div>
 <div class="content-find-bar"><label class="content-search-field">Find a template<input id="message-search" placeholder="Search wording or template name…" type="search"/></label><label>Template type<select id="message-category"><option value="all">All templates</option><option value="Clinic callback">Clinic callbacks</option><option value="Appointments">Appointments</option><option value="Follow-up">Follow-up</option><option value="Treatment information">Treatment information</option><option value="Financing">Financing</option></select></label><button class="button-secondary" id="message-clear" type="button">Clear filters</button></div><div class="card-grid" id="messages-grid"></div>
 </section>
@@ -74,62 +74,85 @@
 <p class="section-kicker">Readouts</p>
 <h2 id="voicemail-title">Voicemail Scripts</h2>
 </div></div>
-<div class="personal-templates" data-personal-copy-list="voicemail" hidden><h3>My templates</h3><ul></ul></div>
+
 <div class="voicemail-grid" id="voicemail-list"></div>
 </section>
 <section class="panel workspace-panel template-settings" data-workspace-view="templates-title" aria-labelledby="templates-title" hidden>
 <h2 id="templates-title" class="visually-hidden">Manage templates</h2>
+<datalist id="template-tags"><option value="Clinic callback"></option><option value="Follow-up"></option><option value="Appointments"></option><option value="Treatment information"></option><option value="Financing"></option></datalist>
 <div class="template-tabs" role="group" aria-label="Template management">
 <button class="button-secondary" type="button" data-template-tab="message" aria-pressed="true">Messages</button>
 <button class="button-secondary" type="button" data-template-tab="voicemail" aria-pressed="false">Voicemail scripts</button>
 <button class="button-secondary" type="button" data-template-tab="community" aria-pressed="false">Community</button>
 </div>
 <div data-template-pane="message">
-<section class="template-card" aria-labelledby="company-messages-heading">
-<div class="template-card-heading"><div><h3 id="company-messages-heading">Company messages</h3><p>Choose a message to preview or save your own wording.</p></div></div>
-<div class="template-library">
-<div class="template-library-sidebar">
-<label class="field">Find a message<input id="company-message-search" type="search" placeholder="Search company messages"/></label>
-<div id="company-message-picker" class="script-list" role="group" aria-label="Company messages"></div>
-</div>
-<div id="company-message-editor" class="script-reading"></div>
-</div>
-</section>
 <div class="personal-templates template-card" data-personal-templates="message">
 <div class="template-card-heading"><div><h3>My messages</h3><p>Templates saved to your library.</p></div>
 <div class="template-toolbar"><button class="button-secondary" type="button" data-refresh-templates>Refresh</button>
+<button class="button-secondary" type="button" data-select-templates aria-pressed="false">Select</button>
 <button class="button" type="button" data-new-template>New template</button></div></div>
+<div class="template-toolbar template-selection" hidden>
+<label><input type="checkbox" data-select-all/> Select all</label>
+<button class="button-secondary" type="button" data-delete-selected disabled>Delete selected</button>
+</div>
 <ul></ul>
-<form method="post" hidden>
+<dialog class="template-dialog" aria-labelledby="message-template-dialog-title"><h4 id="message-template-dialog-title">New template</h4>
+<form method="post">
 <fieldset disabled>
 <label class="field">Title<input name="title" maxlength="160" required/></label>
-<label class="field">Template text<textarea name="body" rows="5" maxlength="20000" required></textarea></label>
-<p class="muted">Use <code>{{staffName}}</code> for your name and <code>&lt;&gt;</code> for the patient name.</p>
+<div class="template-metadata">
+<label class="field">Clinic<select name="clinic_id"><option value="">All clinics</option></select></label>
+<label class="field">Tag (optional)<input name="tag" list="template-tags" maxlength="60" placeholder="Choose or type a tag"/></label>
+</div>
+<label for="message-template-body">Template text</label>
+<div class="message-mention-editor">
+<div class="message-mention-mirror" aria-hidden="true"></div>
+<textarea id="message-template-body" name="body" rows="5" maxlength="20000" aria-describedby="message-mention-help" aria-autocomplete="list" aria-controls="message-mention-options" required></textarea>
+<div class="message-mention-menu" hidden><p>Suggestions</p><div id="message-mention-options" role="listbox" aria-label="Template suggestions"></div></div>
+</div>
+<p id="message-mention-help" class="muted">Type @ for names, clinic numbers, and links.</p>
 <button class="button" type="submit">Add template</button>
 <button class="button-secondary" type="reset">Cancel</button>
 </fieldset>
-</form>
+<p data-editor-status role="status"></p>
+</form></dialog>
 <p role="status"></p>
 </div></div>
 <div data-template-pane="voicemail" hidden>
 <div class="personal-templates template-card" data-personal-templates="voicemail">
 <div class="template-card-heading"><div><h3>My voicemail scripts</h3><p>Templates saved to your library.</p></div>
 <div class="template-toolbar"><button class="button-secondary" type="button" data-refresh-templates>Refresh</button>
+<button class="button-secondary" type="button" data-select-templates aria-pressed="false">Select</button>
 <button class="button" type="button" data-new-template>New template</button></div></div>
+<div class="template-toolbar template-selection" hidden>
+<label><input type="checkbox" data-select-all/> Select all</label>
+<button class="button-secondary" type="button" data-delete-selected disabled>Delete selected</button>
+</div>
 <ul></ul>
-<form method="post" hidden>
+<dialog class="template-dialog" aria-labelledby="voicemail-template-dialog-title"><h4 id="voicemail-template-dialog-title">New template</h4>
+<form method="post">
 <fieldset disabled>
 <label class="field">Title<input name="title" maxlength="160" required/></label>
-<label class="field">Template text<textarea name="body" rows="5" maxlength="20000" required></textarea></label>
-<p class="muted">Use <code>{{staffName}}</code> for your name and <code>&lt;&gt;</code> for the patient name.</p>
+<div class="template-metadata">
+<label class="field">Clinic<select name="clinic_id"><option value="">All clinics</option></select></label>
+<label class="field">Tag (optional)<input name="tag" list="template-tags" maxlength="60" placeholder="Choose or type a tag"/></label>
+</div>
+<label for="voicemail-template-body">Template text</label>
+<div class="message-mention-editor">
+<div class="message-mention-mirror" aria-hidden="true"></div>
+<textarea id="voicemail-template-body" name="body" rows="5" maxlength="20000" aria-describedby="voicemail-mention-help" aria-autocomplete="list" aria-controls="voicemail-mention-options" required></textarea>
+<div class="message-mention-menu" hidden><p>Suggestions</p><div id="voicemail-mention-options" role="listbox" aria-label="Template suggestions"></div></div>
+</div>
+<p id="voicemail-mention-help" class="muted">Type @ for names, clinic numbers, and links.</p>
 <button class="button" type="submit">Add template</button>
 <button class="button-secondary" type="reset">Cancel</button>
 </fieldset>
-</form>
+<p data-editor-status role="status"></p>
+</form></dialog>
 <p role="status"></p>
 </div></div>
 <div data-template-pane="community" class="template-card" hidden>
-<div class="template-card-heading"><div><h3>Shared by staff</h3><p>Browse staff templates and save a copy to your library.</p></div><div class="template-toolbar">
+<div class="template-card-heading"><div><h3>Template library</h3><p>Find company defaults and templates shared by Renue staff.</p></div><div class="template-toolbar">
 <label class="field">Template type<select id="community-template-kind"><option value="all">All templates</option><option value="message">Messages</option><option value="voicemail">Voicemail scripts</option></select></label>
 <button class="button-secondary" type="button" id="community-template-refresh">Refresh</button></div></div>
 <p id="community-template-status" role="status"></p>
@@ -147,7 +170,7 @@
 </div></div>
 <article class="financing-card" id="financing-content"></article>
 </section>
-<section aria-label="Clinic hours and contacts" class="panel workspace-panel" data-workspace-view="hours-title" hidden=""><div class="section-heading"><div><p class="section-kicker">Clinic reference</p><h2 id="hours-title">Hours &amp; contacts</h2></div></div><p class="view-description">All times are local to the clinic. Crestview uses Central time; New York and New Jersey use Eastern time.</p><div class="shared-contact"><div><span class="context-label">Fax · All locations</span><strong id="organization-fax"></strong></div><button class="button-secondary" data-copy-contact type="button">Copy fax number</button></div><div class="hours-grid hero-hours-grid" id="hours-list"></div><details class="company-emails" id="company-emails"><summary><span>Company emails</span><span class="email-count"></span><span aria-hidden="true" class="summary-icon"></span></summary><div class="company-email-table-wrap"><table class="company-email-table"><caption class="visually-hidden">Company email directory</caption><thead><tr><th scope="col">Team / Purpose</th><th scope="col">Email address</th></tr></thead><tbody></tbody></table></div></details></section><section aria-label="Vitamins and IV menu" class="panel workspace-panel vitamins-panel" data-workspace-view="vitamins-title" hidden=""><div class="section-heading"><div><p class="section-kicker">New Jersey · Paramus</p><h2 id="vitamins-title">Vitamins &amp; IV</h2></div></div><p class="view-description">Available at the Paramus clinic, New Jersey. Browse 8 IV therapies, 4 vitamin shots and 1 add-on by treatment, ingredient or price.</p>
+<section aria-label="Clinic hours and contacts" class="panel workspace-panel" data-workspace-view="hours-title" hidden=""><div class="section-heading"><div><p class="section-kicker">Clinic reference</p><h2 id="hours-title">Hours &amp; contacts</h2></div></div><p class="view-description">Hours are shown in the selected clinic’s local time.</p><div class="shared-contact"><div><span class="context-label">Fax · All locations</span><strong id="organization-fax"></strong></div><button class="button-secondary" data-copy-contact type="button">Copy fax number</button></div><div id="hours-list"></div><details class="company-emails" id="company-emails"><summary><span>Company emails</span><span class="email-count"></span><span aria-hidden="true" class="summary-icon"></span></summary><div class="company-email-table-wrap"><table class="company-email-table"><caption class="visually-hidden">Company email directory</caption><thead><tr><th scope="col">Team / Purpose</th><th scope="col">Email address</th></tr></thead><tbody></tbody></table></div></details></section><section aria-label="Vitamins and IV menu" class="panel workspace-panel vitamins-panel" data-workspace-view="vitamins-title" hidden=""><div class="section-heading"><div><p class="section-kicker">New Jersey · Paramus</p><h2 id="vitamins-title">Vitamins &amp; IV</h2></div></div><p class="view-description">Available at the Paramus clinic, New Jersey. Browse 8 IV therapies, 4 vitamin shots and 1 add-on by treatment, ingredient or price.</p>
 <div class="menu-toolbar">
 <div class="menu-search"><label for="menu-search">Find a treatment or ingredient</label><input id="menu-search" placeholder="Try B12, magnesium or hydration…" type="search"/></div>
 <fieldset class="menu-filters"><legend>Show</legend><label><input checked="" name="menu-category" type="radio" value="all"/><span>All options</span></label><label><input name="menu-category" type="radio" value="iv"/><span>IV therapies</span></label><label><input name="menu-category" type="radio" value="shot"/><span>Vitamin shots</span></label><label><input name="menu-category" type="radio" value="addon"/><span>Add-on</span></label></fieldset>
@@ -197,4 +220,4 @@
 </div>
 </form>
 </div>
-</div><div aria-live="polite" class="toast" id="toast" role="status"></div><script src="./vitamins-data.js?v=1"></script><script src="./care-content.js?v=template-library"></script><script src="./contact-directory.js?v=1"></script><script src="./app.js?v=template-library"></script><script src="./vitamins.js?v=direct-copy"></script><script src="./care-tools.js?v=clinic-ivk-prices"></script><script src="./workspace.js?v=template-library"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.89.0/dist/umd/supabase.js"></script><script src="./personal-templates.js?v=template-library"></script><script src="./staff-access.js?v=template-library"></script></body></html>
+</div><div aria-live="polite" class="toast" id="toast" role="status"></div><script src="./vitamins-data.js?v=1"></script><script src="./care-content.js?v=clinic-number"></script><script src="./contact-directory.js?v=clinic-views"></script><script src="./app.js?v=clinic-views"></script><script src="./vitamins.js?v=direct-copy"></script><script src="./care-tools.js?v=clinic-ivk-prices"></script><script src="./workspace.js?v=clinic-views"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.89.0/dist/umd/supabase.js"></script><script src="./personal-templates.js?v=clinic-views"></script><script src="./staff-access.js?v=clinic-number"></script></body></html>

@@ -17,13 +17,20 @@ async function fetchContactDirectory(client) {
   return { organization: organization.data, clinicsById, emails: emails.data };
 }
 
-function resolveContactReferences(body) {
+const clinicNumberMention = /(?<![\w@.+-])@clinic[ -]number(?![\w@-])/i;
+
+function selectedClinicPhone(clinicId = selectedLocationId) {
+  return clinicLocations[clinicId]?.phone;
+}
+
+function resolveContactReferences(body, clinicId = selectedLocationId) {
   if (!organizationContacts) return body;
   const links = {
     website: organizationContacts.website_url,
     advancecare: organizationContacts.advance_care_url
   };
   return body
+    .replace(new RegExp(clinicNumberMention.source, "gi"), () => selectedClinicPhone(clinicId) || "[Select a clinic for its phone number]")
     .replace(/\{\{org:(website|advancecare)\}\}/g, (_, key) => links[key])
     .replace(/(?<![\w@.+-])@(renuesite|advancecare)(?![\w@-])/gi, (_, key) =>
       links[key.toLowerCase() === "renuesite" ? "website" : "advancecare"])

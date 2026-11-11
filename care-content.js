@@ -56,14 +56,6 @@ const quickMessageTemplates = [
     "note": "Discuss integration support and timing with the treating provider."
   },
   {
-    "key": "chelsea-ivk-sale",
-    "subtitle": "Chelsea · IV ketamine opening sale",
-    "locationId": "CHELSEA",
-    "category": "Financing",
-    "body": "Hi <>,\n\nThe initial IV ketamine protocol is 6 infusions over 3 weeks — twice a week for 3 consecutive weeks. Chelsea’s opening-sale rate is $400 per session.\n\nWe accept HSA and FSA funds for eligible expenses. CareCredit and Advance Care are financing options you can explore, subject to approval and the offer’s terms.\n\nAdvance Care: {{org:advancecare}}",
-    "note": "Chelsea opening sale only. Advance Care applications involve a hard credit inquiry; promotional financing offers vary."
-  },
-  {
     "key": "no-response-after-consult",
     "subtitle": "No response after consult / evaluation",
     "category": "Follow-up",

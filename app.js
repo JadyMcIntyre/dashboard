@@ -100,12 +100,12 @@ Please call {{phone}} to get in touch with one of our team members or reply to t
 
 {{org:website}}`;
 
-messageTemplates.unshift(...Object.entries(clinicLocations).map(([locationId]) => ({
-  key: "clinic-callback-" + locationId,
-  locationId,
-  subtitle: "",
-  body: clinicFollowUpBody.replace("{{phone}}", "@"+ locationId + "-number"),
-})));
+messageTemplates.unshift({
+  key: "clinic-callback",
+  subtitle: "Clinic callback",
+  category: "Clinic callback",
+  body: clinicFollowUpBody.replace("{{phone}}", "@clinic number")
+});
 
 const messagesGrid = document.querySelector("#messages-grid");
 const showAllMessagesInput = document.querySelector("#show-all-messages");
@@ -614,17 +614,25 @@ function openAppointmentModal(template) {
   });
 }
 
-function plainMessageText(body) {
+function plainMessageText(body, resolveStaff = true) {
   return normalizeTemplateForCopy(body)
-    .replaceAll("{{staffName}}", () => staffDisplayName || "[Your name]")
+    .replace(/{{staffName}}|(?<![\w@.+-])@me(?![\w@-])/gi, () => resolveStaff ? staffDisplayName || "[Your name]" : "@me")
     .replaceAll("{{appointmentDateTime}}", "@appointment")
     .replaceAll("<>", "@patient");
 }
 
+function messagePreviewText(body, clinicId = selectedLocationId) {
+  return resolveContactReferences(plainMessageText(body), clinicId);
+}
+
 function messageForPersonalisation(template) {
+  if (clinicNumberMention.test(template.body) && !selectedClinicPhone()) {
+    showToast("Select a clinic at the top to use its phone number.");
+    return null;
+  }
   return {
     ...template,
-    body: resolveContactReferences(plainMessageText(template.body))
+    body: messagePreviewText(template.body)
       .replace(/(?<![\w@.+-])@patient(?![\w@])/gi, "<>")
       .replace(/(?<![\w@.+-])@appointment(?![\w@])/gi, "{{appointmentDateTime}}")
   };
@@ -716,20 +724,46 @@ function updateHeroTime() {
 let selectedMessageIndex = 0;
 let selectedVoicemailIndex = 0;
 
-let messageOverrides = new Map();
+let activeMessages = [];
+let activeVoicemails = [];
 
-function messageWithPersonalEdit(template) {
-  const body = messageOverrides.get(template.key);
-  return body === undefined ? template : { ...template, body };
+function setActiveTemplates(kind, rows) {
+  const items = rows.map((row) => ({
+    key: row.default_message_key || row.id,
+    title: row.title,
+    subtitle: row.title,
+    body: row.body,
+    locationId: row.clinic_id,
+    category: row.tag,
+    note: row.note
+  }));
+  if (kind === "message") {
+    const previousKey = activeMessages[selectedMessageIndex]?.key;
+    activeMessages = items;
+    selectedMessageIndex = items.findIndex(({ key }) => key === previousKey);
+    if (selectedMessageIndex < 0 && selectedLocationId) selectedMessageIndex = items.findIndex(({ locationId }) => locationId === selectedLocationId);
+    const categories = document.querySelector("#message-category");
+    const selection = categories.value;
+    const tags = [...new Set(items.map(({ category }) => category).filter(Boolean))].sort();
+    categories.replaceChildren(new Option("All templates", "all"), ...tags.map((tag) => new Option(tag, tag)));
+    categories.value = tags.includes(selection) ? selection : "all";
+    renderMessages();
+  } else {
+    const previousKey = activeVoicemails[selectedVoicemailIndex]?.key;
+    activeVoicemails = items;
+    selectedVoicemailIndex = items.findIndex(({ key }) => key === previousKey);
+    renderVoicemails();
+  }
+  document.dispatchEvent(new Event("workspace-data-ready"));
 }
 
 function renderMessages() {
   const showAll = showAllMessagesInput.checked || !selectedLocationId;
   const category = document.querySelector("#message-category").value;
   const query = document.querySelector("#message-search").value.trim().toLocaleLowerCase();
-  const visible = messageTemplates.map((template, index) => ({ ...messageWithPersonalEdit(template), index }))
+  const visible = activeMessages.map((template, index) => ({ ...template, index }))
     .filter((template) => {
-      const type = template.category || (template.locationId ? "Clinic callback" : isAppointmentConfirmationTemplate(messageTemplates[template.index]) ? "Appointments" : "Follow-up");
+      const type = template.category || "Untagged";
       return (showAll || !template.locationId || template.locationId === selectedLocationId)
         && (category === "all" || type === category)
         && `${template.subtitle} ${template.body}`.toLocaleLowerCase().includes(query);
@@ -742,10 +776,10 @@ function renderMessages() {
     messagesGrid.innerHTML = '<p class="insurance-empty">No matching templates. Clear the filters or try different wording.</p>';
     return;
   }
-  const selected = messageWithPersonalEdit(messageTemplates[selectedMessageIndex]);
+  const selected = activeMessages[selectedMessageIndex];
   messagesGrid.innerHTML = `<div class="script-list" aria-label="Message templates">${visible.map((template) => `
-    <button type="button" class="script-choice" data-select-message="${template.index}" aria-pressed="${template.index === selectedMessageIndex}">${escapeHtml(template.subtitle)}<span>${escapeHtml(template.category || (template.locationId ? "Clinic callback" : isAppointmentConfirmationTemplate(messageTemplates[template.index]) ? "Appointments" : "Follow-up"))}</span></button>`).join("")}</div>
-    <article class="script-reading" aria-label="Selected message"><p class="script-reading-label">Message preview</p><h3>${escapeHtml(selected.subtitle)}</h3><div class="message-body plain-message">${escapeHtml(resolveContactReferences(plainMessageText(selected.body)))}</div>${selected.note ? `<p class="template-note">${escapeHtml(selected.note)}</p>` : ""}<div class="card-actions"><button class="button" type="button" data-copy-message="${selectedMessageIndex}">Personalise &amp; copy</button></div></article>`;
+    <button type="button" class="script-choice" data-select-message="${template.index}" aria-pressed="${template.index === selectedMessageIndex}">${escapeHtml(template.subtitle)}<span>${escapeHtml(template.category || "Untagged")}</span></button>`).join("")}</div>
+    <article class="script-reading" aria-label="Selected message"><p class="script-reading-label">Message preview</p><h3>${escapeHtml(selected.subtitle)}</h3><div class="message-body plain-message">${escapeHtml(messagePreviewText(selected.body))}</div>${selected.note ? `<p class="template-note">${escapeHtml(selected.note)}</p>` : ""}<div class="card-actions"><button class="button" type="button" data-copy-message="${selectedMessageIndex}">Personalise &amp; copy</button></div></article>`;
 }
 
 function voicemailWithStaffName(body) {
@@ -753,14 +787,17 @@ function voicemailWithStaffName(body) {
 }
 
 function renderVoicemails() {
-  if (!voicemailScripts.length) {
+  const visible = activeVoicemails.map((script, index) => ({ ...script, index }))
+    .filter((script) => !selectedLocationId || !script.locationId || script.locationId === selectedLocationId);
+  if (!visible.some(({ index }) => index === selectedVoicemailIndex)) selectedVoicemailIndex = visible[0]?.index;
+  if (!visible.length) {
     voicemailList.innerHTML = '<p class="insurance-empty">No voicemail scripts are available.</p>';
     return;
   }
-  const selected = voicemailScripts[selectedVoicemailIndex] || voicemailScripts[0];
-  voicemailList.innerHTML = `<div class="script-list" aria-label="Voicemail scripts">${voicemailScripts.map((script, index) => `
-    <button type="button" class="script-choice" data-select-voicemail="${index}" aria-pressed="${index === selectedVoicemailIndex}">${escapeHtml(script.title)}<span>Readout script</span></button>`).join("")}</div>
-    <article class="script-reading" aria-label="Selected voicemail"><p class="script-reading-label">Read aloud</p><h3>${escapeHtml(selected.title)}</h3><div class="voicemail-body">${formatVoicemailForDisplay(voicemailWithStaffName(selected.body))}</div><div class="card-actions"><button class="button" type="button" data-copy-default-voicemail>Copy script</button></div></article>`;
+  const selected = activeVoicemails[selectedVoicemailIndex];
+  voicemailList.innerHTML = `<div class="script-list" aria-label="Voicemail scripts">${visible.map((script) => `
+    <button type="button" class="script-choice" data-select-voicemail="${script.index}" aria-pressed="${script.index === selectedVoicemailIndex}">${escapeHtml(script.title)}<span>${escapeHtml(script.category || "Readout script")}</span></button>`).join("")}</div>
+    <article class="script-reading" aria-label="Selected voicemail"><p class="script-reading-label">Read aloud</p><h3>${escapeHtml(selected.title)}</h3><div class="voicemail-body">${formatVoicemailForDisplay(messagePreviewText(voicemailWithStaffName(selected.body)))}</div><div class="card-actions"><button class="button" type="button" data-copy-default-voicemail>Copy script</button></div></article>`;
 }
 
 function renderHours() {
@@ -768,46 +805,43 @@ function renderHours() {
     return;
   }
 
-  if (officeHours.length === 0) {
+  const clinic = clinicLocations[selectedLocationId];
+  const office = officeHours.find((entry) => entry.location === clinic?.hoursName);
+  if (!office) {
     hoursList.innerHTML = `
       <article class="hours-card hours-card-empty">
-        <p>Office hours are not available right now.</p>
+        <p>${clinic ? "Office hours are not available right now." : "Select a clinic above to see its hours and contact details."}</p>
       </article>
     `;
     return;
   }
 
-  hoursList.innerHTML = officeHours
-    .map((office) => {
-      const clinic = Object.values(clinicLocations).find((entry) => entry.hoursName === office.location);
-      return `
-        <article class="hours-card">
-          <div class="hours-card-header">
-            <div>
-              <h3>${escapeHtml(clinic?.name || office.location)}</h3>
-              <p class="hours-address">${(clinic?.address ? [clinic.address.replace(/, USA$/, "")] : office.addressLines)
-                .map((line) => escapeHtml(line))
-                .join("<br />")}</p>
-              ${clinic ? `<a class="clinic-phone" href="tel:${clinic.phone.replace(/\D/g, "")}">${escapeHtml(clinic.phone)}</a>` : ""}
-            </div>
-          </div>
-          <div class="hours-table" role="list" aria-label="${escapeHtml(office.location)} office hours">
-            ${office.schedule
-              .map(
-                (entry) => `
-                  <div class="hours-row" role="listitem">
-                    <span class="hours-day">${escapeHtml(entry.day)}</span>
-                    <span class="hours-time">${escapeHtml(entry.hours)}</span>
-                    ${entry.note ? `<span class="hours-schedule-note">${escapeHtml(entry.note)}</span>` : ""}
-                  </div>
-                `
-              )
-              .join("")}
-          </div>
-        </article>
-      `;
-    })
-    .join("");
+  hoursList.innerHTML = `
+    <article class="hours-card">
+      <div class="hours-card-header">
+        <div>
+          <h3>${escapeHtml(clinic?.name || office.location)}</h3>
+          <p class="hours-address">${(clinic?.address ? [clinic.address.replace(/, USA$/, "")] : office.addressLines)
+            .map((line) => escapeHtml(line))
+            .join("<br />")}</p>
+          ${clinic ? `<a class="clinic-phone" href="tel:${clinic.phone.replace(/\D/g, "")}">${escapeHtml(clinic.phone)}</a>` : ""}
+        </div>
+      </div>
+      <div class="hours-table" role="list" aria-label="${escapeHtml(office.location)} office hours">
+        ${office.schedule
+          .map(
+            (entry) => `
+              <div class="hours-row" role="listitem">
+                <span class="hours-day">${escapeHtml(entry.day)}</span>
+                <span class="hours-time">${escapeHtml(entry.hours)}</span>
+                ${entry.note ? `<span class="hours-schedule-note">${escapeHtml(entry.note)}</span>` : ""}
+              </div>
+            `
+          )
+          .join("")}
+      </div>
+    </article>
+  `;
 }
 
 function renderFinancingOptions() {
@@ -1003,9 +1037,15 @@ document.addEventListener("click", async (event) => {
     return;
   }
   if (event.target.closest("[data-copy-default-voicemail]")) {
-    const script = voicemailScripts[selectedVoicemailIndex] || voicemailScripts[0];
+    const script = activeVoicemails[selectedVoicemailIndex] || activeVoicemails[0];
     try {
-      await copyText(voicemailWithStaffName(script.body));
+      const template = messageForPersonalisation({ subtitle: script.title, body: voicemailWithStaffName(script.body) });
+      if (!template) return;
+      const value = template.body.includes("<>") || isAppointmentConfirmationTemplate(template)
+        ? await buildMessageForCopy(template)
+        : template.body;
+      if (!value) return;
+      await copyText(value);
       showToast("Voicemail script copied.");
     } catch {
       showToast("Copy failed. Please try again.");
@@ -1035,8 +1075,10 @@ document.addEventListener("click", async (event) => {
 
   const messageButton = event.target.closest("[data-copy-message]");
   if (messageButton) {
-    const template = messageWithPersonalEdit(messageTemplates[Number(messageButton.dataset.copyMessage)]);
-    const messageToCopy = await buildMessageForCopy(messageForPersonalisation(template));
+    const template = activeMessages[Number(messageButton.dataset.copyMessage)];
+    const personalised = messageForPersonalisation(template);
+    if (!personalised) return;
+    const messageToCopy = await buildMessageForCopy(personalised);
     if (!messageToCopy) {
       return;
     }
@@ -1112,7 +1154,7 @@ async function init() {
       selectedLocationId = savedClinic;
       selectedState = clinicLocations[savedClinic].state;
       document.querySelector(`input[name="call-state"][value="${savedClinic}"]`).checked = true;
-      selectedMessageIndex = messageTemplates.findIndex((template) => template.locationId === savedClinic);
+      selectedMessageIndex = activeMessages.findIndex((template) => template.locationId === savedClinic);
     }
   } catch { /* Use the unselected state when storage is unavailable. */ }
   await loadNewInfo();
@@ -1131,16 +1173,17 @@ async function init() {
   }, 1000);
 }
 
-init();
+const workspaceInitialisation = init();
 
 stateInputs.forEach((input) => {
   input.addEventListener("change", () => {
     selectedLocationId = input.value;
     selectedState = clinicLocations[selectedLocationId].state;
     try { localStorage.setItem("renue-clinic", selectedLocationId); } catch { /* Clinic selection still works without storage. */ }
-    selectedMessageIndex = messageTemplates.findIndex((template) => template.locationId === selectedLocationId);
     updateHeroTime();
     renderMessages();
+    renderVoicemails();
+    renderHours();
     renderInsuranceTable();
     updateFabHours();
     document.dispatchEvent(new Event("workspace-clinic-change"));

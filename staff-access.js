@@ -14,7 +14,6 @@ if (!window.supabase) {
     "sb_publishable_A-tlM6YuoENyosTMzY0mqQ_aNj7iWqM"
   );
   const setTemplateOwner = createPersonalTemplateEditors(client);
-  const setExistingMessageOwner = createExistingMessageEditor(client);
   const setCommunityOwner = createTemplateCommunity(client);
   let revision = 0;
   let submitting = false;
@@ -34,13 +33,14 @@ if (!window.supabase) {
 
     const directory = await fetchContactDirectory(client);
     if (currentRevision !== revision) return;
+    await workspaceInitialisation;
+    if (currentRevision !== revision) return;
     applyContactDirectory(directory);
 
     const role = data.role.charAt(0).toUpperCase() + data.role.slice(1);
     visibleUserId = session.user.id;
     staffDisplayName = data.display_name;
-    setTemplateOwner(visibleUserId);
-    setExistingMessageOwner(visibleUserId);
+    setTemplateOwner(visibleUserId, data.role);
     setCommunityOwner(visibleUserId);
     renderVoicemails();
     account.textContent = data.display_name + " · " + role;
@@ -57,7 +57,6 @@ if (!window.supabase) {
     visibleUserId = null;
     staffDisplayName = "";
     setTemplateOwner(null);
-    setExistingMessageOwner(null);
     setCommunityOwner(null);
     closeAppointmentModal(null);
     workspace.hidden = true;
