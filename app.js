@@ -676,6 +676,20 @@ function showToast(message) {
 }
 
 
+function clinicWeekday(clinic, date = new Date()) {
+  return new Intl.DateTimeFormat("en-US", {
+    timeZone: clinic.timeZone,
+    weekday: "long",
+  }).format(date);
+}
+
+function highlightHoursDay(day) {
+  const current = hoursList?.querySelector('[aria-current="date"]');
+  if (current?.dataset.weekday === day) return;
+  current?.removeAttribute("aria-current");
+  hoursList?.querySelector(`[data-weekday="${day}"]`)?.setAttribute("aria-current", "date");
+}
+
 function updateFabHours() {
   if (!fabHoursEl) return;
   if (!selectedState) {
@@ -690,10 +704,8 @@ function updateFabHours() {
     return;
   }
 
-  const todayFull = new Intl.DateTimeFormat("en-US", {
-    timeZone: clinic.timeZone,
-    weekday: "long",
-  }).format(new Date());
+  const todayFull = clinicWeekday(clinic);
+  highlightHoursDay(todayFull);
 
   const entry = location.schedule.find(
     (s) => s.day.toLowerCase() === todayFull.toLowerCase()
@@ -831,8 +843,8 @@ function renderHours() {
         ${office.schedule
           .map(
             (entry) => `
-              <div class="hours-row" role="listitem">
-                <span class="hours-day">${escapeHtml(entry.day)}</span>
+              <div class="hours-row" role="listitem" data-weekday="${escapeHtml(entry.day)}">
+                <span class="hours-day">${escapeHtml(entry.day)}<span class="hours-today" aria-hidden="true">Today</span></span>
                 <span class="hours-time">${escapeHtml(entry.hours)}</span>
                 ${entry.note ? `<span class="hours-schedule-note">${escapeHtml(entry.note)}</span>` : ""}
               </div>
@@ -842,6 +854,7 @@ function renderHours() {
       </div>
     </article>
   `;
+  highlightHoursDay(clinicWeekday(clinic));
 }
 
 function renderFinancingOptions() {
