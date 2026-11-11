@@ -206,7 +206,7 @@
 #staff-sign-out { display: flex; justify-content: center; align-items: center; gap: 8px; }
 .sidebar-bottom { gap: 12px; padding-top: 24px; }
 .workspace-page .workspace-shell.sidebar-collapsed { grid-template-columns: 64px minmax(0, 1fr); }
-.sidebar-collapsed .workspace-sidebar { padding: 16px 8px; }
+.sidebar-collapsed .workspace-sidebar { z-index: 20; padding: 16px 8px; }
 .sidebar-collapsed .sidebar-header { flex-direction: column; gap: 10px; }
 .sidebar-collapsed .workspace-sidebar .sidebar-logo { display: none; }
 .sidebar-collapsed .workspace-sidebar .sidebar-mark { display: block; }
