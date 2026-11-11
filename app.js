@@ -775,9 +775,8 @@ function renderMessages() {
   const query = document.querySelector("#message-search").value.trim().toLocaleLowerCase();
   const visible = activeMessages.map((template, index) => ({ ...template, index }))
     .filter((template) => {
-      const type = template.category || "Untagged";
       return (showAll || !template.locationId || template.locationId === selectedLocationId)
-        && (category === "all" || type === category)
+        && (category === "all" || template.category === category)
         && `${template.subtitle} ${template.body}`.toLocaleLowerCase().includes(query);
     });
   if (!visible.some((template) => template.index === selectedMessageIndex)) selectedMessageIndex = visible[0]?.index;
@@ -790,7 +789,7 @@ function renderMessages() {
   }
   const selected = activeMessages[selectedMessageIndex];
   messagesGrid.innerHTML = `<div class="script-list" aria-label="Message templates">${visible.map((template) => `
-    <button type="button" class="script-choice" data-select-message="${template.index}" aria-pressed="${template.index === selectedMessageIndex}">${escapeHtml(template.subtitle)}<span>${escapeHtml(template.category || "Untagged")}</span></button>`).join("")}</div>
+    <button type="button" class="script-choice" data-select-message="${template.index}" aria-pressed="${template.index === selectedMessageIndex}">${escapeHtml(template.subtitle)}${template.category ? `<span>${escapeHtml(template.category)}</span>` : ""}</button>`).join("")}</div>
     <article class="script-reading" aria-label="Selected message"><p class="script-reading-label">Message preview</p><h3>${escapeHtml(selected.subtitle)}</h3><div class="message-body plain-message">${escapeHtml(messagePreviewText(selected.body))}</div>${selected.note ? `<p class="template-note">${escapeHtml(selected.note)}</p>` : ""}<div class="card-actions"><button class="button" type="button" data-copy-message="${selectedMessageIndex}">Personalise &amp; copy</button></div></article>`;
 }
 
