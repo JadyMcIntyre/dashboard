@@ -257,12 +257,20 @@
 
 .sidebar-theme-switch {
   display: grid;
-  place-items: center;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
   justify-self: center;
+  gap: 8px;
   min-width: 44px;
   min-height: 36px;
   cursor: pointer;
 }
+.sidebar-theme-label { color: var(--muted); font-size: .72rem; }
+.sidebar-theme-light { justify-self: end; }
+:root[data-theme="light"] .sidebar-theme-light,
+:root[data-theme="dark"] .sidebar-theme-dark { color: var(--text); font-weight: 600; }
+.sidebar-collapsed .sidebar-theme-switch { grid-template-columns: auto; }
+.sidebar-collapsed .sidebar-theme-label { display: none; }
 .sidebar-theme-track {
   display: block;
   width: 46px;
