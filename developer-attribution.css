@@ -1,0 +1,38 @@
+.developer-attribution {
+  display: inline-block;
+  inline-size: clamp(7.75rem, 12vw, 9.5rem);
+  max-inline-size: 100%;
+  block-size: auto;
+  vertical-align: middle;
+  opacity: .72;
+}
+
+:root[data-theme="dark"] .developer-attribution {
+  filter: invert(1);
+  opacity: .78;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) .developer-attribution {
+    filter: invert(1);
+    opacity: .78;
+  }
+}
+
+.workspace-attribution-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: .5rem 1.25rem;
+  padding-block: .5rem;
+  border-block-start: 1px solid var(--line);
+}
+
+.sign-in-attribution-footer {
+  display: flex;
+  justify-content: center;
+  margin-block-start: 1rem;
+  padding-block-start: .75rem;
+  border-block-start: 1px solid var(--line);
+}

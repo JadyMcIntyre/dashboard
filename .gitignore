@@ -15,6 +15,8 @@ test-results/
 
 # Local dependencies, output and logs
 node_modules/
+dist/
+__pycache__/
 coverage/
 *.log
 *.tmp

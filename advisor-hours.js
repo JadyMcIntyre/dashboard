@@ -1,3 +1,8 @@
+/* Renue Wellness Dashboard
+ * Original design and development by J Mc Intyre, 2026.
+ * See AUTHORS.md for project attribution and release verification.
+ */
+
 function createAdvisorHours(client) {
   const panel = document.querySelector("#advisor-hours-panel");
   const status = panel.querySelector("[role=status]");

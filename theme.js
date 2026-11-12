@@ -1,3 +1,8 @@
+/* Renue Wellness Dashboard
+ * Original design and development by J Mc Intyre, 2026.
+ * See AUTHORS.md for project attribution and release verification.
+ */
+
 (() => {
   const key = "renue-theme";
   const systemTheme = window.matchMedia("(prefers-color-scheme: dark)");

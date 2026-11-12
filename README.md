@@ -2,6 +2,10 @@
 
 Desktop staff-reference prototype for clinic information, treatment guidance, patient communication templates and resources.
 
+## Attribution
+
+**Designed & built by J Mc Intyre, 2026.** The dashboard credits the original developer in the footer and HTML metadata. [AUTHORS.md](AUTHORS.md) records the available history and explains how to sign, archive and verify a release.
+
 ## Run locally
 
 No dependency installation or build step is needed. From this folder, run:
@@ -24,7 +28,20 @@ For this repository, the expected URL is [https://jadymcintyre.github.io/dashboa
 
 The empty `.nojekyll` file disables Jekyll processing so the HTML, CSS, JavaScript, assets and template placeholders are served directly. All application paths are relative, including the old `vitamins.html` redirect, to support a repository subdirectory. No custom domain is needed for testing.
 
-**Visibility:** ordinary GitHub Pages hosting is public, even if the repository is private. This prototype has no sign-in or access control, so published clinic content and company contact details can be read by anyone with access to the site. Do not add secrets or patient records to this repository. GitHub Enterprise Cloud has separate private-Pages capabilities.
+**Visibility:** ordinary GitHub Pages hosting is public, even if the repository is private. Supabase sign-in protects authenticated workflows and database records according to their access policies. Assets bundled into the static site are publicly downloadable. Do not add secrets or patient records to this repository. GitHub Enterprise Cloud has separate private-Pages capabilities.
+
+## Build and verify provenance
+
+Run these commands from the Git checkout with Python 3 and Git installed.
+
+```sh
+python3 -m unittest discover -s tests -v
+python3 scripts/build.py
+```
+
+The tests verify footer attribution and metadata in both source HTML and built output. The build recreates the generated `dist/` directory and adds `build-provenance.json`, which records the original developer, application name and version, creation year, full Git commit hash, and UTC build time. `sourceDirty` indicates changes in the working tree. Use a clean checkout of the signed release tag for distributable builds. Update the application version in `scripts/build-info.json` when cutting a release. Version `0.1.0` is the initial version for this build process.
+
+To publish provenance on Cloudflare Pages, set the build command to `python3 -m unittest discover -s tests -v && python3 scripts/build.py` and the output directory to `dist`. Deploying the repository root directly, as in the GitHub Pages branch setup above, still serves the attribution but skips generated provenance. The GitHub Actions workflow verifies attribution on pushes and pull requests.
 
 ## Current features
 
@@ -36,7 +53,7 @@ The empty `.nojekyll` file disables Jekyll processing so the HTML, CSS, JavaScri
 
 Patient names and customer addresses are not saved by the application. Directions links send the entered starting point to Google Maps when opened; copy buttons write the selected text or link to the clipboard.
 
-There is currently no Supabase connection, user login, editing interface or usage-based sorting. Those are planned future enhancements. Existing content is the starting default library for later user-owned template copies, hide/restore preferences and manager-maintained clinic records.
+Supabase provides staff sign-in, the contact directory, template management and advisor schedules.
 
 ## Where to update content
 

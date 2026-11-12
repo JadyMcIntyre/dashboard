@@ -1,3 +1,8 @@
+/* Renue Wellness Dashboard
+ * Original design and development by J Mc Intyre, 2026.
+ * See AUTHORS.md for project attribution and release verification.
+ */
+
 const templateColumns = "id, kind, title, body, clinic_id, tag, default_message_key, removed_from_library, shared_with_staff, company_template";
 
 const retiredStarterKeys = new Set(["chelsea-ivk-sale",
