@@ -185,9 +185,11 @@ function createPersonalTemplateEditors(client) {
               const template = messageForPersonalisation({ subtitle: row.title, body: row.body });
               if (!template) return;
               const needsDetails = template.body.includes("<>") || isAppointmentConfirmationTemplate(template);
-              const value = needsDetails ? await buildMessageForCopy(template) : template.body;
-              if (!value || owner !== userId) return;
-              await copyText(value);
+              if (needsDetails) {
+                if (!await copyPersonalisedMessage(template)) return;
+              } else {
+                await copyText(template.body);
+              }
               if (owner === userId) showToast("Template copied.");
             },
           } : {}),

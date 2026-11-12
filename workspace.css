@@ -317,3 +317,15 @@
 .advisor-hours-field-row .field { margin: 0; }
 .advisor-hours-field-row input { min-width: 0; }
 .advisor-hours-dialog .template-toolbar { margin-top: 1rem; }
+
+#appointment-copy-help { color: var(--muted); font-size: .85rem; }
+#appointment-copy-output {
+  width: 100%;
+  padding: .65rem;
+  border: 1px solid var(--line);
+  border-radius: .5rem;
+  background: var(--ui-subtle);
+  color: var(--text);
+  font: inherit;
+  resize: vertical;
+}

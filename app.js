@@ -119,6 +119,9 @@ const toast = document.querySelector("#toast");
 const heroTime = document.querySelector("#hero-time");
 const appointmentModal = document.querySelector("#appointment-modal");
 const appointmentForm = document.querySelector("#appointment-form");
+const appointmentCopyButton = appointmentForm.querySelector("[type=submit]");
+const appointmentCopyFallback = document.querySelector("#appointment-copy-fallback");
+const appointmentCopyOutput = document.querySelector("#appointment-copy-output");
 const appointmentClientNameInput = document.querySelector("#appointment-client-name");
 const appointmentDateInput = document.querySelector("#appointment-date");
 const appointmentTimeInput = document.querySelector("#appointment-time");
@@ -370,6 +373,7 @@ let selectedState = "";
 let selectedLocationId = "";
 let selectedFlService = "TMS";
 let appointmentModalResolver = null;
+let appointmentTemplate = null;
 let appointmentModalTrigger = null;
 
 function escapeHtml(value) {
@@ -567,23 +571,33 @@ function formatAppointmentDateTime(dateValue, timeValue) {
   return `${datePart} at ${timePart}`;
 }
 
-function closeAppointmentModal(result = null) {
+function closeAppointmentModal(copied = false) {
   if (!appointmentModalResolver) {
     return;
   }
 
   const resolve = appointmentModalResolver;
   appointmentModalResolver = null;
+  appointmentTemplate = null;
+  clearAppointmentCopyFallback();
   appointmentModal.classList.remove("is-visible");
   appointmentModal.setAttribute("aria-hidden", "true");
   document.body.style.overflow = "";
   appointmentForm.reset();
   document.querySelector(".shell").inert = false;
   appointmentModalTrigger?.focus();
-  resolve(result);
+  resolve(copied);
 }
 
-function openAppointmentModal(template) {
+function clearAppointmentCopyFallback() {
+  appointmentCopyFallback.hidden = true;
+  appointmentCopyOutput.value = "";
+}
+
+function copyPersonalisedMessage(template) {
+  appointmentTemplate = template;
+  appointmentCopyButton.disabled = false;
+  clearAppointmentCopyFallback();
   const hasAppointment = isAppointmentConfirmationTemplate(template);
   const staffField = document.querySelector("#message-staff-field");
   const staffInput = document.querySelector("#message-staff-name");
@@ -638,30 +652,30 @@ function messageForPersonalisation(template) {
   };
 }
 
-async function buildMessageForCopy(template) {
-  const details = await openAppointmentModal(template);
-  if (!details) return null;
-  const message = applyClientName(normalizeTemplateForCopy(template.body), details.clientName).replaceAll("{{staffName}}", () => details.staffName);
-  return isAppointmentConfirmationTemplate(template)
-    ? applyAppointmentDateTime(message, details.appointmentDateTime)
-    : message;
-}
-
 async function copyText(value) {
   if (navigator.clipboard?.writeText) {
-    await navigator.clipboard.writeText(value);
-    return;
+    try {
+      await navigator.clipboard.writeText(value);
+      return;
+    } catch {
+      // The browser may allow copying a selection even when Clipboard API access is blocked.
+    }
   }
 
+  const focused = document.activeElement;
   const textarea = document.createElement("textarea");
   textarea.value = value;
-  textarea.setAttribute("readonly", "");
-  textarea.style.position = "absolute";
+  textarea.readOnly = true;
+  textarea.style.position = "fixed";
   textarea.style.left = "-9999px";
   document.body.appendChild(textarea);
-  textarea.select();
-  document.execCommand("copy");
-  textarea.remove();
+  try {
+    textarea.select();
+    if (!document.execCommand("copy")) throw new Error("Clipboard write was blocked.");
+  } finally {
+    textarea.remove();
+    focused?.focus({ preventScroll: true });
+  }
 }
 
 let toastTimer;
@@ -1074,17 +1088,7 @@ document.addEventListener("click", async (event) => {
     const template = activeMessages[Number(messageButton.dataset.copyMessage)];
     const personalised = messageForPersonalisation(template);
     if (!personalised) return;
-    const messageToCopy = await buildMessageForCopy(personalised);
-    if (!messageToCopy) {
-      return;
-    }
-
-    try {
-      await copyText(messageToCopy);
-      showToast("Message copied to clipboard.");
-    } catch (error) {
-      showToast("Copy failed. Please try again.");
-    }
+    if (await copyPersonalisedMessage(personalised)) showToast("Message copied to clipboard.");
     return;
   }
 
@@ -1102,8 +1106,14 @@ document.addEventListener("click", async (event) => {
 
 });
 
-appointmentForm.addEventListener("submit", (event) => {
+appointmentForm.addEventListener("input", (event) => {
+  if (event.target !== appointmentCopyOutput) clearAppointmentCopyFallback();
+});
+
+appointmentForm.addEventListener("submit", async (event) => {
   event.preventDefault();
+  const request = appointmentModalResolver;
+  if (!request || appointmentCopyButton.disabled) return;
 
   const clientName = appointmentClientNameInput.value.trim();
   const appointmentDate = appointmentDateInput.value;
@@ -1118,16 +1128,31 @@ appointmentForm.addEventListener("submit", (event) => {
     return;
   }
 
-  closeAppointmentModal({
-    clientName,
-    staffName,
-    appointmentDateTime: hasAppointment ? formatAppointmentDateTime(appointmentDate, appointmentTime) : null,
-  });
+  let message = applyClientName(normalizeTemplateForCopy(appointmentTemplate.body), clientName)
+    .replaceAll("{{staffName}}", () => staffName);
+  if (hasAppointment) {
+    message = applyAppointmentDateTime(message, formatAppointmentDateTime(appointmentDate, appointmentTime));
+  }
+
+  appointmentCopyButton.disabled = true;
+  try {
+    await copyText(message);
+    if (request === appointmentModalResolver) closeAppointmentModal(true);
+  } catch {
+    if (request === appointmentModalResolver) {
+      appointmentCopyFallback.hidden = false;
+      appointmentCopyOutput.value = message;
+      appointmentCopyOutput.focus();
+      appointmentCopyOutput.select();
+    }
+  } finally {
+    if (request === appointmentModalResolver) appointmentCopyButton.disabled = false;
+  }
 });
 
 window.addEventListener("keydown", (event) => {
   if (event.key === "Tab" && appointmentModalResolver) {
-    const controls = [...appointmentModal.querySelectorAll("button, input")].filter((control) => !control.disabled && control.getClientRects().length);
+    const controls = [...appointmentModal.querySelectorAll("button, input, textarea")].filter((control) => !control.disabled && control.getClientRects().length);
     const first = controls[0];
     const last = controls[controls.length - 1];
     if (event.shiftKey && document.activeElement === first) {
