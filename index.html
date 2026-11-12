@@ -11,7 +11,8 @@
       <p id="staff-sign-in-status" role="status">Checking your session…</p>
     </form>
     <form id="staff-set-password" method="post" hidden>
-      <p>Choose a password for your Renue staff account.</p>
+      <label class="field">First name<input name="first_name" type="text" autocomplete="given-name" maxlength="60" aria-describedby="staff-first-name-help" required/></label>
+      <p class="muted" id="staff-first-name-help">Enter only your first name. It will appear in the dashboard and be filled in when you use your name in messages and voicemail scripts.</p>
       <label class="field">New password<input name="password" type="password" autocomplete="new-password" minlength="8" required/></label>
       <label class="field">Confirm password<input name="confirmation" type="password" autocomplete="new-password" minlength="8" required/></label>
       <button class="button" type="submit">Set password</button>
@@ -265,4 +266,4 @@
 </div>
 </form>
 </div>
-</div><div aria-live="polite" class="toast" id="toast" role="status"></div><script src="./vitamins-data.js?v=1"></script><script src="./care-content.js?v=clinic-number"></script><script src="./contact-directory.js?v=sidebar-rail"></script><script src="./app.js?v=voicemail-readout"></script><script src="./vitamins.js?v=direct-copy"></script><script src="./care-tools.js?v=clinic-ivk-prices"></script><script src="./workspace.js?v=advisor-hours"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.89.0/dist/umd/supabase.js"></script><script src="./personal-templates.js?v=template-icons"></script><script src="./advisor-hours.js?v=1"></script><script src="./staff-access.js?v=staff-invite"></script></body></html>
+</div><div aria-live="polite" class="toast" id="toast" role="status"></div><script src="./vitamins-data.js?v=1"></script><script src="./care-content.js?v=clinic-number"></script><script src="./contact-directory.js?v=sidebar-rail"></script><script src="./app.js?v=voicemail-readout"></script><script src="./vitamins.js?v=direct-copy"></script><script src="./care-tools.js?v=clinic-ivk-prices"></script><script src="./workspace.js?v=advisor-hours"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.89.0/dist/umd/supabase.js"></script><script src="./personal-templates.js?v=template-icons"></script><script src="./advisor-hours.js?v=1"></script><script src="./staff-access.js?v=invite-first-name"></script></body></html>

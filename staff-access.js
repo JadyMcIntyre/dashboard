@@ -85,7 +85,7 @@ if (!window.supabase) {
       signIn.hidden = true;
       if (setPassword.hidden) {
         setPassword.hidden = false;
-        setPassword.elements.password.focus();
+        setPassword.elements.first_name.focus();
       }
       return;
     }
@@ -139,6 +139,12 @@ if (!window.supabase) {
   setPassword.addEventListener("submit", async (event) => {
     event.preventDefault();
     if (!inviteSession || setPasswordButton.disabled) return;
+    const firstName = setPassword.elements.first_name.value.trim();
+    if (!firstName || /[\s\p{Cc}]/u.test(firstName)) {
+      setPasswordStatus.textContent = "Enter only your first name.";
+      setPassword.elements.first_name.focus();
+      return;
+    }
     const password = setPassword.elements.password.value;
     if (password !== setPassword.elements.confirmation.value) {
       setPasswordStatus.textContent = "Passwords do not match.";
@@ -148,14 +154,14 @@ if (!window.supabase) {
 
     const invitedUserId = inviteSession.user.id;
     setPasswordButton.disabled = true;
-    setPasswordStatus.textContent = "Saving your password…";
+    setPasswordStatus.textContent = "Setting up your staff account…";
     try {
       const { data: { session }, error: sessionError } = await client.auth.getSession();
       if (sessionError || session?.user.id !== invitedUserId || inviteSession?.user.id !== invitedUserId) {
         setPasswordStatus.textContent = "Your invitation session has ended. Ask your manager for a fresh invitation.";
         return;
       }
-      const { data, error } = await client.auth.updateUser({ password });
+      const { data, error } = await client.auth.updateUser({ password, data: { renue_first_name: firstName } });
       if (error) {
         setPasswordStatus.textContent = error.message || "Could not save your password. Try again.";
         return;
