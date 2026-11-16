@@ -334,3 +334,17 @@
   font: inherit;
   resize: vertical;
 }
+
+.message-script-list { grid-template-columns: minmax(0, 1fr); }
+.message-order-row { position: relative; display: grid; }
+.message-order-row .script-choice { padding-inline-end: 98px; overflow-wrap: anywhere; }
+.message-order-controls { position: absolute; inset-inline-end: 6px; top: 50%; transform: translateY(-50%); display: flex; align-items: center; }
+.message-order-controls button,
+.message-drag-handle { display: grid; place-items: center; width: 28px; height: 30px; color: var(--muted); }
+.message-order-controls button { background: transparent; border: 0; border-radius: 5px; font: inherit; cursor: pointer; }
+.message-order-controls button:disabled { opacity: .35; cursor: default; }
+.message-order-controls button:not(:disabled):hover { background: var(--ui-accent-soft); color: var(--text); }
+.message-drag-handle { cursor: grab; font-size: 1.1rem; user-select: none; }
+.message-drag-handle:active { cursor: grabbing; }
+.message-drop-target .script-choice { outline: 2px solid var(--ui-accent-line); outline-offset: -2px; }
+@media (hover: none) { .message-drag-handle { display: none; } }

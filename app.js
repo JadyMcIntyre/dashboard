@@ -791,6 +791,91 @@ const messageSort = document.querySelector("#message-sort");
 const messagesView = messagesGrid.closest("[data-workspace-view]");
 let messageCopyUsage = null;
 let messageSortCounts = new Map();
+let messageOrderStorageKey = null;
+let customMessageOrder = [];
+let draggedMessageIndex = null;
+
+function defaultOrderedMessages() {
+  const positions = new Map(customMessageOrder.map((key, index) => [key, index]));
+  return activeMessages.map((template, index) => ({ ...template, index })).sort((first, second) =>
+    (positions.get(first.key) ?? Infinity) - (positions.get(second.key) ?? Infinity)
+    || first.index - second.index
+  );
+}
+
+function moveMessage(from, to) {
+  if (from === to || messageSort.value !== "default") return;
+  const visibleIndices = [...messagesGrid.querySelectorAll("[data-message-row]")]
+    .map((row) => Number(row.dataset.messageRow));
+  const fromPosition = visibleIndices.indexOf(from);
+  const toPosition = visibleIndices.indexOf(to);
+  if (fromPosition < 0 || toPosition < 0) return;
+
+  // Move visible templates through their current slots so filters preserve hidden templates.
+  const visibleSlots = new Set(visibleIndices);
+  visibleIndices.splice(fromPosition, 1);
+  visibleIndices.splice(toPosition, 0, from);
+  let nextVisible = 0;
+  const orderedKeys = defaultOrderedMessages().map(({ index, key }) =>
+    visibleSlots.has(index) ? activeMessages[visibleIndices[nextVisible++]].key : key
+  );
+  customMessageOrder = orderedKeys;
+  try {
+    if (messageOrderStorageKey) localStorage.setItem(messageOrderStorageKey, JSON.stringify(orderedKeys));
+  } catch { /* Reordering still works for this session. */ }
+  renderMessages();
+  return toPosition;
+}
+
+messagesGrid.addEventListener("click", (event) => {
+  const control = event.target.closest("[data-move-message]");
+  if (!control) return;
+  const row = control.closest("[data-message-row]");
+  const target = control.dataset.moveMessage === "up" ? row.previousElementSibling : row.nextElementSibling;
+  if (!target) return;
+  const from = Number(row.dataset.messageRow);
+  const position = moveMessage(from, Number(target.dataset.messageRow));
+  if (position === undefined) return;
+  const movedRow = messagesGrid.querySelector(`[data-message-row="${from}"]`);
+  const sameControl = movedRow.querySelector(`[data-move-message="${control.dataset.moveMessage}"]:enabled`);
+  (sameControl || movedRow.querySelector("[data-move-message]:enabled"))?.focus();
+  showToast(`Moved to position ${position + 1}.`);
+});
+
+messagesGrid.addEventListener("dragstart", (event) => {
+  const handle = event.target.closest(".message-drag-handle");
+  if (!handle) return;
+  draggedMessageIndex = Number(handle.closest("[data-message-row]").dataset.messageRow);
+  event.dataTransfer.effectAllowed = "move";
+  event.dataTransfer.setData("text/plain", "");
+});
+
+messagesGrid.addEventListener("dragover", (event) => {
+  const row = event.target.closest("[data-message-row]");
+  if (draggedMessageIndex === null || !row) return;
+  event.preventDefault();
+  event.dataTransfer.dropEffect = "move";
+  messagesGrid.querySelector(".message-drop-target")?.classList.remove("message-drop-target");
+  if (Number(row.dataset.messageRow) !== draggedMessageIndex) row.classList.add("message-drop-target");
+});
+
+messagesGrid.addEventListener("dragleave", (event) => {
+  const row = event.target.closest(".message-drop-target");
+  if (row && !row.contains(event.relatedTarget)) row.classList.remove("message-drop-target");
+});
+
+messagesGrid.addEventListener("drop", (event) => {
+  const row = event.target.closest("[data-message-row]");
+  if (draggedMessageIndex === null || !row) return;
+  event.preventDefault();
+  moveMessage(draggedMessageIndex, Number(row.dataset.messageRow));
+  draggedMessageIndex = null;
+});
+
+messagesGrid.addEventListener("dragend", () => {
+  draggedMessageIndex = null;
+  messagesGrid.querySelector(".message-drop-target")?.classList.remove("message-drop-target");
+});
 
 function refreshMessageSort() {
   messageSortCounts = new Map(messageCopyUsage?.counts);
@@ -799,6 +884,14 @@ function refreshMessageSort() {
 
 function setMessageCopyUsage(usage) {
   messageCopyUsage = usage;
+  messageOrderStorageKey = usage?.userId ? `renue-message-order:${usage.userId}` : null;
+  customMessageOrder = [];
+  if (messageOrderStorageKey) {
+    try {
+      const savedOrder = JSON.parse(localStorage.getItem(messageOrderStorageKey));
+      if (Array.isArray(savedOrder)) customMessageOrder = savedOrder.filter((key) => typeof key === "string");
+    } catch { /* Fall back to the original template order. */ }
+  }
   messageSort.value = "default";
   messageSortCounts = new Map();
 }
@@ -839,10 +932,11 @@ function setActiveTemplates(kind, rows) {
 }
 
 function renderMessages() {
+  draggedMessageIndex = null;
   const showAll = showAllMessagesInput.checked || !selectedLocationId;
   const category = document.querySelector("#message-category").value;
   const query = document.querySelector("#message-search").value.trim().toLocaleLowerCase();
-  const visible = activeMessages.map((template, index) => ({ ...template, index }))
+  const visible = defaultOrderedMessages()
     .filter((template) => {
       return (showAll || !template.locationId || template.locationId === selectedLocationId)
         && (category === "all" || template.category === category)
@@ -863,8 +957,20 @@ function renderMessages() {
     return;
   }
   const selected = activeMessages[selectedMessageIndex];
-  messagesGrid.innerHTML = `<div class="script-list" aria-label="Message templates">${visible.map((template) => `
-    <button type="button" class="script-choice" data-select-message="${template.index}" aria-pressed="${template.index === selectedMessageIndex}">${escapeHtml(template.subtitle)}${template.category ? `<span>${escapeHtml(template.category)}</span>` : ""}</button>`).join("")}</div>
+  const canReorder = messageSort.value === "default" && visible.length > 1;
+  messagesGrid.innerHTML = `<div class="script-list message-script-list" aria-label="Message templates">${visible.map((template, position) => {
+    const title = escapeHtml(template.subtitle);
+    const choice = `<button type="button" class="script-choice" data-select-message="${template.index}" aria-pressed="${template.index === selectedMessageIndex}">${title}${template.category ? `<span>${escapeHtml(template.category)}</span>` : ""}</button>`;
+    if (!canReorder) return choice;
+    return `<div class="message-order-row" data-message-row="${template.index}">
+      ${choice}
+      <div class="message-order-controls">
+        <span class="message-drag-handle" draggable="true" title="Drag to reorder" aria-hidden="true">⠿</span>
+        <button type="button" data-move-message="up" aria-label="Move ${title} up" ${position === 0 ? "disabled" : ""}>↑</button>
+        <button type="button" data-move-message="down" aria-label="Move ${title} down" ${position === visible.length - 1 ? "disabled" : ""}>↓</button>
+      </div>
+    </div>`;
+  }).join("")}</div>
     <article class="script-reading" aria-label="Selected message"><p class="script-reading-label">Message preview</p><h3>${escapeHtml(selected.subtitle)}</h3><div class="message-body plain-message">${escapeHtml(messagePreviewText(selected.body))}</div>${selected.note ? `<p class="template-note">${escapeHtml(selected.note)}</p>` : ""}<div class="card-actions"><button class="button" type="button" data-copy-message="${selectedMessageIndex}">${messageNeedsDetails(selected.body) ? "Personalise &amp; copy" : "Copy message"}</button></div></article>`;
 }
 

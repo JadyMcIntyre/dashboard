@@ -87,6 +87,7 @@ if (!window.supabase) {
   function startMessageCopyUsage(userId) {
     const counts = new Map();
     const usage = {
+      userId,
       counts,
       async record(key) {
         try {
