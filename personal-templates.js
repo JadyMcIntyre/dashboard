@@ -31,27 +31,11 @@ function starterTemplates() {
       tag: item.category || (item.locationId ? "Clinic callback" : isAppointmentConfirmationTemplate(item) ? "Appointments" : "Follow-up"),
       default_message_key: item.key, note: item.note
     })),
-    ...messageTemplates.flatMap((item) => {
-      const translation = spanishCompanyMessages[item.key];
-      if (!translation) return [];
-      const [title, body, note] = translation;
-      return [{
-        kind: "message", title, body, note, clinic_id: item.locationId || null,
-        tag: item.category || (isAppointmentConfirmationTemplate(item) ? "Appointments" : "Follow-up"),
-        default_message_key: "es-" + item.key
-      }];
-    }),
-    ...voicemailScripts.flatMap((item) => {
-      const key = "voicemail-" + item.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 85);
-      const original = {
-        kind: "voicemail", title: item.title, body: item.body.replace(/\bKaylin\b/g, "@me"),
-        clinic_id: null, tag: null, default_message_key: key
-      };
-      const translation = spanishCompanyVoicemails.get(item.title);
-      if (!translation) return [original];
-      const [title, body] = translation;
-      return [original, { ...original, title, body, default_message_key: "es-" + key }];
-    })
+    ...voicemailScripts.map((item) => ({
+      kind: "voicemail", title: item.title, body: item.body.replace(/\bKaylin\b/g, "@me"),
+      clinic_id: null, tag: null,
+      default_message_key: "voicemail-" + item.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 85)
+    }))
   ];
 }
 
@@ -154,13 +138,6 @@ function createPersonalTemplateEditors(client) {
         clinic.className = "template-row-clinic";
         clinic.textContent = row.clinic_id ? clinicLocations[row.clinic_id]?.name || row.clinic_id : "All clinics";
         metadata.append(clinic);
-        if (row.default_message_key?.startsWith("es-")) {
-          const language = document.createElement("span");
-          language.className = "template-row-clinic";
-          language.lang = "es";
-          language.textContent = "Español";
-          metadata.append(language);
-        }
         if (row.tag) {
           const tag = document.createElement("span");
           tag.className = "template-row-tag";
@@ -210,7 +187,7 @@ function createPersonalTemplateEditors(client) {
           ...(kind === "message" ? {
             Copy: async () => {
               const owner = userId;
-              const template = messageForPersonalisation({ subtitle: row.title, body: row.body, language: row.default_message_key?.startsWith("es-") ? "es" : "en" });
+              const template = messageForPersonalisation({ subtitle: row.title, body: row.body });
               if (!template) return;
               const needsDetails = template.body.includes("<>") || isAppointmentConfirmationTemplate(template);
               if (needsDetails) {
@@ -589,10 +566,7 @@ function createTemplateCommunity(client, manageSharedTemplate) {
       const sharedTemplates = shared.data
         .filter((row) => !retiredStarterKeys.has(row.default_message_key))
         .map((row) => ({ ...row, default_message_key: null }));
-      const libraries = new Map([
-        ["company", { name: translateLabel("Company default"), templates: starters.filter((row) => !row.default_message_key.startsWith("es-")) }],
-        ["company-es", { name: translateLabel("Company default · Spanish"), templates: starters.filter((row) => row.default_message_key.startsWith("es-")) }]
-      ]);
+      const libraries = new Map([["company", { name: "Company default", templates: [...starters] }]]);
       const mine = sharedTemplates.filter((template) => template.user_id === owner);
       if (mine.length) libraries.set("mine", { name: "Shared by me", templates: mine });
       for (const template of sharedTemplates) {

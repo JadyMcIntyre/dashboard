@@ -304,7 +304,7 @@
 .advisor-hours-table-wrap:has(table[hidden]) { display: none; }
 .advisor-hours-table { width: 100%; min-width: 52rem; border-collapse: collapse; font-size: .8rem; }
 .advisor-hours-table th,
-.advisor-hours-table td { padding: .75rem .65rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: middle; }
+.advisor-hours-table td { padding: .75rem .65rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
 .advisor-hours-table thead { background: var(--ui-subtle); }
 .advisor-hours-own { background: var(--ui-accent-soft); }
 .advisor-hours-own > th[scope="row"] {
@@ -334,5 +334,3 @@
   font: inherit;
   resize: vertical;
 }
-
-#dashboard-language { max-width: 18rem; }

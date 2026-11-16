@@ -61,7 +61,7 @@ function createAdvisorHours(client) {
       if (advisor.user_id === userId) {
         row.className = "advisor-hours-own";
         const you = document.createElement("small");
-        you.textContent = translateLabel("You");
+        you.textContent = "You";
         heading.append(you);
       }
       row.append(heading);
@@ -72,11 +72,11 @@ function createAdvisorHours(client) {
           cell.textContent = `${formatTime(shift.starts_at)} – ${formatTime(shift.ends_at)}`;
           if (advisor.name !== "Emma" && shift.ends_at < shift.starts_at) {
             const nextDay = document.createElement("small");
-            nextDay.textContent = translateLabel("Ends next day");
+            nextDay.textContent = "Ends next day";
             cell.append(nextDay);
           }
         } else {
-          cell.textContent = translateLabel("Off");
+          cell.textContent = "Off";
           cell.className = "advisor-hours-off";
         }
       });
@@ -84,7 +84,7 @@ function createAdvisorHours(client) {
         const button = document.createElement("button");
         button.type = "button";
         button.className = "button-secondary";
-        button.textContent = translateLabel("Edit");
+        button.textContent = "Edit";
         button.setAttribute("aria-label", `Edit hours for ${advisor.name}`);
         button.addEventListener("click", () => edit(advisor));
         row.insertCell().append(button);

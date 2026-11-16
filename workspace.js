@@ -8,7 +8,6 @@ const viewNames = {
   "treatment-title": "Treatment guide",
   "vitamins-title": "Vitamins & IV",
   "messages-title": "Messages",
-  "settings-title": "Settings",
   "templates-title": "Manage templates",
   "advisor-hours-title": "Advisor hours",
   "voicemail-title": "Voicemail scripts",
@@ -17,7 +16,6 @@ const viewNames = {
   "resources-title": "Resources",
   "financing-title": "Financing",
 };
-initialiseLanguageSettings();
 const workspaceSearch = document.querySelector("#workspace-search");
 const searchResults = document.querySelector("#workspace-search-results");
 const workspaceMain = document.querySelector("#workspace-main");
@@ -58,8 +56,8 @@ function showWorkspaceView(id, updateUrl = false) {
     if (link.hash === `#${view}`) link.setAttribute("aria-current", "page");
     else link.removeAttribute("aria-current");
   });
-  document.querySelector("#workspace-view-title").textContent = translateLabel(viewNames[view]);
-  document.title = `${translateLabel(viewNames[view])} · Renue Wellness`;
+  document.querySelector("#workspace-view-title").textContent = viewNames[view];
+  document.title = `${viewNames[view]} · Renue Wellness`;
   window.scrollTo(0, 0);
   document.dispatchEvent(new Event("workspace-view-change"));
 }
@@ -103,14 +101,12 @@ function buildWorkspaceSearchEntries() {
     }
   }
   activeMessages.forEach((template, index) => {
-    if (!matchesCompanyMessageLanguage(template)) return;
     const clinic = clinicLocations[template.locationId];
     const subtitle = clinic ? `Message template · ${clinic.name || clinic.hoursName}` : "Message template";
     add(template.subtitle, subtitle, messagePreviewText(template.body, template.locationId || selectedLocationId),
       "messages-title", { message: index, clinic: template.locationId });
   });
   activeVoicemails.forEach((script, index) => {
-    if (!matchesCompanyVoicemailLanguage(script)) return;
     const clinic = clinicLocations[script.locationId];
     const subtitle = clinic ? `Voicemail script · ${clinic.name || clinic.hoursName}` : "Voicemail script";
     add(script.title, subtitle, messagePreviewText(voicemailWithStaffName(script.body), script.locationId || selectedLocationId),
@@ -154,7 +150,7 @@ function renderWorkspaceSearch() {
   items.innerHTML = groups.filter(([, entries]) => entries.length).map(([label, entries]) => {
     const buttons = entries.map((entry) => {
       const index = currentSearchEntries.push(entry) - 1;
-      const content = `<span>${escapeHtml(entry.title)}<small>${escapeHtml(entry.subtitle)}</small></span><span class="search-result-category">${escapeHtml(translateLabel(viewNames[entry.view]))} →</span>`;
+      const content = `<span>${escapeHtml(entry.title)}<small>${escapeHtml(entry.subtitle)}</small></span><span class="search-result-category">${escapeHtml(viewNames[entry.view])} →</span>`;
       return `<button type="button" class="search-result" data-search-result="${index}">${content}</button>`;
     }).join("");
     return `<h3 class="search-result-group">${escapeHtml(label)}</h3>${buttons}`;
