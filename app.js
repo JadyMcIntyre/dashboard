@@ -599,11 +599,31 @@ function clearAppointmentCopyFallback() {
   appointmentCopyOutput.value = "";
 }
 
+const patientMention = /(?<![\w@.+-])@patient(?![\w@])/gi;
+const appointmentMention = /(?<![\w@.+-])@appointment(?![\w@])/gi;
+
+function messageNeedsDetails(body) {
+  return body.includes("<>") || body.includes("{{appointmentDateTime}}")
+    || body.search(patientMention) !== -1 || body.search(appointmentMention) !== -1;
+}
+
+async function copyMessageTemplate(template) {
+  const personalised = messageForPersonalisation(template);
+  if (!personalised) return false;
+  if (messageNeedsDetails(personalised.body)) return copyPersonalisedMessage(personalised);
+  await copyText(personalised.body);
+  return true;
+}
+
 function copyPersonalisedMessage(template) {
   appointmentTemplate = template;
   appointmentCopyButton.disabled = false;
   clearAppointmentCopyFallback();
   const hasAppointment = isAppointmentConfirmationTemplate(template);
+  const hasPatient = template.body.includes("<>");
+  appointmentClientNameInput.closest("label").hidden = !hasPatient;
+  appointmentClientNameInput.disabled = !hasPatient;
+  appointmentClientNameInput.required = hasPatient;
   const staffField = document.querySelector("#message-staff-field");
   const staffInput = document.querySelector("#message-staff-name");
   staffField.hidden = !template.body.includes("{{staffName}}");
@@ -628,7 +648,9 @@ function copyPersonalisedMessage(template) {
   return new Promise((resolve) => {
     appointmentModalResolver = resolve;
     window.setTimeout(() => {
-      appointmentClientNameInput.focus();
+      if (appointmentModalResolver === resolve) {
+        (hasPatient ? appointmentClientNameInput : appointmentDateInput).focus();
+      }
     }, 0);
   });
 }
@@ -652,8 +674,8 @@ function messageForPersonalisation(template) {
   return {
     ...template,
     body: messagePreviewText(template.body)
-      .replace(/(?<![\w@.+-])@patient(?![\w@])/gi, "<>")
-      .replace(/(?<![\w@.+-])@appointment(?![\w@])/gi, "{{appointmentDateTime}}")
+      .replace(patientMention, "<>")
+      .replace(appointmentMention, "{{appointmentDateTime}}")
   };
 }
 
@@ -809,7 +831,7 @@ function renderMessages() {
   const selected = activeMessages[selectedMessageIndex];
   messagesGrid.innerHTML = `<div class="script-list" aria-label="Message templates">${visible.map((template) => `
     <button type="button" class="script-choice" data-select-message="${template.index}" aria-pressed="${template.index === selectedMessageIndex}">${escapeHtml(template.subtitle)}${template.category ? `<span>${escapeHtml(template.category)}</span>` : ""}</button>`).join("")}</div>
-    <article class="script-reading" aria-label="Selected message"><p class="script-reading-label">Message preview</p><h3>${escapeHtml(selected.subtitle)}</h3><div class="message-body plain-message">${escapeHtml(messagePreviewText(selected.body))}</div>${selected.note ? `<p class="template-note">${escapeHtml(selected.note)}</p>` : ""}<div class="card-actions"><button class="button" type="button" data-copy-message="${selectedMessageIndex}">Personalise &amp; copy</button></div></article>`;
+    <article class="script-reading" aria-label="Selected message"><p class="script-reading-label">Message preview</p><h3>${escapeHtml(selected.subtitle)}</h3><div class="message-body plain-message">${escapeHtml(messagePreviewText(selected.body))}</div>${selected.note ? `<p class="template-note">${escapeHtml(selected.note)}</p>` : ""}<div class="card-actions"><button class="button" type="button" data-copy-message="${selectedMessageIndex}">${messageNeedsDetails(selected.body) ? "Personalise &amp; copy" : "Copy message"}</button></div></article>`;
 }
 
 function voicemailWithStaffName(body) {
@@ -1091,9 +1113,11 @@ document.addEventListener("click", async (event) => {
   const messageButton = event.target.closest("[data-copy-message]");
   if (messageButton) {
     const template = activeMessages[Number(messageButton.dataset.copyMessage)];
-    const personalised = messageForPersonalisation(template);
-    if (!personalised) return;
-    if (await copyPersonalisedMessage(personalised)) showToast("Message copied to clipboard.");
+    try {
+      if (await copyMessageTemplate(template)) showToast("Message copied to clipboard.");
+    } catch {
+      showToast("Copy failed. Please try again.");
+    }
     return;
   }
 
@@ -1128,8 +1152,12 @@ appointmentForm.addEventListener("submit", async (event) => {
   const staffName = staffInput.disabled ? "" : staffInput.value.trim();
   if (!staffInput.disabled && !staffName) { showToast("Enter your name."); return; }
   const hasAppointment = !appointmentDateInput.disabled;
-  if (!clientName || (hasAppointment && (!appointmentDate || !appointmentTime))) {
-    showToast(hasAppointment ? "Enter the client name, date, and time." : "Enter the client name.");
+  if (!appointmentClientNameInput.disabled && !clientName) {
+    showToast("Enter the patient name.");
+    return;
+  }
+  if (hasAppointment && (!appointmentDate || !appointmentTime)) {
+    showToast("Enter the appointment date and time.");
     return;
   }
 
