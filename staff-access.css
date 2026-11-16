@@ -495,3 +495,15 @@
 .community-library-heading h4 {
   margin: 0;
 }
+
+.remember-email {
+  display: flex;
+  align-items: center;
+  gap: .55rem;
+  color: var(--muted);
+  font-size: .85rem;
+}
+
+.remember-email input {
+  accent-color: var(--primary);
+}

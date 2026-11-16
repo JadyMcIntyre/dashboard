@@ -29,6 +29,31 @@ document.querySelectorAll(".password-visibility").forEach((button) => {
   input.form.addEventListener("password-cleared", () => setVisible(false));
 });
 
+const rememberEmail = signIn.elements.remember_email;
+const rememberedEmailKey = "renue-remembered-email";
+let rememberedEmail = "";
+
+function restoreRememberedEmail() {
+  signIn.elements.email.value = rememberedEmail;
+  rememberEmail.checked = Boolean(rememberedEmail);
+}
+
+function saveRememberedEmail(email) {
+  rememberedEmail = email;
+  try {
+    if (email) localStorage.setItem(rememberedEmailKey, email);
+    else localStorage.removeItem(rememberedEmailKey);
+  } catch { /* Sign-in still works if browser storage is unavailable. */ }
+}
+
+try { rememberedEmail = localStorage.getItem(rememberedEmailKey) || ""; }
+catch { /* Continue with an empty email field. */ }
+restoreRememberedEmail();
+
+rememberEmail.addEventListener("change", () => {
+  if (!rememberEmail.checked) saveRememberedEmail("");
+});
+
 if (!window.supabase) {
   signInStatus.textContent = "Sign-in could not load. Refresh the page to try again.";
 } else {
@@ -86,6 +111,7 @@ if (!window.supabase) {
     renderVoicemails();
     account.textContent = data.display_name + " · " + role;
     signIn.reset();
+    restoreRememberedEmail();
     signInStatus.textContent = "";
     accessScreen.hidden = true;
     workspace.hidden = false;
@@ -205,12 +231,14 @@ if (!window.supabase) {
     submitting = true;
     signInButton.disabled = true;
     signInStatus.textContent = "Signing in…";
+    const email = signIn.elements.email.value.trim();
     try {
       const { error } = await client.auth.signInWithPassword({
-        email: signIn.elements.email.value.trim(),
+        email,
         password: signIn.elements.password.value
       });
       if (error) signInStatus.textContent = "Sign-in failed. Check your email and password and try again.";
+      else if (rememberEmail.checked) saveRememberedEmail(email);
     } catch {
       signInStatus.textContent = "Sign-in is unavailable. Please try again.";
     } finally {
