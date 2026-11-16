@@ -67,12 +67,19 @@ test('search shortcut and workspace preferences survive navigation and reload', 
   await expect(themeSwitch).toBeChecked();
   await page.keyboard.press('Escape');
   await page.locator('#workspace-main').focus();
-  await page.keyboard.press('/');
-  const search = page.getByRole('combobox', { name: 'Search the workspace' });
+  await page.keyboard.press('Slash');
+  const search = page.locator('#workspace-search');
   await expect(search).toBeFocused();
   await search.fill('Spravato');
   const palette = page.getByRole('dialog', { name: 'Search workspace' });
   await expect(palette).toBeVisible();
+  await expect(search).toHaveRole('combobox');
+  await palette.getByRole('button', { name: 'Clear search' }).click();
+  await expect(search).toBeFocused();
+  await expect(search).toHaveValue('');
+  await expect(palette.getByRole('group', { name: 'Suggested for intake' })).toBeVisible();
+  await expect(palette.getByRole('button', { name: 'Clear search' })).toBeHidden();
+  await search.fill('Spravato');
   await expect(page.locator('[data-workspace-view="treatment-title"]')).toBeVisible();
   await expect(palette.getByRole('option').first()).toHaveText(/Spravato.*Treatment guide/);
   await expect(palette.getByRole('option').first()).toHaveAttribute('aria-selected', 'true');
@@ -177,6 +184,66 @@ test('Voicemail scripts remain selectable, read aloud, and free of copy controls
   await expect(selected.getByText('Read aloud', { exact: true })).toBeVisible();
   await expect(selected.locator('.voicemail-body')).not.toBeEmpty();
   await expect(selected.getByRole('button', { name: /copy/i })).toHaveCount(0);
+});
+
+test('Resources filter and keep their copy actions', async ({ page, context }) => {
+  await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+  await openWorkspace(page, 'dark', 'resources-title');
+  const cards = page.locator('#resources-list article');
+  await expect(cards.first()).toBeVisible();
+  await page.locator('#resource-category').selectOption('Education');
+  await expect(cards.first().locator('.resource-tags')).toContainText('Education');
+  await cards.first().getByRole('button', { name: 'Copy link' }).click();
+  await expect(page.locator('#toast')).toHaveText('Link copied to clipboard.');
+  await page.locator('#resource-search').fill('zz-no-matches');
+  await expect(page.getByText('No matching resources', { exact: false })).toBeVisible();
+  await page.getByRole('button', { name: 'Clear filters' }).click();
+  await expect(cards.first()).toBeVisible();
+});
+
+test('Hours, contacts and advisor schedules keep clinic context and permissions', async ({ page }) => {
+  await openWorkspace(page, 'light', 'hours-title');
+  await clinic(page, 'CHELSEA').click();
+  await expect(page.locator('#hours-list')).toContainText('Chelsea');
+  await expect(page.locator('#hours-list [aria-current="date"]')).toContainText('Monday');
+  await page.locator('#company-emails summary').click();
+  await expect(page.getByRole('link', { name: 'intake@example.test' })).toBeVisible();
+  await page.getByRole('link', { name: 'Advisor hours' }).click();
+  await expect(page.getByRole('rowheader', { name: 'Alex You' })).toBeVisible();
+  await expect(page.getByRole('button', { name: /^Edit hours for/ })).toHaveCount(0);
+});
+
+test('Travel routes, financing and Vitamins retain their existing controls', async ({ page }) => {
+  await openWorkspace(page, 'dark', 'travel-title');
+  await page.locator('#travel-origin').fill('10001');
+  await page.locator('#travel-mode').selectOption('transit');
+  await page.getByRole('button', { name: 'Find directions' }).click();
+  await expect(page.getByRole('link', { name: /^Open directions to Chelsea/ })).toHaveAttribute('href', /origin=10001.*travelmode=transit/);
+  await page.getByRole('link', { name: 'Financing' }).click();
+  await expect(page.getByRole('button', { name: 'Copy CareCredit link' })).toBeVisible();
+  await page.getByRole('link', { name: 'Vitamins & IV' }).click();
+  await page.locator('#menu-sort').selectOption('price-low');
+  const prices = (await page.locator('.treatment-price').allTextContents()).map(text => Number(text.slice(1)));
+  expect(prices.length).toBeGreaterThan(1);
+  expect(prices).toEqual([...prices].sort((a, b) => a - b));
+  await page.getByRole('button', { name: 'Expand descriptions' }).click();
+  await expect(page.locator('.vitamin-card details').first()).toHaveAttribute('open', '');
+});
+
+test('Template management keeps both editor dialogs and the community tab', async ({ page }) => {
+  await openWorkspace(page, 'light', 'templates-title');
+  const newTemplate = page.getByRole('button', { name: 'New template' });
+  await newTemplate.click();
+  let editor = page.getByRole('dialog', { name: 'New template' });
+  await expect(editor.getByLabel('Template text')).toBeVisible();
+  await editor.getByRole('button', { name: 'Cancel' }).click();
+  await page.getByRole('button', { name: 'Voicemail scripts', exact: true }).click();
+  await newTemplate.click();
+  editor = page.getByRole('dialog', { name: 'New template' });
+  await expect(editor.getByLabel('Template text')).toBeVisible();
+  await editor.getByRole('button', { name: 'Cancel' }).click();
+  await page.getByRole('button', { name: 'Community' }).click();
+  await expect(page.getByRole('heading', { name: 'Template library' })).toBeVisible();
 });
 
 for (const theme of ['light', 'dark']) {

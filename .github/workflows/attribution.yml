@@ -2,7 +2,9 @@ name: Verify dashboard build and browser flows
 
 on:
   push:
+    branches-ignore: [develop]
   pull_request:
+  workflow_call:
 
 permissions:
   contents: read

@@ -62,25 +62,25 @@ const financingClientLinks = {
 
 const financingOptionsContent = `
   <div class="financing-options-grid">
-    <article class="financing-option">
-      <div class="financing-option-heading"><h3>CareCredit</h3><button class="button-secondary copy-link-icon" type="button" data-copy-financing="carecredit" aria-label="Copy CareCredit link" title="Copy CareCredit link"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M15 4H6a2 2 0 0 0-2 2v9"/></svg></button></div>
+    <article class="financing-option ds-card">
+      <div class="financing-option-heading"><h3>CareCredit</h3><button class="button-secondary ds-icon-button copy-link-icon" type="button" data-copy-financing="carecredit" aria-label="Copy CareCredit link" title="Copy CareCredit link"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M15 4H6a2 2 0 0 0-2 2v9"/></svg></button></div>
       <p><strong>What it is:</strong> A healthcare credit card issued by Synchrony Bank and used to pay for medical expenses.</p>
       <p><strong>How it works:</strong> Patients apply like a credit card. Approval is required.</p>
       <p><strong>Terms:</strong> Financing and promotional offers are subject to credit approval. Patients should review the offer’s repayment and interest terms.</p>
     </article>
-    <article class="financing-option">
-      <div class="financing-option-heading"><h3>Advance Care</h3><button class="button-secondary copy-link-icon" type="button" data-copy-financing="advancecare" aria-label="Copy Advance Care link" title="Copy Advance Care link"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M15 4H6a2 2 0 0 0-2 2v9"/></svg></button></div>
+    <article class="financing-option ds-card">
+      <div class="financing-option-heading"><h3>Advance Care</h3><button class="button-secondary ds-icon-button copy-link-icon" type="button" data-copy-financing="advancecare" aria-label="Copy Advance Care link" title="Copy Advance Care link"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M15 4H6a2 2 0 0 0-2 2v9"/></svg></button></div>
       <p><strong>What it is:</strong> Medical financing for procedures and expenses that insurance may not cover.</p>
       <p><strong>How it works:</strong> Patients apply online and receive a credit decision. Co-signers may be used.</p>
       <p><strong>Terms:</strong> Approval and financing offers depend on the application. Patients should review the available offer and repayment terms.</p>
     </article>
-    <article class="financing-option">
+    <article class="financing-option ds-card">
       <h3>HSA</h3>
       <p><strong>What it is:</strong> A tax-advantaged Health Savings Account for medical expenses.</p>
       <p><strong>Who qualifies:</strong> Patients must have a high-deductible health plan.</p>
       <p><strong>How it works:</strong> The patient and/or employer contributes money, funds can be used for qualified medical expenses, and money rolls over every year.</p>
     </article>
-    <article class="financing-option">
+    <article class="financing-option ds-card">
       <h3>FSA</h3>
       <p><strong>What it is:</strong> An employer-sponsored Flexible Spending Account for medical expenses using pre-tax dollars.</p>
       <p><strong>How it works:</strong> Patients elect an annual amount during open enrollment, and money is taken from their paycheck.</p>
@@ -1045,7 +1045,7 @@ function renderHours() {
   }
 
   hoursList.innerHTML = `
-    <article class="hours-card">
+    <article class="hours-card ds-card">
       <div class="hours-card-header">
         <div>
           <h3>${escapeHtml(clinic?.name || office.location)}</h3>
@@ -1089,7 +1089,12 @@ function renderResources() {
     && `${resource.title} ${resource.note} ${resource.stage || ""} ${resource.category}`.toLocaleLowerCase().includes(query));
   document.querySelector("#resource-count").textContent = `${visible.length} ${visible.length === 1 ? "resource" : "resources"}`;
   resourcesList.innerHTML = visible.length ? visible.map((resource) => `
-    <article class="resource-card"><div class="resource-tags"><span>${escapeHtml(resource.category)}</span>${resource.stage ? `<span>${escapeHtml(resource.stage)}</span>` : ""}</div><h3 class="resource-title">${escapeHtml(resource.title)}</h3><p>${escapeHtml(resource.note)}</p><p class="financing-url">${escapeHtml(resource.url)}</p><div class="resource-actions"><button class="button-secondary" type="button" data-copy-resource="${resource.index}">Copy link</button></div></article>`).join("")
+    <article class="resource-card ds-card">
+      <div class="resource-tags"><span>${escapeHtml(resource.category)}</span>${resource.stage ? `<span>${escapeHtml(resource.stage)}</span>` : ""}</div>
+      <h3 class="resource-title">${escapeHtml(resource.title)}</h3>
+      <p>${escapeHtml(resource.note)}</p>
+      <div class="resource-actions"><p class="financing-url">${escapeHtml(resource.url)}</p><button class="button-secondary ds-button" type="button" data-copy-resource="${resource.index}">${intakeIcon("copy")} Copy link</button></div>
+    </article>`).join("")
     : '<p class="insurance-empty">No matching resources. Clear the filters or try another treatment.</p>';
 }
 
@@ -1187,23 +1192,23 @@ function renderInsuranceTable() {
         </thead>
         <tbody>
           <tr>
-            <td>
+            <td><div class="insurance-lane-items">
               <ul>
                 ${catalog.inNetwork.map(renderInNetworkItem).join("")}
               </ul>
-            </td>
-            <td>
+            </div></td>
+            <td><div class="insurance-lane-items">
               <ul>
                 ${renderInsuranceItems(catalog.outOfNetwork)}
               </ul>
               ${conditionalOon}
-            </td>
-            <td>
+            </div></td>
+            <td><div class="insurance-lane-items">
               <ul>
                 ${renderInsuranceItems(catalog.consultOnly)}
                 ${renderInsuranceItems(catalog.doNotSchedule)}
               </ul>
-            </td>
+            </div></td>
           </tr>
         </tbody>
       </table></div>
@@ -1442,7 +1447,7 @@ travelForm.addEventListener("submit", (event) => {
   document.querySelector("#travel-summary").textContent = `From ${origin} · ${modeLabel}. Choose a clinic to view miles and time in Google Maps. These clinics are not ranked by distance.`;
   document.querySelector("#travel-clinics").innerHTML = Object.values(clinicLocations).map((clinic) => {
     const params = new URLSearchParams({ api: "1", origin: startingPoint, destination: clinic.address, travelmode: travelMode.value });
-    return `<article class="travel-clinic"><h3>${escapeHtml(clinic.name)}</h3><p>${escapeHtml(clinic.address.replace(", USA", ""))}</p><a class="button-secondary" href="https://www.google.com/maps/dir/?${escapeHtml(params.toString())}" target="_blank" rel="noopener noreferrer" aria-label="Open directions to ${escapeHtml(clinic.name)} in Google Maps (new tab)">Open directions <span aria-hidden="true">↗</span></a></article>`;
+    return `<article class="travel-clinic ds-card"><h3>${escapeHtml(clinic.name)}</h3><p>${escapeHtml(clinic.address.replace(", USA", ""))}</p><a class="button-secondary ds-button" href="https://www.google.com/maps/dir/?${escapeHtml(params.toString())}" target="_blank" rel="noopener noreferrer" aria-label="Open directions to ${escapeHtml(clinic.name)} in Google Maps (new tab)">Open directions <span aria-hidden="true">↗</span></a></article>`;
   }).join("");
   travelResults.hidden = false;
 });

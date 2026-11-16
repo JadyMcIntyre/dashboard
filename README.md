@@ -26,7 +26,7 @@ Publish `dist/` as the static site. On Cloudflare Pages, keep `dist` as the outp
 npm ci && python3 -m unittest discover -s tests -v && python3 scripts/build.py
 ```
 
-For GitHub Pages, use an artifact-based Pages workflow to publish the same `dist/` directory. Relative asset URLs support hosting under a repository subdirectory. The build publishes the static app, compiled stylesheet, selected Lucide symbols and Inter font. Playground files, browser fixtures, screenshots, npm dependencies and source styles stay outside the build.
+GitHub Pages staging publishes a separately configured build from `develop`. See [Deployment and environment setup](docs/deployment.md) for branch policy, the manual settings, and the staging Supabase checklist.
 
 GitHub Pages and Cloudflare Pages serve public static assets. Supabase sign-in protects authenticated workflows and database records according to their access policies. Keep secrets and patient records out of the repository and static output.
 

@@ -3,6 +3,11 @@
   let onAuthState;
   const data = {
     staff_profiles: { display_name: 'Alex', role: 'advisor' },
+    company_email_contacts: [{ id: 1, label: 'Intake support', email: 'intake@example.test' }],
+    advisor_roster: [
+      { id: 1, name: 'Alex', user_id: 'test-advisor', advisor_weekly_hours: [{ weekday: 1, starts_at: '08:30', ends_at: '17:30' }] },
+      { id: 2, name: 'Morgan', user_id: 'test-colleague', advisor_weekly_hours: [{ weekday: 1, starts_at: '10:00', ends_at: '19:00' }] }
+    ],
     organization_contacts: {
       fax: '212-555-0100', website_url: 'https://renue.example.test',
       carecredit_url: 'https://carecredit.example.test', advance_care_url: 'https://advance-care.example.test',

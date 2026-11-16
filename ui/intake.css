@@ -96,3 +96,20 @@
   :is(#messages-grid, #voicemail-list).script-workspace { grid-template-columns: 1fr; }
   .script-library .script-list { max-height: 230px; }
 }
+
+.workspace-page .insurance-table-scroll .insurance-table td { padding: 0; border: 0; background: transparent; }
+.insurance-lane-items {
+  padding: 8px var(--ds-3);
+  border: 1px solid var(--ds-border);
+  border-top: 0;
+  border-radius: 0 0 var(--ds-radius-panel) var(--ds-radius-panel);
+  background: var(--ds-surface);
+}
+
+#messages-grid .script-list { max-height: max(200px, calc(100dvh - 390px)); overflow-y: auto; overscroll-behavior: contain; }
+@media (min-width: 831px) {
+  #messages-grid .script-reading { position: sticky; top: var(--ds-3); }
+}
+@media (max-width: 830px) {
+  #messages-grid .script-list { max-height: 225px; }
+}

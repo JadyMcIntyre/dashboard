@@ -266,3 +266,9 @@
   .workspace-search .ds-key { display: none; }
 }
 
+
+.command-header #workspace-search::-webkit-search-cancel-button { appearance: none; }
+#workspace-search-clear { --control-line: transparent; --control-fg: var(--ds-muted); flex-shrink: 0; }
+.search-result .command-result-icon { color: var(--ds-muted); width: 15px; height: 15px; }
+.search-result .command-result-label { flex: 1; min-width: 0; }
+.search-result[aria-selected="true"] .command-result-icon { color: var(--ds-accent); }

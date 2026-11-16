@@ -29,7 +29,7 @@
   transition: background-color var(--ds-motion), border-color var(--ds-motion), color var(--ds-motion);
 }
 /* Keep the existing class hooks without inheriting the legacy focus fill. */
-.ds-button.button-secondary:focus-visible:not(:hover, :active) {
+.ds-button:is(.button, .button-secondary):focus-visible:not(:hover, :active) {
   background: var(--control-bg);
   color: var(--control-fg);
   border-color: var(--control-line);

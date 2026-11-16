@@ -20,6 +20,7 @@ const workspaceSearch = document.querySelector("#workspace-search");
 const searchResults = document.querySelector("#workspace-search-results");
 const workspaceMain = document.querySelector("#workspace-main");
 const searchTrigger = document.querySelector("#workspace-search-trigger");
+const searchClear = document.querySelector("#workspace-search-clear");
 const searchItems = document.querySelector("#workspace-search-items");
 let currentSearchEntries = [];
 let activeSearchIndex = -1;
@@ -199,6 +200,15 @@ const searchGroups = {
   "hours-title": "Clinics and contacts", "resources-title": "Resources"
 };
 
+const searchIcons = {
+  "insurance-title": "insurance", "treatment-title": "treatment",
+  "vitamins-title": "vitamins", "messages-title": "messages",
+  "voicemail-title": "voicemail", "hours-title": "hours",
+  "advisor-hours-title": "calendar", "resources-title": "resources",
+  "travel-title": "travel", "financing-title": "financing", "templates-title": "templates"
+};
+const callShortcuts = ["insurance-title", "treatment-title", "messages-title", "hours-title"];
+
 function searchRank(entry, query) {
   const title = entry.title.toLocaleLowerCase();
   if (title === query) return 0;
@@ -223,7 +233,10 @@ function highlightSearchResult(index, scroll = true) {
 
 function renderWorkspaceSearch() {
   const query = workspaceSearch.value.trim().toLocaleLowerCase();
+  const currentView = document.querySelector('[data-workspace-view]:not([hidden])')?.dataset.workspaceView;
+  const suggestions = callShortcuts.filter(view => view !== currentView);
   const shortcuts = Object.entries(viewNames).map(([view, title]) => ({ view, title, subtitle: "" }));
+  searchClear.hidden = !workspaceSearch.value;
   const matches = query
     ? [...buildWorkspaceSearchEntries(), ...shortcuts.filter(({ view }) => view !== "travel-title")]
       .map((entry) => ({ entry, rank: searchRank(entry, query) }))
@@ -231,10 +244,14 @@ function renderWorkspaceSearch() {
       .sort((a, b) => a.rank - b.rank
         || Number(Boolean(b.entry.clinic && b.entry.clinic === selectedLocationId))
          - Number(Boolean(a.entry.clinic && a.entry.clinic === selectedLocationId)))
-    : shortcuts.map((entry) => ({ entry, rank: -1 }));
+    : [...suggestions.map(view => shortcuts.find(entry => entry.view === view)),
+       ...shortcuts.filter(entry => entry.view !== currentView && !suggestions.includes(entry.view))]
+      .map(entry => ({ entry, rank: -1 }));
   const groups = new Map();
   for (const { entry, rank } of matches) {
-    const label = !query ? "Workspace pages" : rank === 0 ? "Exact matches" : searchGroups[entry.view] || "Workspace tools";
+    const label = !query
+      ? (suggestions.includes(entry.view) ? "Suggested for intake" : "Workspace pages")
+      : rank === 0 ? "Exact matches" : searchGroups[entry.view] || "Workspace tools";
     if (!groups.has(label)) groups.set(label, []);
     groups.get(label).push(entry);
   }
@@ -244,7 +261,8 @@ function renderWorkspaceSearch() {
     const options = entries.map((entry) => {
       const index = currentSearchEntries.push(entry) - 1;
       return `<div class="search-result" role="option" id="command-result-${index}" data-search-result="${index}" aria-selected="false">
-        <span><strong>${escapeHtml(entry.title)}</strong>${entry.subtitle ? `<small>${escapeHtml(entry.subtitle)}</small>` : ""}</span>
+        <svg class="ds-icon command-result-icon" aria-hidden="true"><use href="./assets/renue-icons.svg#${searchIcons[entry.view]}"></use></svg>
+        <span class="command-result-label"><strong>${escapeHtml(entry.title)}</strong>${entry.subtitle ? `<small>${escapeHtml(entry.subtitle)}</small>` : ""}</span>
         <span class="search-result-category">${escapeHtml(viewNames[entry.view])}</span>
       </div>`;
     }).join("");
@@ -299,6 +317,11 @@ document.addEventListener("click", (event) => {
 });
 workspaceSearch.addEventListener("input", renderWorkspaceSearch);
 searchTrigger.addEventListener("click", openWorkspaceSearch);
+searchClear.addEventListener("click", () => {
+  workspaceSearch.value = "";
+  workspaceSearch.focus();
+  renderWorkspaceSearch();
+});
 document.querySelector("#workspace-search-close").addEventListener("click", () => closeWorkspaceSearch(true));
 searchResults.addEventListener("keydown", (event) => {
   if (event.key !== "Escape" || event.isComposing) return;
