@@ -70,7 +70,7 @@ function createAdvisorHours(client) {
         const shift = advisor.advisor_weekly_hours.find((entry) => entry.weekday === weekday);
         if (shift?.starts_at && shift.ends_at) {
           cell.textContent = `${formatTime(shift.starts_at)} – ${formatTime(shift.ends_at)}`;
-          if (shift.ends_at < shift.starts_at) {
+          if (advisor.name !== "Emma" && shift.ends_at < shift.starts_at) {
             const nextDay = document.createElement("small");
             nextDay.textContent = "Ends next day";
             cell.append(nextDay);
