@@ -560,20 +560,21 @@ function getDefaultAppointmentValues() {
   return { dateValue, timeValue };
 }
 
-function formatAppointmentDateTime(dateValue, timeValue) {
+function formatAppointmentDateTime(dateValue, timeValue, language) {
+  const locale = language === "es" ? "es-US" : "en-US";
   const date = new Date(`${dateValue}T${timeValue}`);
-  const datePart = new Intl.DateTimeFormat("en-US", {
+  const datePart = new Intl.DateTimeFormat(locale, {
     weekday: "long",
     month: "long",
     day: "numeric",
   }).format(date);
-  const timePart = new Intl.DateTimeFormat("en-US", {
+  const timePart = new Intl.DateTimeFormat(locale, {
     hour: "numeric",
     minute: "2-digit",
     hour12: true,
   }).format(date);
 
-  return `${datePart} at ${timePart}`;
+  return `${datePart} ${language === "es" ? "a las" : "at"} ${timePart}`;
 }
 
 function closeAppointmentModal(copied = false) {
@@ -613,7 +614,7 @@ function copyPersonalisedMessage(template) {
   appointmentModal.querySelector(".field-row").hidden = !hasAppointment;
   appointmentDateInput.disabled = !hasAppointment;
   appointmentTimeInput.disabled = !hasAppointment;
-  document.querySelector("#appointment-modal-title").textContent = "Personalise message";
+  document.querySelector("#appointment-modal-title").textContent = translateLabel("Personalise message");
   appointmentModal.querySelector(".section-kicker").textContent = template.subtitle;
   appointmentModalTrigger = document.activeElement;
   document.querySelector(".shell").inert = true;
@@ -758,9 +759,40 @@ let selectedVoicemailIndex = 0;
 let activeMessages = [];
 let activeVoicemails = [];
 
+const companyMessageLanguage = document.querySelector("#company-message-language");
+const companyVoicemailLanguage = document.querySelector("#company-voicemail-language");
+
+function matchCounterpart(items, current, language) {
+  if (!current?.companyDefault) return current ? items.indexOf(current) : -1;
+  const key = current.key.replace(/^es-/, "");
+  return items.findIndex((item) => item.key === (language === "es" ? "es-" + key : key));
+}
+
+companyMessageLanguage.value = companyVoicemailLanguage.value = dashboardLanguage;
+companyMessageLanguage.addEventListener("change", () => {
+  selectedMessageIndex = matchCounterpart(activeMessages, activeMessages[selectedMessageIndex], companyMessageLanguage.value);
+  renderMessages();
+  document.dispatchEvent(new Event("workspace-data-ready"));
+});
+companyVoicemailLanguage.addEventListener("change", () => {
+  selectedVoicemailIndex = matchCounterpart(activeVoicemails, activeVoicemails[selectedVoicemailIndex], companyVoicemailLanguage.value);
+  renderVoicemails();
+  document.dispatchEvent(new Event("workspace-data-ready"));
+});
+
+function matchesCompanyMessageLanguage(template) {
+  return !template.companyDefault || template.language === companyMessageLanguage.value;
+}
+
+function matchesCompanyVoicemailLanguage(script) {
+  return !script.companyDefault || script.language === companyVoicemailLanguage.value;
+}
+
 function setActiveTemplates(kind, rows) {
   const items = rows.map((row) => ({
     key: row.default_message_key || row.id,
+    companyDefault: Boolean(row.default_message_key),
+    language: row.default_message_key?.startsWith("es-") ? "es" : "en",
     title: row.title,
     subtitle: row.title,
     body: row.body,
@@ -776,7 +808,7 @@ function setActiveTemplates(kind, rows) {
     const categories = document.querySelector("#message-category");
     const selection = categories.value;
     const tags = [...new Set(items.map(({ category }) => category).filter(Boolean))].sort();
-    categories.replaceChildren(new Option("All templates", "all"), ...tags.map((tag) => new Option(tag, tag)));
+    categories.replaceChildren(new Option(translateLabel("All templates"), "all"), ...tags.map((tag) => new Option(translateLabel(tag), tag)));
     categories.value = tags.includes(selection) ? selection : "all";
     renderMessages();
   } else {
@@ -794,22 +826,22 @@ function renderMessages() {
   const query = document.querySelector("#message-search").value.trim().toLocaleLowerCase();
   const visible = activeMessages.map((template, index) => ({ ...template, index }))
     .filter((template) => {
-      return (showAll || !template.locationId || template.locationId === selectedLocationId)
+      return matchesCompanyMessageLanguage(template) && (showAll || !template.locationId || template.locationId === selectedLocationId)
         && (category === "all" || template.category === category)
         && `${template.subtitle} ${template.body}`.toLocaleLowerCase().includes(query);
     });
   if (!visible.some((template) => template.index === selectedMessageIndex)) selectedMessageIndex = visible[0]?.index;
   messagesFilterNote.textContent = showAll
-    ? "All clinics · Choose a template to read and copy."
-    : `${clinicLocations[selectedLocationId].name} · General templates are included.`;
+    ? translateLabel("All clinics · Choose a template to read and copy.")
+    : `${clinicLocations[selectedLocationId].name} · ${translateLabel("General templates are included.")}`;
   if (!visible.length) {
-    messagesGrid.innerHTML = '<p class="insurance-empty">No matching templates. Clear the filters or try different wording.</p>';
+    messagesGrid.innerHTML = `<p class="insurance-empty">${translateLabel("No matching templates. Clear the filters or try different wording.")}</p>`;
     return;
   }
   const selected = activeMessages[selectedMessageIndex];
   messagesGrid.innerHTML = `<div class="script-list" aria-label="Message templates">${visible.map((template) => `
-    <button type="button" class="script-choice" data-select-message="${template.index}" aria-pressed="${template.index === selectedMessageIndex}">${escapeHtml(template.subtitle)}${template.category ? `<span>${escapeHtml(template.category)}</span>` : ""}</button>`).join("")}</div>
-    <article class="script-reading" aria-label="Selected message"><p class="script-reading-label">Message preview</p><h3>${escapeHtml(selected.subtitle)}</h3><div class="message-body plain-message">${escapeHtml(messagePreviewText(selected.body))}</div>${selected.note ? `<p class="template-note">${escapeHtml(selected.note)}</p>` : ""}<div class="card-actions"><button class="button" type="button" data-copy-message="${selectedMessageIndex}">Personalise &amp; copy</button></div></article>`;
+    <button type="button" class="script-choice" data-select-message="${template.index}" aria-pressed="${template.index === selectedMessageIndex}">${escapeHtml(template.subtitle)}${template.category ? `<span>${escapeHtml(translateLabel(template.category))}</span>` : ""}</button>`).join("")}</div>
+    <article class="script-reading" aria-label="Selected message"><p class="script-reading-label">${translateLabel("Message preview")}</p><h3>${escapeHtml(selected.subtitle)}</h3><div class="message-body plain-message">${escapeHtml(messagePreviewText(selected.body))}</div>${selected.note ? `<p class="template-note">${escapeHtml(selected.note)}</p>` : ""}<div class="card-actions"><button class="button" type="button" data-copy-message="${selectedMessageIndex}">${escapeHtml(translateLabel("Personalise & copy"))}</button></div></article>`;
 }
 
 function voicemailWithStaffName(body) {
@@ -818,16 +850,16 @@ function voicemailWithStaffName(body) {
 
 function renderVoicemails() {
   const visible = activeVoicemails.map((script, index) => ({ ...script, index }))
-    .filter((script) => !selectedLocationId || !script.locationId || script.locationId === selectedLocationId);
+    .filter((script) => matchesCompanyVoicemailLanguage(script) && (!selectedLocationId || !script.locationId || script.locationId === selectedLocationId));
   if (!visible.some(({ index }) => index === selectedVoicemailIndex)) selectedVoicemailIndex = visible[0]?.index;
   if (!visible.length) {
-    voicemailList.innerHTML = '<p class="insurance-empty">No voicemail scripts are available.</p>';
+    voicemailList.innerHTML = `<p class="insurance-empty">${translateLabel("No voicemail scripts are available.")}</p>`;
     return;
   }
   const selected = activeVoicemails[selectedVoicemailIndex];
   voicemailList.innerHTML = `<div class="script-list" aria-label="Voicemail scripts">${visible.map((script) => `
-    <button type="button" class="script-choice" data-select-voicemail="${script.index}" aria-pressed="${script.index === selectedVoicemailIndex}">${escapeHtml(script.title)}<span>${escapeHtml(script.category || "Readout script")}</span></button>`).join("")}</div>
-    <article class="script-reading" aria-label="Selected voicemail"><p class="script-reading-label">Read aloud</p><h3>${escapeHtml(selected.title)}</h3><div class="voicemail-body">${formatVoicemailForDisplay(messagePreviewText(voicemailWithStaffName(selected.body)))}</div></article>`;
+    <button type="button" class="script-choice" data-select-voicemail="${script.index}" aria-pressed="${script.index === selectedVoicemailIndex}">${escapeHtml(script.title)}<span>${escapeHtml(translateLabel(script.category || "Readout script"))}</span></button>`).join("")}</div>
+    <article class="script-reading" aria-label="Selected voicemail"><p class="script-reading-label">${translateLabel("Read aloud")}</p><h3>${escapeHtml(selected.title)}</h3><div class="voicemail-body">${formatVoicemailForDisplay(messagePreviewText(voicemailWithStaffName(selected.body)))}</div></article>`;
 }
 
 function renderHours() {
@@ -1093,7 +1125,7 @@ document.addEventListener("click", async (event) => {
     const template = activeMessages[Number(messageButton.dataset.copyMessage)];
     const personalised = messageForPersonalisation(template);
     if (!personalised) return;
-    if (await copyPersonalisedMessage(personalised)) showToast("Message copied to clipboard.");
+    if (await copyPersonalisedMessage(personalised)) showToast(translateLabel("Message copied to clipboard."));
     return;
   }
 
@@ -1136,7 +1168,7 @@ appointmentForm.addEventListener("submit", async (event) => {
   let message = applyClientName(normalizeTemplateForCopy(appointmentTemplate.body), clientName)
     .replaceAll("{{staffName}}", () => staffName);
   if (hasAppointment) {
-    message = applyAppointmentDateTime(message, formatAppointmentDateTime(appointmentDate, appointmentTime));
+    message = applyAppointmentDateTime(message, formatAppointmentDateTime(appointmentDate, appointmentTime, appointmentTemplate.language));
   }
 
   appointmentCopyButton.disabled = true;

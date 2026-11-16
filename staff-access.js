@@ -137,7 +137,7 @@ if (!window.supabase) {
     if (inviteSession || event === "SIGNED_OUT") rememberInvite(null);
     inviteSession = null;
     setPassword.hidden = true;
-    accessTitle.textContent = "Staff sign-in";
+    accessTitle.textContent = translateLabel("Staff sign-in");
     signIn.hidden = false;
 
     if (session && session.user.id === visibleUserId &&
