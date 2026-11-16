@@ -4,9 +4,9 @@
  */
 
 const signIn = document.querySelector("#staff-sign-in");
-const signInButton = signIn.querySelector("button");
+const signInButton = signIn.querySelector("button[type=submit]");
 const setPassword = document.querySelector("#staff-set-password");
-const setPasswordButton = setPassword.querySelector("button");
+const setPasswordButton = setPassword.querySelector("button[type=submit]");
 const setPasswordStatus = setPassword.querySelector("[role=status]");
 const accessTitle = document.querySelector("#staff-access-title");
 const signInStatus = document.querySelector("#staff-sign-in-status");
