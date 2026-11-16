@@ -35,7 +35,7 @@ The Python build recreates `dist/` and writes `build-provenance.json` with the o
 ## Design system and browser checks
 
 - `ui/tokens.css` defines light and dark semantic roles, type, spacing, radius, focus and motion. Legacy variables in `brand.css` and `theme.css` continue to serve screens outside the pilot.
-- `ui/components.css` defines owned primitives. The local Tailwind compiler expands `@apply` utilities and excludes Preflight. `ui/workspace.css` and `ui/treatment.css` apply the system to the shell and Treatment Guide.
+- `ui/components.css` defines owned primitives. The local Tailwind compiler expands `@apply` utilities and excludes Preflight. `ui/workspace.css` and `ui/treatment.css` apply the system to the shell and Treatment Guide. `ui/intake.css` brings the same primitives to Insurance, Messages, and Voicemail scripts.
 - The compiled stylesheet loads after the existing theme and workspace sheets. Shell and Treatment Guide rules override the legacy pill controls, sidebar breakpoints and guide fact grid within their existing selectors. Legacy forms, tables and dialogs retain their current CSS until their screens are migrated.
 - `scripts/build-ui.mjs` creates the compiled stylesheet and a local SVG sprite containing only the selected Lucide icons. It also bundles Inter and both upstream licenses.
 - To preview the components, build as above, then serve the **repository root locally** with `python3 -m http.server 4174 --bind 127.0.0.1` and open [the playground](http://127.0.0.1:4174/dev/playground.html). The playground uses synthetic examples and has no authentication or database access. It shows default, hover, focus-visible, selected, pressed and disabled controls in either theme.
@@ -46,13 +46,13 @@ npx playwright install chromium
 npm run test:browser
 ```
 
-Playwright starts a fresh local build and stubs Supabase with synthetic data. The functional suite covers staff sign-in/out and account popover keyboard controls, treatment selection and clinic pricing, related routes and history, keyboard search, preferences, message reordering and personalised clipboard copying. On macOS it compares the two themes at 1440 and 1024 px against checked-in screenshots. Linux CI runs the same functional and layout assertions and uploads screenshots for review. To refresh the macOS references intentionally, run `RENUE_BROWSER_CHANNEL=chrome npm run test:browser -- --update-snapshots` with Chrome installed, then inspect the diffs.
+Playwright starts a fresh local build and stubs Supabase with synthetic data. The functional suite covers staff sign-in/out and account popover keyboard controls, treatment selection and clinic pricing, related routes and history, keyboard command palette navigation, preferences, clinic contact copying, insurance rules, voicemail readouts, message reordering and personalised clipboard copying. On macOS it compares the two themes at 1440 and 1024 px against checked-in screenshots. Linux CI runs the same functional and layout assertions and uploads screenshots for review. To refresh the macOS references intentionally, run `RENUE_BROWSER_CHANNEL=chrome npm run test:browser -- --update-snapshots` with Chrome installed, then inspect the diffs.
 
 ## Current features
 
 - During-a-call views: insurance, treatment guide, travel and transport, hours and contacts, financing, vitamins and IV.
 - Follow-up views: messages, voicemail scripts and resources.
-- Workspace-wide search, clinic-specific content and local clinic clocks.
+- A workspace command palette (Cmd/Ctrl+K or /), clinic-specific content, local clinic clocks and contact copy controls.
 - Personalised message copying and copyable patient-resource links.
 - Light/dark mode and last selected clinic remembered in the browser.
 

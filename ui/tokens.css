@@ -34,6 +34,8 @@
   --ds-focus: #aa4d25;
   --ds-positive: #276454;
   --ds-positive-soft: #e5f3ed;
+  --ds-caution: #93452f;
+  --ds-caution-soft: #fcefe9;
   --ds-warning: #77471e;
   --ds-warning-soft: #fff2df;
   --ds-shadow: 0 12px 30px rgb(28 24 18 / 12%);
@@ -76,6 +78,8 @@
   --ds-focus: #ffb08a;
   --ds-positive: #9fd5bd;
   --ds-positive-soft: #243730;
+  --ds-caution: #ffc0a5;
+  --ds-caution-soft: #372922;
   --ds-warning: #f0c193;
   --ds-warning-soft: #30271e;
   --ds-shadow: 0 12px 32px rgb(0 0 0 / 35%);

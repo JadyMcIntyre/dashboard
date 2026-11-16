@@ -956,8 +956,13 @@ function setActiveTemplates(kind, rows) {
   document.dispatchEvent(new Event("workspace-data-ready"));
 }
 
+function intakeIcon(name) {
+  return `<svg class="ds-icon" aria-hidden="true" focusable="false"><use href="./assets/renue-icons.svg#${name}"></use></svg>`;
+}
+
 function renderMessages() {
   clearMessageDrag();
+  const previousScroll = messagesGrid.querySelector(".script-list")?.scrollTop || 0;
   const showAll = showAllMessagesInput.checked || !selectedLocationId;
   const category = document.querySelector("#message-category").value;
   const query = document.querySelector("#message-search").value.trim().toLocaleLowerCase();
@@ -975,21 +980,29 @@ function renderMessages() {
   }
   if (!visible.some((template) => template.index === selectedMessageIndex)) selectedMessageIndex = visible[0]?.index;
   messagesFilterNote.textContent = showAll
-    ? "All clinics · Choose a template to read and copy."
-    : `${clinicLocations[selectedLocationId].name} · General templates are included.`;
+    ? "Showing templates for all clinics"
+    : `${clinicLocations[selectedLocationId].name} and general templates`;
   if (!visible.length) {
-    messagesGrid.innerHTML = '<p class="insurance-empty">No matching templates. Clear the filters or try different wording.</p>';
+    messagesGrid.innerHTML = `<p class="ds-empty intake-empty">${intakeIcon("inbox")} No matching templates. Clear the filters or try different wording.</p>`;
     return;
   }
   const selected = activeMessages[selectedMessageIndex];
   const canReorder = messageSort.value === "default" && visible.length > 1;
-  messagesGrid.innerHTML = `<div class="script-list message-script-list" aria-label="Message templates">${visible.map((template) => {
+  messagesGrid.innerHTML = `<div class="script-library ds-card"><header class="script-library-heading"><h3>Templates</h3><span>${visible.length}</span></header><div class="script-list message-script-list" aria-label="Message templates">${visible.map((template) => {
     const dragAttributes = canReorder
       ? ` draggable="true" data-message-row="${template.index}" aria-keyshortcuts="Alt+ArrowUp Alt+ArrowDown"`
       : "";
     return `<button type="button" class="script-choice" data-select-message="${template.index}" aria-pressed="${template.index === selectedMessageIndex}"${dragAttributes}>${escapeHtml(template.subtitle)}${template.category ? `<span>${escapeHtml(template.category)}</span>` : ""}</button>`;
-  }).join("")}</div>
-    <article class="script-reading" aria-label="Selected message"><p class="script-reading-label">Message preview</p><h3>${escapeHtml(selected.subtitle)}</h3><div class="message-body plain-message">${escapeHtml(messagePreviewText(selected.body))}</div>${selected.note ? `<p class="template-note">${escapeHtml(selected.note)}</p>` : ""}<div class="card-actions"><button class="button" type="button" data-copy-message="${selectedMessageIndex}">${messageNeedsDetails(selected.body) ? "Personalise &amp; copy" : "Copy message"}</button></div></article>`;
+  }).join("")}</div></div>
+    <article class="script-reading ds-card" aria-label="Selected message">
+      <header class="script-preview-heading">
+        <div><p class="script-reading-label">Message preview</p><h3>${escapeHtml(selected.subtitle)}</h3></div>
+        <div class="card-actions"><button class="ds-button" data-variant="primary" type="button" data-copy-message="${selectedMessageIndex}">${intakeIcon("copy")}${messageNeedsDetails(selected.body) ? "Personalise &amp; copy" : "Copy message"}</button></div>
+      </header>
+      <div class="message-body plain-message">${escapeHtml(messagePreviewText(selected.body))}</div>
+      ${selected.note ? `<p class="template-note ds-notice">${intakeIcon("info")}${escapeHtml(selected.note)}</p>` : ""}
+    </article>`;
+  messagesGrid.querySelector(".script-list").scrollTop = previousScroll;
 }
 
 function voicemailWithStaffName(body) {
@@ -997,17 +1010,22 @@ function voicemailWithStaffName(body) {
 }
 
 function renderVoicemails() {
+  const previousScroll = voicemailList.querySelector(".script-list")?.scrollTop || 0;
   const visible = activeVoicemails.map((script, index) => ({ ...script, index }))
     .filter((script) => !selectedLocationId || !script.locationId || script.locationId === selectedLocationId);
   if (!visible.some(({ index }) => index === selectedVoicemailIndex)) selectedVoicemailIndex = visible[0]?.index;
   if (!visible.length) {
-    voicemailList.innerHTML = '<p class="insurance-empty">No voicemail scripts are available.</p>';
+    voicemailList.innerHTML = `<p class="ds-empty intake-empty">${intakeIcon("inbox")} No voicemail scripts are available.</p>`;
     return;
   }
   const selected = activeVoicemails[selectedVoicemailIndex];
-  voicemailList.innerHTML = `<div class="script-list" aria-label="Voicemail scripts">${visible.map((script) => `
-    <button type="button" class="script-choice" data-select-voicemail="${script.index}" aria-pressed="${script.index === selectedVoicemailIndex}">${escapeHtml(script.title)}<span>${escapeHtml(script.category || "Readout script")}</span></button>`).join("")}</div>
-    <article class="script-reading" aria-label="Selected voicemail"><p class="script-reading-label">Read aloud</p><h3>${escapeHtml(selected.title)}</h3><div class="voicemail-body">${formatVoicemailForDisplay(messagePreviewText(voicemailWithStaffName(selected.body)))}</div></article>`;
+  voicemailList.innerHTML = `<div class="script-library ds-card"><header class="script-library-heading"><h3>Scripts</h3><span>${visible.length}</span></header><div class="script-list" aria-label="Voicemail scripts">${visible.map((script) => `
+    <button type="button" class="script-choice" data-select-voicemail="${script.index}" aria-pressed="${script.index === selectedVoicemailIndex}">${escapeHtml(script.title)}<span>${escapeHtml(script.category || "Readout script")}</span></button>`).join("")}</div></div>
+    <article class="script-reading ds-card" aria-label="Selected voicemail">
+      <header class="script-preview-heading"><div><p class="script-reading-label">Read aloud</p><h3>${escapeHtml(selected.title)}</h3></div>${intakeIcon("voicemail")}</header>
+      <div class="voicemail-body">${formatVoicemailForDisplay(messagePreviewText(voicemailWithStaffName(selected.body)))}</div>
+    </article>`;
+  voicemailList.querySelector(".script-list").scrollTop = previousScroll;
 }
 
 function renderHours() {
@@ -1079,7 +1097,8 @@ function renderInsuranceTable() {
   const catalog = insuranceCatalogByState[selectedState];
   if (!catalog) {
     insuranceTableContainer.innerHTML = `
-      <div class="insurance-empty">
+      <div class="ds-empty intake-empty">
+        ${intakeIcon("insurance")}
         Select a clinic in the call location picker to view its insurance lists.
       </div>
     `;
@@ -1087,12 +1106,12 @@ function renderInsuranceTable() {
   }
 
   const locationName = clinicLocations[selectedLocationId].name;
-  const insuranceTableNote = `<p class="insurance-table-note">If the insurer is not listed in the table, send it to the auth team and ask for a photo of the insurance card.</p>`;
-  const outOfNetworkHeading = selectedState === "NY"
-    ? `Out Of Network<span class="insurance-th-note">With benefits: schedule an eval.<br />Without: pivot to an IVK consult and offer a SCA; can take 2–6 weeks.</span>`
+  const insuranceTableNote = `<p class="insurance-table-note ds-notice">${intakeIcon("info")}<span>If the insurer is not listed in the table, send it to the auth team and ask for a photo of the insurance card.</span></p>`;
+  const outOfNetworkNote = selectedState === "NY"
+    ? `<span class="insurance-th-note">With benefits: schedule an eval.<br />Without: pivot to an IVK consult and offer a SCA; can take 2–6 weeks.</span>`
     : selectedState === "NJ"
-    ? `Out Of Network<span class="insurance-th-note">With benefits: send to auth with a photo of the card.</span>`
-    : "Out Of Network";
+    ? `<span class="insurance-th-note">With benefits: send to auth with a photo of the card.</span>`
+    : "";
   const flBoldMap =
     selectedState === "FL"
       ? selectedFlService === "TMS"
@@ -1115,9 +1134,9 @@ function renderInsuranceTable() {
 
   const flToggle =
     selectedState === "FL"
-      ? `<div class="fl-service-toggle">
-          <button aria-pressed="${selectedFlService === "TMS"}" class="fl-service-btn${selectedFlService === "TMS" ? " active" : ""}" data-fl-service="TMS">TMS</button>
-          <button aria-pressed="${selectedFlService === "SPR"}" class="fl-service-btn${selectedFlService === "SPR" ? " active" : ""}" data-fl-service="SPR">SPR</button>
+      ? `<div class="fl-service-toggle ds-segmented" role="group" aria-label="Preferred treatment">
+          <button aria-pressed="${selectedFlService === "TMS"}" class="fl-service-btn ds-segment${selectedFlService === "TMS" ? " active" : ""}" type="button" data-fl-service="TMS">TMS</button>
+          <button aria-pressed="${selectedFlService === "SPR"}" class="fl-service-btn ds-segment${selectedFlService === "SPR" ? " active" : ""}" type="button" data-fl-service="SPR">SPR</button>
         </div>`
       : "";
 
@@ -1149,21 +1168,21 @@ function renderInsuranceTable() {
     <div class="insurance-table-card">
       <div class="insurance-table-header-row">
         <p class="insurance-table-intro">
-          Showing ${escapeHtml(locationName)} insurance information for intake scheduling decisions.
+          <strong>${escapeHtml(locationName)}</strong><span>Intake scheduling reference</span>
         </p>
         ${flToggle}
       </div>
-      <p class="insurance-intake-question"><strong>Ask:</strong> Is your Medicare or Medicaid managed by another insurer?</p>
+      <p class="insurance-intake-question ds-card">${intakeIcon("messages")}<span><strong>Ask during intake</strong>Is your Medicare or Medicaid managed by another insurer?</span></p>
       ${insuranceTableNote}
       ${medicaidNote}
       ${serviceGuidance}
       ${selectedState === "NJ" ? '<p class="insurance-service-guidance"><a class="resource-url" href="#vitamins-title">View Paramus vitamin &amp; IV menu →</a></p>' : ""}
-      <table class="insurance-table">
+      <div class="insurance-table-scroll" tabindex="0" role="region" aria-label="Insurance scheduling categories"><table class="insurance-table">
         <thead>
           <tr>
-            <th>In Network${evaluationOnlyNote}</th>
-            <th>${outOfNetworkHeading}</th>
-            <th>Do Not Schedule Evaluation${consultNote}${costNote}</th>
+            <th scope="col"><span class="insurance-lane-label" data-tone="positive">${intakeIcon("check")} In network</span>${evaluationOnlyNote}</th>
+            <th scope="col"><span class="insurance-lane-label" data-tone="warning">${intakeIcon("info")} Out of network</span>${outOfNetworkNote}</th>
+            <th scope="col"><span class="insurance-lane-label" data-tone="caution">${intakeIcon("close")} Do not schedule evaluation</span>${consultNote}${costNote}</th>
           </tr>
         </thead>
         <tbody>
@@ -1187,7 +1206,7 @@ function renderInsuranceTable() {
             </td>
           </tr>
         </tbody>
-      </table>
+      </table></div>
     </div>
   `;
   filterInsuranceItems();
@@ -1244,14 +1263,14 @@ document.addEventListener("click", async (event) => {
   if (messageChoice) {
     selectedMessageIndex = Number(messageChoice.dataset.selectMessage);
     renderMessages();
-    document.querySelector(`[data-select-message="${selectedMessageIndex}"]`)?.focus();
+    document.querySelector(`[data-select-message="${selectedMessageIndex}"]`)?.focus({ preventScroll: true });
     return;
   }
   const voicemailChoice = event.target.closest("[data-select-voicemail]");
   if (voicemailChoice) {
     selectedVoicemailIndex = Number(voicemailChoice.dataset.selectVoicemail);
     renderVoicemails();
-    document.querySelector(`[data-select-voicemail="${selectedVoicemailIndex}"]`)?.focus();
+    document.querySelector(`[data-select-voicemail="${selectedVoicemailIndex}"]`)?.focus({ preventScroll: true });
     return;
   }
   const flServiceBtn = event.target.closest("[data-fl-service]");

@@ -225,7 +225,7 @@ function renderWorkspaceSearch() {
   const query = workspaceSearch.value.trim().toLocaleLowerCase();
   const shortcuts = Object.entries(viewNames).map(([view, title]) => ({ view, title, subtitle: "" }));
   const matches = query
-    ? [...buildWorkspaceSearchEntries(), ...shortcuts.filter(({ view }) => !["treatment-title", "travel-title"].includes(view))]
+    ? [...buildWorkspaceSearchEntries(), ...shortcuts.filter(({ view }) => view !== "travel-title")]
       .map((entry) => ({ entry, rank: searchRank(entry, query) }))
       .filter(({ rank }) => rank >= 0)
       .sort((a, b) => a.rank - b.rank
@@ -300,6 +300,12 @@ document.addEventListener("click", (event) => {
 workspaceSearch.addEventListener("input", renderWorkspaceSearch);
 searchTrigger.addEventListener("click", openWorkspaceSearch);
 document.querySelector("#workspace-search-close").addEventListener("click", () => closeWorkspaceSearch(true));
+searchResults.addEventListener("keydown", (event) => {
+  if (event.key !== "Escape" || event.isComposing) return;
+  event.preventDefault();
+  event.stopPropagation();
+  closeWorkspaceSearch(true);
+});
 searchResults.addEventListener("cancel", (event) => {
   event.preventDefault();
   closeWorkspaceSearch(true);

@@ -68,14 +68,26 @@ test('search shortcut and workspace preferences survive navigation and reload', 
   await page.keyboard.press('Escape');
   await page.locator('#workspace-main').focus();
   await page.keyboard.press('/');
-  const search = page.getByRole('searchbox', { name: 'Search the workspace' });
+  const search = page.getByRole('combobox', { name: 'Search the workspace' });
   await expect(search).toBeFocused();
   await search.fill('Spravato');
-  await expect(page.locator('#workspace-search-results')).toBeVisible();
+  const palette = page.getByRole('dialog', { name: 'Search workspace' });
+  await expect(palette).toBeVisible();
+  await expect(page.locator('[data-workspace-view="treatment-title"]')).toBeVisible();
+  await expect(palette.getByRole('option').first()).toHaveText(/Spravato.*Treatment guide/);
+  await expect(palette.getByRole('option').first()).toHaveAttribute('aria-selected', 'true');
+  await page.keyboard.press('ArrowDown');
+  await expect(palette.getByRole('option').nth(1)).toHaveAttribute('aria-selected', 'true');
+  await page.keyboard.press('ArrowUp');
+  await expect(palette.getByRole('option').first()).toHaveAttribute('aria-selected', 'true');
   await page.keyboard.press('Escape');
-  await expect(page.locator('#workspace-search-results')).toBeHidden();
+  await expect(palette).toBeHidden();
+  await expect(page.locator('#workspace-main')).toBeFocused();
+  await page.keyboard.press('Control+k');
+  await expect(search).toBeFocused();
   await search.fill('Spravato');
-  await page.locator('#workspace-search-items').getByRole('button', { name: /^Spravato/ }).first().click();
+  await page.keyboard.press('Enter');
+  await expect(palette).toBeHidden();
   await expect(treatment(page, 'spravato')).toHaveAttribute('aria-pressed', 'true');
   await page.reload();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
@@ -118,6 +130,53 @@ test('message personalisation keeps the modal and clipboard action', async ({ pa
   const copied = await page.evaluate(() => navigator.clipboard.readText());
   expect(copied).toContain('Hi Test Patient,');
   expect(copied).toContain('Alex');
+});
+
+test('Insurance keeps clinic-specific rules, filters and Florida service guidance', async ({ page }) => {
+  await page.setViewportSize({ width: 1024, height: 768 });
+  await openWorkspace(page, 'light', 'insurance-title');
+  const find = page.getByRole('searchbox', { name: 'Find an insurer' });
+  await expect(page.getByText('Select a clinic in the call location picker')).toBeVisible();
+  await clinic(page, 'CHELSEA').click();
+  await find.fill('Fidelis');
+  await expect(page.locator('#insurance-search-status')).toContainText('match');
+  await expect(page.getByRole('cell').first().getByText('Fidelis Medicaid / UHC Medicaid', { exact: true })).toBeVisible();
+  await expect(page.getByRole('cell').first().locator('li:visible').filter({ hasNotText: /Fidelis/i })).toHaveCount(0);
+  await find.clear();
+  await clinic(page, 'FL').click();
+  await expect(page.getByRole('button', { name: 'TMS', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  await page.getByRole('button', { name: 'SPR', exact: true }).click();
+  await expect(page.getByRole('button', { name: 'SPR', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.getByText('Tricare — go TMS route')).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(1024);
+});
+
+test('clinic contact copy buttons work independently from the phone link', async ({ page, context }) => {
+  await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+  await openWorkspace(page, 'dark');
+  const phoneCopy = page.getByRole('button', { name: 'Copy clinic phone number' });
+  const addressCopy = page.getByRole('button', { name: 'Copy clinic address' });
+  await expect(phoneCopy).toBeHidden();
+  await expect(addressCopy).toBeHidden();
+  await clinic(page, 'CHELSEA').click();
+  await expect(page.locator('#context-phone')).toHaveAttribute('href', 'tel:2125550103');
+  await phoneCopy.focus();
+  await page.keyboard.press('Enter');
+  await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toBe('212-555-0103');
+  await addressCopy.click();
+  await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toBe('100 Example Avenue, Chelsea');
+});
+
+test('Voicemail scripts remain selectable, read aloud, and free of copy controls', async ({ page }) => {
+  await openWorkspace(page, 'dark', 'voicemail-title');
+  const scripts = page.locator('[data-select-voicemail]');
+  const selected = page.getByRole('article', { name: 'Selected voicemail' });
+  await expect(scripts.nth(1)).toBeVisible();
+  await scripts.nth(1).click();
+  await expect(scripts.nth(1)).toHaveAttribute('aria-pressed', 'true');
+  await expect(selected.getByText('Read aloud', { exact: true })).toBeVisible();
+  await expect(selected.locator('.voicemail-body')).not.toBeEmpty();
+  await expect(selected.getByRole('button', { name: /copy/i })).toHaveCount(0);
 });
 
 for (const theme of ['light', 'dark']) {
