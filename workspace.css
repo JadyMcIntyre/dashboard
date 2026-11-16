@@ -305,10 +305,15 @@
 .advisor-hours-table { width: 100%; min-width: 52rem; border-collapse: collapse; font-size: .8rem; }
 .advisor-hours-table th,
 .advisor-hours-table td { padding: .75rem .65rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
-.advisor-hours-table thead,
-.advisor-hours-own { background: var(--ui-subtle); }
+.advisor-hours-table thead { background: var(--ui-subtle); }
+.advisor-hours-own { background: var(--ui-accent-soft); }
+.advisor-hours-own > th[scope="row"] {
+  box-shadow: inset 3px 0 var(--ui-accent-line);
+  color: var(--primary);
+}
 .advisor-hours-table tbody tr:last-child > * { border-bottom: 0; }
 .advisor-hours-table small { display: block; margin-top: .25rem; color: var(--muted); }
+.advisor-hours-own > th small { color: inherit; font-weight: 600; }
 .advisor-hours-off,
 .advisor-hours-status { color: var(--muted); }
 .advisor-hours-status:empty { display: none; }
