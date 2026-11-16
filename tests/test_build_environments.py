@@ -8,18 +8,36 @@ from scripts.build import AUTH_CONFIG, ROOT, build, staging_auth_config
 
 
 STAGING_SETTINGS = {
+    "RENUE_STAGING_SUPABASE_MODE": "isolated",
     "RENUE_STAGING_SUPABASE_URL": "https://renuestagingfixture.supabase.co",
     "RENUE_STAGING_SUPABASE_PUBLISHABLE_KEY": "sb_publishable_fixture_only",
 }
 
 
 class BuildEnvironmentTests(unittest.TestCase):
+    def test_shared_staging_build_uses_the_existing_browser_configuration(self):
+        with patch.dict("os.environ", {
+            "RENUE_STAGING_SUPABASE_MODE": "shared",
+            "RENUE_STAGING_SUPABASE_URL": "",
+            "RENUE_STAGING_SUPABASE_PUBLISHABLE_KEY": "",
+        }), TemporaryDirectory() as temporary:
+            output = Path(temporary)
+            build(output, staging=True)
+            self.assertEqual((output / AUTH_CONFIG).read_bytes(), (ROOT / AUTH_CONFIG).read_bytes())
+
+    def test_rejects_unknown_staging_mode(self):
+        with patch.dict("os.environ", {**STAGING_SETTINGS, "RENUE_STAGING_SUPABASE_MODE": "share"}):
+            with self.assertRaisesRegex(ValueError, "shared or isolated"):
+                staging_auth_config()
+
     def test_staging_artifact_uses_only_its_public_configuration(self):
         with patch.dict("os.environ", STAGING_SETTINGS), TemporaryDirectory() as temporary:
             output = Path(temporary)
             build(output, staging=True)
             config = (output / AUTH_CONFIG).read_text()
-            for setting in STAGING_SETTINGS.values():
+            for name, setting in STAGING_SETTINGS.items():
+                if name == "RENUE_STAGING_SUPABASE_MODE":
+                    continue
                 self.assertIn(setting, config)
             production = (ROOT / AUTH_CONFIG).read_text()
             for value in re.findall(r"https://[^\"]+|sb_publishable_[A-Za-z0-9_-]+", production):

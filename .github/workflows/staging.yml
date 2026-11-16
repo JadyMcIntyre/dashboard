@@ -32,6 +32,7 @@ jobs:
       - run: npm ci
       - name: Build against staging
         env:
+          RENUE_STAGING_SUPABASE_MODE: ${{ vars.RENUE_STAGING_SUPABASE_MODE }}
           RENUE_STAGING_SUPABASE_URL: ${{ vars.RENUE_STAGING_SUPABASE_URL }}
           RENUE_STAGING_SUPABASE_PUBLISHABLE_KEY: ${{ vars.RENUE_STAGING_SUPABASE_PUBLISHABLE_KEY }}
         run: python3 scripts/build.py --staging

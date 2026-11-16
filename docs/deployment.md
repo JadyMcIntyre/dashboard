@@ -14,24 +14,17 @@ This architecture adds no production deployment workflow or database changes.
 
 ## One-time staging setup after approval
 
-1. Provision a separate Supabase project for staging. Apply the dashboard schema,
-   functions, RLS and grants from reviewed migration sources. Where SQL currently
-   exists only in migration history, capture and review schema-only SQL before
-   applying it to staging. Verify the destination project before running any
-   migration. Seed synthetic staff profiles and auth accounts, clinic contacts,
-   templates, and advisor schedules. Use advisor and manager test accounts to
-   check access policies. Keep production rows, auth users, storage, backups,
-   and live email settings out of staging.
-2. In staging Supabase **Authentication → URL Configuration**, set Site URL to
-   the existing GitHub Pages project URL including its repository path
-   (`https://jadymcintyre.github.io/dashboard/`). Allow the exact staging
-   callback URL used by invitation and sign-in flows. Use test recipients or a
-   sandbox mail service for invitations.
-3. In GitHub **Settings → Secrets and variables → Actions → Variables**, add
-   `RENUE_STAGING_SUPABASE_URL` and `RENUE_STAGING_SUPABASE_PUBLISHABLE_KEY`
-   from the staging project. These values are public browser configuration and
-   are included in the staging artifact. Keep service-role, secret and
-   management keys and database passwords out of the repository and frontend.
+1. In GitHub **Settings → Secrets and variables → Actions → Variables**, set
+   `RENUE_STAGING_SUPABASE_MODE` to `shared`. The staging build will use the
+   existing browser Supabase configuration. Leave the staging URL and key
+   variables empty in this mode.
+2. Use your existing testing account to sign in and test UI changes on Pages.
+   Staging and production share authentication and records. Keep edits scoped to
+   the testing account's own data. Publishing to Community or changing advisor
+   hours can affect production users if your account has permission.
+3. Keep service-role keys, secret keys and database passwords outside static
+   hosting. The shared build uses only the existing public browser key.
+
 4. In GitHub **Settings → Environments → github-pages**, set **Deployment
    branches and tags** to **Selected branches and tags**, then add a branch
    rule matching exactly `develop`. Remove broader rules and leave tags
@@ -47,8 +40,8 @@ This architecture adds no production deployment workflow or database changes.
 The workflow checks out `develop`, verifies the app with Node 24, `npm ci`,
 the Python tests and Linux Playwright, then builds and uploads `dist/`. Only
 the final job has Pages and OIDC deployment permissions. A shared concurrency
-group serializes staging workflows. Missing configuration, a production project
-URL or key, or a privileged key causes the build to fail before upload.
+group serializes staging workflows. An unset mode defaults to isolated and
+requires separate project configuration. Shared mode is an explicit opt-in.
 
 ### Manual dispatch and first release
 
@@ -62,12 +55,20 @@ A workflow registered on `main` still cannot deploy Pages from `main`.
 ### Verify the published environment
 
 After deployment, open the staging URL and verify the Git commit in
-`build-provenance.json`. Check that sign-in contacts the staging Supabase host.
-Test an invitation, advisor sign-in, manager permissions, synthetic data edits
-and sign-out. The automated browser suite uses a local Supabase fixture, so these
-checks verify the hosted environment and its policies.
+`build-provenance.json`. Sign in with your testing account and check the
+workspace. In shared mode, requests use the existing Supabase host. The
+automated browser suite runs against a synthetic fixture.
 
-A normal `python3 scripts/build.py` build retains the existing production
-browser configuration. A local staging build uses `python3 scripts/build.py
---staging` with both environment variables set. Keep production credentials,
-patient details, secrets and private exports outside static assets.
+### Switch to an isolated project later
+
+Provision a separate Supabase project with the reviewed schema, RLS, grants and
+functions. Seed synthetic staff accounts, contacts, templates and schedules.
+In that project, configure the Pages URL and exact Auth redirects. In GitHub,
+set `RENUE_STAGING_SUPABASE_MODE=isolated` and supply
+`RENUE_STAGING_SUPABASE_URL` and `RENUE_STAGING_SUPABASE_PUBLISHABLE_KEY`.
+Isolated mode rejects the production URL or key and accepts only a publishable
+key.
+
+A normal `python3 scripts/build.py` retains the existing production browser
+configuration. For a local shared staging build, run
+`RENUE_STAGING_SUPABASE_MODE=shared python3 scripts/build.py --staging`.

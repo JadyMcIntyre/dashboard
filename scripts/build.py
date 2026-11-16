@@ -35,11 +35,17 @@ def site_files():
 
 
 def staging_auth_config():
+    mode = os.environ.get("RENUE_STAGING_SUPABASE_MODE") or "isolated"
+    production = (ROOT / AUTH_CONFIG).read_text(encoding="utf-8")
+    if mode == "shared":
+        return production
+    if mode != "isolated":
+        raise ValueError("Set RENUE_STAGING_SUPABASE_MODE to shared or isolated.")
+
     url = os.environ.get("RENUE_STAGING_SUPABASE_URL", "").rstrip("/")
     key = os.environ.get("RENUE_STAGING_SUPABASE_PUBLISHABLE_KEY", "")
     if not re.fullmatch(r"https://[a-z0-9]+\.supabase\.co", url):
         raise ValueError("Set RENUE_STAGING_SUPABASE_URL to the hosted staging project URL.")
-    production = (ROOT / AUTH_CONFIG).read_text(encoding="utf-8")
     if url in production:
         raise ValueError("The staging Supabase project must differ from production.")
     if not re.fullmatch(r"sb_publishable_[A-Za-z0-9_-]+", key):
@@ -82,7 +88,7 @@ def build(output, *, staging=False):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--staging", action="store_true", help="Use the isolated staging Supabase project.")
+    parser.add_argument("--staging", action="store_true", help="Use the configured staging Supabase mode.")
     args = parser.parse_args()
     dist = ROOT / "dist"
     if dist.exists():
