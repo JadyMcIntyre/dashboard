@@ -1,0 +1,87 @@
+@font-face {
+  font-family: "Renue Inter";
+  src: url("./inter.woff2") format("woff2");
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+/* Legacy brand and theme variables remain available to screens outside the pilot. */
+:root {
+  --ds-font: "Renue Inter", system-ui, sans-serif;
+  --ds-type-caption: 11px;
+  --ds-type-small: 12px;
+  --ds-type-body: 13px;
+  --ds-canvas: #faf9f7;
+  --ds-surface: #fff;
+  --ds-sidebar: #f4f4f3;
+  --ds-raised: #f5f5f4;
+  --ds-text: #252629;
+  --ds-body: #414247;
+  --ds-muted: #606168;
+  --ds-border: #e6e4e1;
+  --ds-control-border: #d6d3cf;
+  --ds-hover: #efeeec;
+  --ds-pressed: #e6e4e0;
+  --ds-selected: #eae8e5;
+  --ds-primary-hover: #933719;
+  --ds-primary-pressed: #813016;
+  --ds-control-shadow: 0 1px 2px rgb(27 23 15 / 5%);
+  --ds-accent: #a34220;
+  --ds-accent-soft: #fdf0e9;
+  --ds-accent-line: #e9ba9f;
+  --ds-primary: #a84422;
+  --ds-on-primary: #fffaf6;
+  --ds-focus: #aa4d25;
+  --ds-positive: #276454;
+  --ds-positive-soft: #e5f3ed;
+  --ds-warning: #77471e;
+  --ds-warning-soft: #fff2df;
+  --ds-shadow: 0 12px 30px rgb(28 24 18 / 12%);
+  --ds-overlay: rgb(21 18 15 / 46%);
+  --ds-radius-sm: 5px;
+  --ds-radius: 8px;
+  --ds-radius-panel: 10px;
+  --ds-1: 4px;
+  --ds-2: 8px;
+  --ds-3: 12px;
+  --ds-4: 16px;
+  --ds-5: 20px;
+  --ds-6: 24px;
+  --ds-8: 32px;
+  --ds-control: 34px;
+  --ds-motion: 130ms ease-out;
+}
+
+:root[data-theme="dark"] {
+  --ds-canvas: #161719;
+  --ds-surface: #1d1e21;
+  --ds-sidebar: #1a1b1d;
+  --ds-raised: #242528;
+  --ds-text: #f0efed;
+  --ds-body: #d3d3d6;
+  --ds-muted: #a6a6ac;
+  --ds-border: #343539;
+  --ds-control-border: #4b4d52;
+  --ds-hover: #2c2d31;
+  --ds-pressed: #393b41;
+  --ds-selected: #303136;
+  --ds-primary-hover: #ffc09f;
+  --ds-primary-pressed: #f79d72;
+  --ds-control-shadow: 0 1px 2px rgb(0 0 0 / 16%);
+  --ds-accent: #ffb08a;
+  --ds-accent-soft: #382923;
+  --ds-accent-line: #794f3d;
+  --ds-primary: #ffb08a;
+  --ds-on-primary: #2a1811;
+  --ds-focus: #ffb08a;
+  --ds-positive: #9fd5bd;
+  --ds-positive-soft: #243730;
+  --ds-warning: #f0c193;
+  --ds-warning-soft: #30271e;
+  --ds-shadow: 0 12px 32px rgb(0 0 0 / 35%);
+  --ds-overlay: rgb(0 0 0 / 65%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --ds-motion: 0ms; }
+}

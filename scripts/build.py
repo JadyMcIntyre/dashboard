@@ -43,6 +43,12 @@ def build(output):
         destination.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(source, destination)
 
+    subprocess.run(
+        ["node", "scripts/build-ui.mjs", str(output.resolve())],
+        cwd=ROOT,
+        check=True,
+    )
+
     (output / "build-provenance.json").write_text(
         json.dumps(provenance, indent=2) + "\n", encoding="utf-8"
     )
