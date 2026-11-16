@@ -15,6 +15,20 @@ const workspace = document.querySelector(".workspace-shell");
 const account = document.querySelector("#staff-account");
 const signOutButton = document.querySelector("#staff-sign-out");
 
+document.querySelectorAll(".password-visibility").forEach((button) => {
+  const input = document.getElementById(button.getAttribute("aria-controls"));
+  const fieldLabel = input.labels[0].textContent.toLowerCase();
+  function setVisible(visible) {
+    input.type = visible ? "text" : "password";
+    button.textContent = visible ? "Hide" : "Show";
+    button.setAttribute("aria-label", `${button.textContent} ${fieldLabel}`);
+  }
+  button.hidden = false;
+  button.addEventListener("click", () => setVisible(input.type === "password"));
+  input.form.addEventListener("reset", () => setVisible(false));
+  input.form.addEventListener("password-cleared", () => setVisible(false));
+});
+
 if (!window.supabase) {
   signInStatus.textContent = "Sign-in could not load. Refresh the page to try again.";
 } else {
@@ -201,6 +215,7 @@ if (!window.supabase) {
       signInStatus.textContent = "Sign-in is unavailable. Please try again.";
     } finally {
       signIn.elements.password.value = "";
+      signIn.dispatchEvent(new Event("password-cleared"));
       submitting = false;
       signInButton.disabled = false;
     }

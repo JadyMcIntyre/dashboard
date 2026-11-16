@@ -1,21 +1,39 @@
 <!DOCTYPE html>
 <!-- Renue Wellness Dashboard | Original design and development by J Mc Intyre, 2026. -->
 
-<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/><title>Renue Wellness · Care workspace</title><meta content="Renue Wellness clinic reference, patient messages and intake tools." name="description"/><link href="./resources/brand/renue-mark.svg" rel="icon" type="image/svg+xml"/><script src="./theme.js?v=sidebar-switch"></script><link as="font" crossorigin="" href="./resources/brand/fonts/gotham-book.woff2" rel="preload" type="font/woff2"/><link href="./styles.css?v=ux2" rel="stylesheet"/><link href="./brand.css?v=ux2" rel="stylesheet"/><link href="./vitamins.css?v=workspace-integrated" rel="stylesheet"/><link href="./workspace.css?v=clipboard-submit" rel="stylesheet"/><link href="./theme.css?v=ux-final" rel="stylesheet"/><link rel="stylesheet" href="./staff-access.css?v=staff-invite"/><meta name="author" content="J Mc Intyre"/><meta name="creator" content="J Mc Intyre"/><link rel="stylesheet" href="./developer-attribution.css"/></head><body class="workspace-page"><a class="skip-link" href="#workspace-main">Skip to content</a><main id="staff-access" class="staff-access">
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/><title>Renue Wellness · Care workspace</title><meta content="Renue Wellness clinic reference, patient messages and intake tools." name="description"/><link href="./resources/brand/renue-mark.svg" rel="icon" type="image/svg+xml"/><script src="./theme.js?v=sidebar-switch"></script><link as="font" crossorigin="" href="./resources/brand/fonts/gotham-book.woff2" rel="preload" type="font/woff2"/><link href="./styles.css?v=ux2" rel="stylesheet"/><link href="./brand.css?v=ux2" rel="stylesheet"/><link href="./vitamins.css?v=workspace-integrated" rel="stylesheet"/><link href="./workspace.css?v=clipboard-submit" rel="stylesheet"/><link href="./theme.css?v=ux-final" rel="stylesheet"/><link rel="stylesheet" href="./staff-access.css?v=password-visibility"/><meta name="author" content="J Mc Intyre"/><meta name="creator" content="J Mc Intyre"/><link rel="stylesheet" href="./developer-attribution.css"/></head><body class="workspace-page"><a class="skip-link" href="#workspace-main">Skip to content</a><main id="staff-access" class="staff-access">
   <section class="panel staff-sign-in-panel" aria-labelledby="staff-access-title">
     <img alt="Renue Wellness" width="169" src="./resources/brand/renue-logo.svg"/>
     <h1 id="staff-access-title">Staff sign-in</h1>
     <form id="staff-sign-in" method="post">
       <label class="field">Email<input name="email" type="email" autocomplete="username" required/></label>
-      <label class="field">Password<input name="password" type="password" autocomplete="current-password" required/></label>
+      <div class="field">
+        <label for="sign-in-password">Password</label>
+        <div class="password-field">
+          <input id="sign-in-password" name="password" type="password" autocomplete="current-password" required/>
+          <button class="password-visibility" type="button" aria-controls="sign-in-password" aria-label="Show password" hidden>Show</button>
+        </div>
+      </div>
       <button class="button" type="submit" disabled>Sign in</button>
       <p id="staff-sign-in-status" role="status">Checking your session…</p>
     </form>
     <form id="staff-set-password" method="post" hidden>
       <label class="field">First name<input name="first_name" type="text" autocomplete="given-name" maxlength="60" aria-describedby="staff-first-name-help" required/></label>
       <p class="muted" id="staff-first-name-help">Enter only your first name. It will appear in the dashboard and be filled in when you use your name in messages and voicemail scripts.</p>
-      <label class="field">New password<input name="password" type="password" autocomplete="new-password" minlength="8" required/></label>
-      <label class="field">Confirm password<input name="confirmation" type="password" autocomplete="new-password" minlength="8" required/></label>
+      <div class="field">
+        <label for="new-staff-password">New password</label>
+        <div class="password-field">
+          <input id="new-staff-password" name="password" type="password" autocomplete="new-password" minlength="8" required/>
+          <button class="password-visibility" type="button" aria-controls="new-staff-password" aria-label="Show new password" hidden>Show</button>
+        </div>
+      </div>
+      <div class="field">
+        <label for="confirm-staff-password">Confirm password</label>
+        <div class="password-field">
+          <input id="confirm-staff-password" name="confirmation" type="password" autocomplete="new-password" minlength="8" required/>
+          <button class="password-visibility" type="button" aria-controls="confirm-staff-password" aria-label="Show confirm password" hidden>Show</button>
+        </div>
+      </div>
       <button class="button" type="submit">Set password</button>
       <p role="status"></p>
     </form>
@@ -274,4 +292,4 @@
 </div>
 </form>
 </div>
-</div><div aria-live="polite" class="toast" id="toast" role="status"></div><script src="./vitamins-data.js?v=1"></script><script src="./care-content.js?v=clinic-number"></script><script src="./contact-directory.js?v=sidebar-rail"></script><script src="./app.js?v=clipboard-submit"></script><script src="./vitamins.js?v=direct-copy"></script><script src="./care-tools.js?v=clinic-ivk-prices"></script><script src="./workspace.js?v=advisor-hours"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.89.0/dist/umd/supabase.js"></script><script src="./personal-templates.js?v=clipboard-submit"></script><script src="./advisor-hours.js?v=1"></script><script src="./staff-access.js?v=invite-first-name"></script></body></html>
+</div><div aria-live="polite" class="toast" id="toast" role="status"></div><script src="./vitamins-data.js?v=1"></script><script src="./care-content.js?v=clinic-number"></script><script src="./contact-directory.js?v=sidebar-rail"></script><script src="./app.js?v=clipboard-submit"></script><script src="./vitamins.js?v=direct-copy"></script><script src="./care-tools.js?v=clinic-ivk-prices"></script><script src="./workspace.js?v=advisor-hours"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.89.0/dist/umd/supabase.js"></script><script src="./personal-templates.js?v=clipboard-submit"></script><script src="./advisor-hours.js?v=1"></script><script src="./staff-access.js?v=password-visibility"></script></body></html>

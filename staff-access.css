@@ -21,6 +21,35 @@
   gap: 0.75rem;
 }
 
+.password-field {
+  position: relative;
+}
+
+.password-field input {
+  width: 100%;
+  padding-inline-end: 4.25rem;
+}
+
+.password-visibility {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: .4rem;
+  margin-block: .3rem;
+  min-width: 3.25rem;
+  padding-inline: .5rem;
+  border: 0;
+  border-radius: .5rem;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: .8rem;
+  cursor: pointer;
+}
+
+.password-visibility:hover {
+  background: var(--ui-accent-soft);
+}
+
 .staff-account {
   order: 1;
   font-size: 0.875rem;
