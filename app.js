@@ -793,7 +793,7 @@ let messageCopyUsage = null;
 let messageSortCounts = new Map();
 let messageOrderStorageKey = null;
 let customMessageOrder = [];
-let draggedMessageIndex = null;
+let messageDrag = null;
 
 function defaultOrderedMessages() {
   const positions = new Map(customMessageOrder.map((key, index) => [key, index]));
@@ -823,59 +823,84 @@ function moveMessage(from, to) {
   try {
     if (messageOrderStorageKey) localStorage.setItem(messageOrderStorageKey, JSON.stringify(orderedKeys));
   } catch { /* Reordering still works for this session. */ }
+  const scrollTop = messagesGrid.querySelector(".message-script-list").scrollTop;
   renderMessages();
+  messagesGrid.querySelector(".message-script-list").scrollTop = scrollTop;
   return toPosition;
 }
 
-messagesGrid.addEventListener("click", (event) => {
-  const control = event.target.closest("[data-move-message]");
-  if (!control) return;
-  const row = control.closest("[data-message-row]");
-  const target = control.dataset.moveMessage === "up" ? row.previousElementSibling : row.nextElementSibling;
+messagesGrid.addEventListener("keydown", (event) => {
+  const card = event.target.closest("[data-message-row]");
+  if (!card || !event.altKey || !["ArrowUp", "ArrowDown"].includes(event.key)) return;
+  const target = event.key === "ArrowUp" ? card.previousElementSibling : card.nextElementSibling;
   if (!target) return;
-  const from = Number(row.dataset.messageRow);
+  event.preventDefault();
+  const from = Number(card.dataset.messageRow);
   const position = moveMessage(from, Number(target.dataset.messageRow));
   if (position === undefined) return;
-  const movedRow = messagesGrid.querySelector(`[data-message-row="${from}"]`);
-  const sameControl = movedRow.querySelector(`[data-move-message="${control.dataset.moveMessage}"]:enabled`);
-  (sameControl || movedRow.querySelector("[data-move-message]:enabled"))?.focus();
+  messagesGrid.querySelector(`[data-message-row="${from}"]`)?.focus({ preventScroll: true });
   showToast(`Moved to position ${position + 1}.`);
 });
 
+function clearMessageDrag() {
+  if (!messageDrag) return;
+  cancelAnimationFrame(messageDrag.frame);
+  messageDrag.list.querySelector(".message-drop-target")?.classList.remove("message-drop-target");
+  messageDrag = null;
+}
+
+function scrollMessageDrag() {
+  const drag = messageDrag;
+  if (!drag) return;
+  const { top, bottom, left, right } = drag.list.getBoundingClientRect();
+  const { x, y } = drag;
+  let target = null;
+  if (x >= left && x <= right && y >= top && y <= bottom) {
+    const edge = 48;
+    if (y < top + edge) drag.list.scrollTop -= Math.ceil((top + edge - y) / 3);
+    if (y > bottom - edge) drag.list.scrollTop += Math.ceil((y - bottom + edge) / 3);
+    target = document.elementFromPoint(x, y)?.closest("[data-message-row]");
+  }
+  drag.list.querySelector(".message-drop-target")?.classList.remove("message-drop-target");
+  if (drag.list.contains(target) && Number(target.dataset.messageRow) !== drag.index) {
+    target.classList.add("message-drop-target");
+  }
+  drag.frame = requestAnimationFrame(scrollMessageDrag);
+}
+
 messagesGrid.addEventListener("dragstart", (event) => {
-  const handle = event.target.closest(".message-drag-handle");
-  if (!handle) return;
-  draggedMessageIndex = Number(handle.closest("[data-message-row]").dataset.messageRow);
+  const card = event.target.closest("[data-message-row]");
+  if (!card) return;
+  clearMessageDrag();
+  messageDrag = {
+    index: Number(card.dataset.messageRow),
+    list: card.closest(".message-script-list"),
+    x: event.clientX,
+    y: event.clientY,
+    frame: requestAnimationFrame(scrollMessageDrag)
+  };
   event.dataTransfer.effectAllowed = "move";
   event.dataTransfer.setData("text/plain", "");
 });
 
-messagesGrid.addEventListener("dragover", (event) => {
-  const row = event.target.closest("[data-message-row]");
-  if (draggedMessageIndex === null || !row) return;
+document.addEventListener("dragover", (event) => {
+  if (!messageDrag) return;
+  messageDrag.x = event.clientX;
+  messageDrag.y = event.clientY;
+  if (!messageDrag.list.contains(event.target)) return;
   event.preventDefault();
   event.dataTransfer.dropEffect = "move";
-  messagesGrid.querySelector(".message-drop-target")?.classList.remove("message-drop-target");
-  if (Number(row.dataset.messageRow) !== draggedMessageIndex) row.classList.add("message-drop-target");
-});
-
-messagesGrid.addEventListener("dragleave", (event) => {
-  const row = event.target.closest(".message-drop-target");
-  if (row && !row.contains(event.relatedTarget)) row.classList.remove("message-drop-target");
 });
 
 messagesGrid.addEventListener("drop", (event) => {
-  const row = event.target.closest("[data-message-row]");
-  if (draggedMessageIndex === null || !row) return;
+  const card = event.target.closest("[data-message-row]");
+  if (!messageDrag || !card) return;
   event.preventDefault();
-  moveMessage(draggedMessageIndex, Number(row.dataset.messageRow));
-  draggedMessageIndex = null;
+  moveMessage(messageDrag.index, Number(card.dataset.messageRow));
+  clearMessageDrag();
 });
 
-messagesGrid.addEventListener("dragend", () => {
-  draggedMessageIndex = null;
-  messagesGrid.querySelector(".message-drop-target")?.classList.remove("message-drop-target");
-});
+document.addEventListener("dragend", clearMessageDrag);
 
 function refreshMessageSort() {
   messageSortCounts = new Map(messageCopyUsage?.counts);
@@ -932,7 +957,7 @@ function setActiveTemplates(kind, rows) {
 }
 
 function renderMessages() {
-  draggedMessageIndex = null;
+  clearMessageDrag();
   const showAll = showAllMessagesInput.checked || !selectedLocationId;
   const category = document.querySelector("#message-category").value;
   const query = document.querySelector("#message-search").value.trim().toLocaleLowerCase();
@@ -958,18 +983,11 @@ function renderMessages() {
   }
   const selected = activeMessages[selectedMessageIndex];
   const canReorder = messageSort.value === "default" && visible.length > 1;
-  messagesGrid.innerHTML = `<div class="script-list message-script-list" aria-label="Message templates">${visible.map((template, position) => {
-    const title = escapeHtml(template.subtitle);
-    const choice = `<button type="button" class="script-choice" data-select-message="${template.index}" aria-pressed="${template.index === selectedMessageIndex}">${title}${template.category ? `<span>${escapeHtml(template.category)}</span>` : ""}</button>`;
-    if (!canReorder) return choice;
-    return `<div class="message-order-row" data-message-row="${template.index}">
-      ${choice}
-      <div class="message-order-controls">
-        <span class="message-drag-handle" draggable="true" title="Drag to reorder" aria-hidden="true">⠿</span>
-        <button type="button" data-move-message="up" aria-label="Move ${title} up" ${position === 0 ? "disabled" : ""}>↑</button>
-        <button type="button" data-move-message="down" aria-label="Move ${title} down" ${position === visible.length - 1 ? "disabled" : ""}>↓</button>
-      </div>
-    </div>`;
+  messagesGrid.innerHTML = `<div class="script-list message-script-list" aria-label="Message templates">${visible.map((template) => {
+    const dragAttributes = canReorder
+      ? ` draggable="true" data-message-row="${template.index}" aria-keyshortcuts="Alt+ArrowUp Alt+ArrowDown"`
+      : "";
+    return `<button type="button" class="script-choice" data-select-message="${template.index}" aria-pressed="${template.index === selectedMessageIndex}"${dragAttributes}>${escapeHtml(template.subtitle)}${template.category ? `<span>${escapeHtml(template.category)}</span>` : ""}</button>`;
   }).join("")}</div>
     <article class="script-reading" aria-label="Selected message"><p class="script-reading-label">Message preview</p><h3>${escapeHtml(selected.subtitle)}</h3><div class="message-body plain-message">${escapeHtml(messagePreviewText(selected.body))}</div>${selected.note ? `<p class="template-note">${escapeHtml(selected.note)}</p>` : ""}<div class="card-actions"><button class="button" type="button" data-copy-message="${selectedMessageIndex}">${messageNeedsDetails(selected.body) ? "Personalise &amp; copy" : "Copy message"}</button></div></article>`;
 }
