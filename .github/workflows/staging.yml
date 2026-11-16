@@ -1,0 +1,56 @@
+name: Deploy staging to GitHub Pages
+
+on:
+  push:
+    branches: [develop]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: renue-staging-pages
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    if: github.ref == 'refs/heads/develop'
+    uses: ./.github/workflows/attribution.yml
+
+  build:
+    if: github.ref == 'refs/heads/develop'
+    needs: verify
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Build against staging
+        env:
+          RENUE_STAGING_SUPABASE_MODE: ${{ vars.RENUE_STAGING_SUPABASE_MODE }}
+          RENUE_STAGING_SUPABASE_URL: ${{ vars.RENUE_STAGING_SUPABASE_URL }}
+          RENUE_STAGING_SUPABASE_PUBLISHABLE_KEY: ${{ vars.RENUE_STAGING_SUPABASE_PUBLISHABLE_KEY }}
+        run: python3 scripts/build.py --staging
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist
+
+  deploy:
+    if: github.ref == 'refs/heads/develop'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy the verified staging artifact
+        id: deployment
+        uses: actions/deploy-pages@v4

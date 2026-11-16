@@ -83,6 +83,11 @@ class AttributionTests(unittest.TestCase):
             self.assertEqual(built_at.utcoffset(), timedelta(0))
             self.assertLess(abs(datetime.now(timezone.utc) - built_at), timedelta(minutes=1))
             self.assertFalse((output / "scripts").exists(), "Build tooling must stay outside the published site")
+            self.assertFalse((output / "dev").exists(), "Playground must stay outside the published site")
+            self.assertFalse((output / "tests").exists(), "Test fixtures must stay outside the published site")
+            self.assertFalse((output / "ui").exists(), "Component source must stay outside the published site")
+            for asset in ("renue-ui.css", "renue-icons.svg", "inter.woff2"):
+                self.assertTrue((output / "assets" / asset).is_file(), f"Missing generated UI asset: {asset}")
             self.assertFalse((output / ".git").exists(), "Git metadata must stay outside the published site")
 
 

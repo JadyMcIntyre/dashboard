@@ -54,7 +54,7 @@ rememberEmail.addEventListener("change", () => {
   if (!rememberEmail.checked) saveRememberedEmail("");
 });
 
-if (!window.supabase) {
+if (!window.supabase || !window.renueSupabaseConfig) {
   signInStatus.textContent = "Sign-in could not load. Refresh the page to try again.";
 } else {
   const authRedirect = new URLSearchParams(window.location.hash.slice(1));
@@ -72,10 +72,8 @@ if (!window.supabase) {
     } catch { /* Keep this invitation open for this page. */ }
   }
 
-  const client = window.supabase.createClient(
-    "https://xzpgodvdffpazhcvzxkq.supabase.co",
-    "sb_publishable_A-tlM6YuoENyosTMzY0mqQ_aNj7iWqM"
-  );
+  const { url, publishableKey } = window.renueSupabaseConfig;
+  const client = window.supabase.createClient(url, publishableKey);
   const setAdvisorHoursOwner = createAdvisorHours(client);
   const templateEditors = createPersonalTemplateEditors(client);
   const setCommunityOwner = createTemplateCommunity(client, templateEditors.manageSharedTemplate);

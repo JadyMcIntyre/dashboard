@@ -1,0 +1,98 @@
+.workspace-page .ds-work-view {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ds-text);
+  font-family: var(--ds-font);
+}
+.workspace-page .ds-work-view > .section-heading:has(.visually-hidden) { margin: 0; }
+.ds-work-view :is(.view-description, .content-result-count, .advisor-hours-status) { color: var(--ds-muted); }
+.ds-work-view :is(.field, .content-find-bar label, .menu-toolbar label, .menu-filters legend) { color: var(--ds-body); }
+.ds-work-view :is(.ds-input, .field input, .field select, .template-toolbar select) {
+  border-color: var(--ds-control-border);
+  border-radius: var(--ds-radius);
+  background: var(--ds-surface);
+  color: var(--ds-text);
+}
+.ds-work-view :is(.ds-input, .field input, .field select, summary, [data-template-tab]):focus-visible { outline: 2px solid var(--ds-focus); outline-offset: 2px; }
+.ds-work-view :is(.ds-card, .advisor-hours-table-wrap) { background: var(--ds-surface); border-color: var(--ds-border); border-radius: var(--ds-radius-panel); box-shadow: var(--ds-control-shadow); }
+.ds-work-view :is(h2, h3, h4) { color: var(--ds-text); letter-spacing: -.02em; }
+
+#resources-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--ds-3); }
+#resources-list .resource-card { display: grid; grid-template-rows: auto auto 1fr auto; gap: var(--ds-2); min-width: 0; }
+#resources-list .resource-title { margin: 0; font-weight: 670; line-height: 1.35; }
+#resources-list .resource-card p { margin: 0; color: var(--ds-body); }
+#resources-list .resource-tags { margin: 0; }
+#resources-list .resource-tags span { background: var(--ds-raised); color: var(--ds-muted); }
+#resources-list .resource-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--ds-2); border-top: 1px solid var(--ds-border); padding-top: var(--ds-2); margin-top: var(--ds-2); }
+#resources-list .resource-actions .financing-url { flex: 1 1 12ch; min-width: 0; color: var(--ds-muted); font-size: var(--ds-type-caption); }
+#resources-list > .insurance-empty { grid-column: 1 / -1; color: var(--ds-muted); background: var(--ds-surface); border-color: var(--ds-border); }
+
+.ds-work-view .hours-address, .ds-work-view .hours-time, .ds-work-view .email-count { color: var(--ds-muted); }
+.ds-work-view .hours-card-header h3 { font-size: 16px; font-weight: 680; }
+.ds-work-view .hours-row { border-color: var(--ds-border); }
+.ds-work-view #hours-list .hours-row[aria-current="date"] { background: var(--ds-accent-soft); border-color: var(--ds-accent-line); }
+.ds-work-view :is(.hours-today, .clinic-phone, .company-email-table a, .transport-links a) { color: var(--ds-accent); }
+.ds-work-view .company-emails { padding: 0; }
+.ds-work-view .company-emails summary:hover { background: var(--ds-hover); }
+.ds-work-view :is(.company-email-table, .advisor-hours-table) th { color: var(--ds-text); }
+.ds-work-view :is(.company-email-table, .advisor-hours-table) :is(th, td) { border-color: var(--ds-border); vertical-align: middle; }
+.ds-work-view :is(.company-email-table, .advisor-hours-table) thead { background: var(--ds-raised); }
+.ds-work-view .advisor-hours-own { background: var(--ds-accent-soft); }
+.ds-work-view .advisor-hours-own > th[scope="row"] { color: var(--ds-accent); }
+.ds-work-view .advisor-hours-off { color: var(--ds-muted); }
+
+.ds-work-view .travel-description { color: var(--ds-body); }
+.ds-work-view .travel-form { padding: var(--ds-4); }
+.ds-work-view .transport-policy { background: var(--ds-warning-soft); color: var(--ds-warning); border-color: transparent; display: block; }
+.ds-work-view :is(.travel-help, .transport-area, .transport-support-details, .financing-option p) { color: var(--ds-muted); }
+.ds-work-view .travel-clinics { margin-top: var(--ds-3); }
+.ds-work-view .transport-support .section-kicker { color: var(--ds-accent); }
+.ds-work-view .financing-option { padding: var(--ds-5); gap: var(--ds-3); }
+.ds-work-view .financing-option h3 { font-size: 17px; font-weight: 665; }
+.ds-work-view .financing-option .financing-label { color: var(--ds-accent); }
+
+.vitamins-panel.ds-work-view .menu-toolbar { margin-top: var(--ds-4); }
+.vitamins-panel.ds-work-view .vitamin-grid { gap: var(--ds-3); }
+.vitamins-panel.ds-work-view .vitamin-card { border-width: 1px; padding: var(--ds-4); }
+.vitamins-panel .treatment-price { color: var(--ds-text); font-weight: 690; font-variant-numeric: tabular-nums; }
+.vitamins-panel .treatment-category, .vitamins-panel .treatment-ingredients li { background: var(--ds-raised); color: var(--ds-body); border-color: var(--ds-border); }
+.vitamins-panel .category-iv .treatment-category { background: var(--ds-accent-soft); color: var(--ds-accent); }
+.vitamins-panel .category-shot .treatment-category { background: var(--ds-positive-soft); color: var(--ds-positive); }
+.vitamins-panel .category-addon .treatment-category { background: var(--ds-warning-soft); color: var(--ds-warning); }
+.vitamins-panel .treatment-summary, .vitamins-panel .menu-results-bar { color: var(--ds-muted); }
+.vitamins-panel .menu-filters span { min-height: 35px; border-color: var(--ds-border); border-radius: var(--ds-radius); color: var(--ds-body); }
+.vitamins-panel .menu-filters input:checked + span { background: var(--ds-selected); border-color: var(--ds-control-border); color: var(--ds-text); }
+.vitamins-panel .treatment-description, .vitamins-panel .menu-source-note { border-color: var(--ds-border); }
+.vitamins-panel .menu-source-note { background: var(--ds-surface); color: var(--ds-muted); }
+.vitamins-panel :is(.brochure-links a, .menu-source-note summary) { color: var(--ds-accent); }
+
+.template-settings.ds-work-view .template-tabs { width: fit-content; margin-bottom: var(--ds-4); padding: 4px; border: 1px solid var(--ds-border); }
+.template-settings.ds-work-view .template-tabs button[aria-pressed="true"] { background: var(--ds-selected); color: var(--ds-text); border-color: var(--ds-border); }
+.template-settings.ds-work-view :is(.template-row-clinic, .template-card-heading p, [role="status"]) { color: var(--ds-muted); }
+.template-settings.ds-work-view .template-library-row { border-color: var(--ds-border); background: var(--ds-surface); }
+.template-settings.ds-work-view .template-library-row:hover,
+.template-settings.ds-work-view .template-library-row:has(details[open]) { background: var(--ds-raised); }
+.template-settings.ds-work-view .template-row-reading { background: var(--ds-surface); border-color: var(--ds-border); }
+.template-settings.ds-work-view .template-row-actions { color: var(--ds-text); background: var(--ds-surface); border-color: var(--ds-border); box-shadow: var(--ds-shadow); }
+.template-settings.ds-work-view .template-row-actions button { color: var(--ds-text); }
+.template-settings.ds-work-view .template-row-actions button:hover { background: var(--ds-hover); }
+.ds-work-view .template-dialog.ds-dialog { border-color: var(--ds-border); background: var(--ds-surface); color: var(--ds-text); box-shadow: var(--ds-shadow); }
+.ds-work-view .template-dialog.ds-dialog::backdrop { background: var(--ds-overlay); }
+.ds-work-view .template-dialog textarea { border-color: var(--ds-control-border); background: var(--ds-surface); color: var(--ds-text); }
+.ds-work-view .template-dialog .message-mention-editor textarea { background: transparent; }
+
+.staff-access .staff-sign-in-panel.ds-card { max-width: 416px; padding: var(--ds-8); border: 1px solid var(--ds-border); border-radius: var(--ds-radius-panel); background: var(--ds-surface); color: var(--ds-text); font-family: var(--ds-font); box-shadow: var(--ds-control-shadow); }
+.staff-access .staff-sign-in-panel > img { width: 145px; }
+.staff-sign-in-panel h1 { margin: var(--ds-5) 0 var(--ds-4); font: 680 27px/1.15 var(--ds-font); letter-spacing: -.045em; }
+.staff-sign-in-panel :is(.field, .remember-email, #staff-first-name-help) { color: var(--ds-body); font-size: var(--ds-type-body); }
+.staff-sign-in-panel .field .ds-input { min-height: 41px; background: var(--ds-surface); border-color: var(--ds-control-border); color: var(--ds-text); }
+.staff-sign-in-panel .password-field .ds-input { padding-inline-end: 64px; }
+.staff-sign-in-panel .password-visibility { color: var(--ds-muted); }
+.staff-sign-in-panel .password-visibility:hover { background: var(--ds-hover); color: var(--ds-text); }
+.staff-sign-in-panel form .ds-button { min-height: 38px; margin-top: var(--ds-1); }
+.staff-sign-in-panel :is([role="status"], .remember-email) { color: var(--ds-muted); }
+.staff-sign-in-panel .sign-in-attribution-footer { border-color: var(--ds-border); }
+
+@media (max-width: 900px) { #resources-list { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 420px) { .staff-access .staff-sign-in-panel.ds-card { padding: var(--ds-5); } }

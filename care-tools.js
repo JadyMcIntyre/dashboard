@@ -5,6 +5,19 @@
 
 let selectedTreatmentGuide = "ivk";
 
+function treatmentIcon(name) {
+  return `<svg class="ds-icon" aria-hidden="true" focusable="false"><use href="./assets/renue-icons.svg#${name}"></use></svg>`;
+}
+
+const treatmentGuideIcons = { ivk: "infusion", spravato: "spray", tms: "activity" };
+
+function renderGuideFact([label, value]) {
+  const price = value.match(/^(\$[\d,]+)( per session)$/);
+  return `<div class="guide-fact${price ? " guide-fact-price" : ""}"><dt>${escapeHtml(label)}</dt><dd>${price
+    ? `<strong>${escapeHtml(price[1])}</strong><span>${escapeHtml(price[2])}</span>`
+    : escapeHtml(value)}</dd></div>`;
+}
+
 function renderTreatmentGuide() {
   const guide = treatmentGuides.find((item) => item.id === selectedTreatmentGuide) || treatmentGuides[0];
   document.querySelectorAll("[data-treatment-guide]").forEach((button) => {
@@ -25,12 +38,27 @@ function renderTreatmentGuide() {
     }
   }
   document.querySelector("#treatment-guide-content").innerHTML = `
-    <div class="guide-heading"><div><p class="script-reading-label">${escapeHtml(guide.label)}</p><h3>${escapeHtml(guide.name)}</h3><p>${escapeHtml(guide.summary)}</p></div></div>
-    <dl class="guide-facts">${facts.map(([label, value]) => `<div><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(value)}</dd></div>`).join("")}</dl>
-    <div class="guide-sections">${guide.sections.map(([title, text]) => `<article><h4>${escapeHtml(title)}</h4><p>${escapeHtml(text)}</p></article>`).join("")}</div>
-    <p class="template-note">${escapeHtml(note)}</p>
-    <div class="guide-actions"><button type="button" class="button-secondary" data-workspace-target="insurance-title">Clinic insurance rules →</button><button type="button" class="button-secondary" data-workspace-target="financing-title">Financing &amp; copyable links →</button><button type="button" class="button-secondary" data-workspace-target="travel-title">Transport requirements →</button></div>
-`;
+    <div class="guide-layout">
+      <div class="guide-heading">
+        <span class="guide-emblem">${treatmentIcon(treatmentGuideIcons[guide.id])}</span>
+        <div><p class="script-reading-label">${escapeHtml(guide.label)}</p><h3>${escapeHtml(guide.name)}</h3><p>${escapeHtml(guide.summary)}</p></div>
+      </div>
+      <aside class="guide-quick-reference" aria-labelledby="guide-reference-heading">
+        <h4 id="guide-reference-heading">${treatmentIcon("activity")} At a glance</h4>
+        <dl class="guide-facts">${facts.map(renderGuideFact).join("")}</dl>
+        <p class="template-note ds-notice">${treatmentIcon("info")}<span>${escapeHtml(note)}</span></p>
+      </aside>
+      <div class="guide-sections">${guide.sections.map(([title, text]) => `<article><h4>${escapeHtml(title)}</h4><p>${escapeHtml(text)}</p></article>`).join("")}</div>
+    </div>
+    <div class="guide-links">
+      <h4 class="guide-link-heading">Related tools</h4>
+      <div class="guide-actions">
+        <button type="button" class="button-secondary ds-button" data-workspace-target="insurance-title">Clinic insurance rules ${treatmentIcon("arrow-up-right")}</button>
+        <button type="button" class="button-secondary ds-button" data-workspace-target="financing-title">Financing &amp; copyable links ${treatmentIcon("arrow-up-right")}</button>
+        <button type="button" class="button-secondary ds-button" data-workspace-target="travel-title">Transport requirements ${treatmentIcon("arrow-up-right")}</button>
+      </div>
+    </div>`;
+
 }
 
 document.addEventListener("click", (event) => {

@@ -21,7 +21,7 @@ function renderVitaminMenu() {
   document.querySelector("#menu-count").textContent = `${items.length} ${items.length === 1 ? "option" : "options"}${category === "all" ? " across the menu" : ` · ${categoryLabels[category]}`}`;
   document.querySelector("#menu-empty").hidden = items.length > 0;
   vitaminGrid.innerHTML = items.map((item) => `
-    <article class="vitamin-card category-${item.category}" aria-labelledby="${item.id}-title">
+    <article class="vitamin-card ds-card category-${item.category}" aria-labelledby="${item.id}-title">
       <div class="vitamin-card-top"><span class="treatment-category">${categoryLabels[item.category]}</span><span class="treatment-price">$${item.price}</span></div>
       <h2 id="${item.id}-title">${escapeMenuText(item.name)}</h2>
       <p class="treatment-summary">${escapeMenuText(item.summary)}</p>

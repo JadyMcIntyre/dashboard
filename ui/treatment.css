@@ -1,0 +1,136 @@
+.workspace-page [data-workspace-view="treatment-title"] {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--ds-text);
+  font-family: var(--ds-font);
+}
+.treatment-pilot-header { margin: var(--ds-6) 0 0; }
+.treatment-pilot-header h2 { margin: 0 0 var(--ds-2); font: 600 var(--ds-type-small)/1.4 var(--ds-font); color: var(--ds-muted); }
+.treatment-pilot-header .treatment-guide-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--ds-3);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+.treatment-pilot-header .ds-segment {
+  --control-bg: var(--ds-surface);
+  --control-line: var(--ds-border);
+  text-align: start;
+  justify-content: flex-start;
+  min-height: 67px;
+  min-width: 0;
+  padding: var(--ds-2) var(--ds-3);
+  gap: var(--ds-3);
+  border-radius: var(--ds-radius-panel);
+  box-shadow: var(--ds-control-shadow);
+}
+.treatment-pilot-header .ds-segment[aria-pressed="true"] {
+  --control-bg: var(--ds-surface);
+  --control-line: var(--ds-accent-line);
+  --control-hover: var(--ds-accent-soft);
+  background: var(--control-bg);
+  color: var(--control-fg);
+  border-color: var(--control-line);
+}
+.treatment-pilot-header .ds-segment[aria-pressed="true"]:hover { background: var(--control-hover); }
+.treatment-pilot-header .ds-segment[aria-pressed="true"]:active { background: var(--control-pressed); }
+.treatment-option-icon, .guide-emblem {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--ds-radius);
+  background: var(--ds-raised);
+  color: var(--ds-muted);
+}
+.ds-segment[aria-pressed="true"] .treatment-option-icon,
+.guide-emblem { color: var(--ds-accent); background: var(--ds-accent-soft); }
+.treatment-option-copy { display: grid; gap: 3px; }
+.treatment-option-copy strong { font-weight: 650; }
+.treatment-option-copy small { color: var(--ds-muted); font-size: var(--ds-type-caption); }
+.treatment-option-check { margin-inline-start: auto; color: var(--ds-accent); visibility: hidden; }
+.ds-segment[aria-pressed="true"] .treatment-option-check { visibility: visible; }
+.treatment-pilot-description {
+  margin: var(--ds-3) 0 var(--ds-6);
+  color: var(--ds-muted);
+  font-size: var(--ds-type-small);
+  line-height: 1.55;
+}
+
+.guide-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(270px, 34%);
+  grid-template-rows: auto 1fr;
+  grid-template-areas: "intro facts" "sections facts";
+  column-gap: clamp(24px, 3vw, 48px);
+  row-gap: var(--ds-6);
+}
+.guide-layout .guide-heading { grid-area: intro; display: flex; gap: var(--ds-3); align-items: flex-start; }
+.guide-emblem { width: 44px; height: 44px; margin-top: 3px; }
+.guide-emblem .ds-icon { width: 22px; height: 22px; }
+.guide-heading .script-reading-label { margin: 0 0 4px; color: var(--ds-accent); font: 650 var(--ds-type-small)/1.4 var(--ds-font); letter-spacing: 0; text-transform: none; }
+.guide-layout .guide-heading h3 { font: 690 clamp(1.65rem, 2.55vw, 2.3rem)/1.1 var(--ds-font); letter-spacing: -.048em; }
+.guide-layout .guide-heading > div > p:last-child { color: var(--ds-muted); font: 400 14px/1.5 var(--ds-font); margin-top: 5px; }
+
+.guide-quick-reference {
+  grid-area: facts;
+  align-self: start;
+  padding: var(--ds-5);
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-radius-panel);
+  background: var(--ds-surface);
+  box-shadow: var(--ds-control-shadow);
+}
+.guide-quick-reference h4, .guide-link-heading { font: 650 15px/1.35 var(--ds-font); letter-spacing: -.02em; }
+.guide-quick-reference h4 { display: flex; align-items: center; gap: var(--ds-2); }
+.guide-quick-reference h4 .ds-icon { color: var(--ds-muted); }
+.guide-layout .guide-facts { display: block; margin: var(--ds-4) 0 0; }
+.guide-layout .guide-facts > div { padding: 0; margin-bottom: var(--ds-3); background: transparent; border: 0; border-radius: 0; }
+.guide-layout .guide-facts dt { margin: 0 0 3px; color: var(--ds-muted); font-size: var(--ds-type-small); }
+.guide-layout .guide-facts dd { color: var(--ds-text); font: 625 14px/1.4 var(--ds-font); font-variant-numeric: tabular-nums; }
+.guide-layout .guide-facts > .guide-fact-price { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 3px var(--ds-2); margin: 0; padding: 8px 0; }
+.guide-fact-price:first-of-type,
+.guide-layout .guide-facts > :not(.guide-fact-price) + .guide-fact-price { border-top: 1px solid var(--ds-border); }
+.guide-fact-price dd strong { font-size: 19px; font-weight: 690; letter-spacing: -.04em; }
+.guide-fact-price dd span { color: var(--ds-muted); font-size: var(--ds-type-caption); font-weight: 500; }
+.guide-fact-price:last-child dd strong { color: var(--ds-accent); }
+.guide-quick-reference .template-note {
+  margin: var(--ds-2) 0 0;
+  padding: var(--ds-2) var(--ds-3);
+  border: 0;
+  color: var(--ds-warning);
+  background: var(--ds-warning-soft);
+  font-size: var(--ds-type-small);
+}
+
+.guide-layout .guide-sections {
+  grid-area: sections;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-content: start;
+  gap: var(--ds-5) var(--ds-6);
+  margin: 0;
+}
+.guide-layout .guide-sections h4 { margin: 0 0 6px; color: var(--ds-text); font: 650 14px/1.4 var(--ds-font); letter-spacing: -.015em; }
+.guide-layout .guide-sections p { max-width: 68ch; color: var(--ds-body); font: 400 13.5px/1.58 var(--ds-font); }
+
+.guide-links { margin-top: var(--ds-6); padding: var(--ds-4) 0 0; border-top: 1px solid var(--ds-border); }
+.guide-links .guide-actions { margin: var(--ds-2) 0 0; gap: var(--ds-2); }
+.guide-links .ds-button { min-height: 34px; font-size: var(--ds-type-small); }
+.guide-links .ds-icon { width: 13px; height: 13px; color: var(--ds-muted); }
+
+@media (max-width: 1150px) {
+  .guide-layout .guide-sections { grid-template-columns: 1fr; gap: var(--ds-3); }
+}
+@media (max-width: 760px) {
+  .guide-layout { grid-template-columns: minmax(0, 1fr); grid-template-areas: "intro" "facts" "sections"; gap: var(--ds-4); }
+  .treatment-pilot-header .treatment-guide-tabs { gap: var(--ds-2); }
+  .treatment-pilot-header .ds-segment { min-height: 61px; padding: var(--ds-2); gap: var(--ds-1); }
+  .treatment-option-check, .treatment-option-icon { display: none; }
+}
