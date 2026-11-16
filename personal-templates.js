@@ -187,7 +187,7 @@ function createPersonalTemplateEditors(client) {
           ...(kind === "message" ? {
             Copy: async () => {
               const owner = userId;
-              if (!await copyMessageTemplate({ subtitle: row.title, body: row.body })) return;
+              if (!await copyMessageTemplate({ key: rowKey(row), subtitle: row.title, body: row.body })) return;
               if (owner === userId) showToast("Template copied.");
             },
           } : {}),

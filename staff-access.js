@@ -84,6 +84,35 @@ if (!window.supabase) {
   let visibleUserId = null;
   let inviteSession = null;
 
+  function startMessageCopyUsage(userId) {
+    const counts = new Map();
+    const usage = {
+      counts,
+      async record(key) {
+        try {
+          const { data, error } = await client.rpc("record_message_copy", {
+            expected_user_id: userId,
+            message_key: key
+          });
+          if (!error && typeof data === "number") counts.set(key, Math.max(data, counts.get(key) ?? 0));
+        } catch { /* Clipboard copying is independent of usage storage. */ }
+      }
+    };
+    setMessageCopyUsage(usage);
+
+    void (async () => {
+      try {
+        const { data, error } = await client.from("message_copy_counts")
+          .select("template_key, copy_count").eq("user_id", userId);
+        if (error || messageCopyUsage !== usage) return;
+        for (const { template_key, copy_count } of data) {
+          counts.set(template_key, Math.max(copy_count, counts.get(template_key) ?? 0));
+        }
+        if (messageSort.value === "most-copied" && !messagesView.hidden) refreshMessageSort();
+      } catch { /* The original template order remains available. */ }
+    })();
+  }
+
   async function loadProfile(session, currentRevision) {
     const { data, error } = await client.from("staff_profiles")
       .select("display_name, role").eq("user_id", session.user.id).maybeSingle();
@@ -104,6 +133,7 @@ if (!window.supabase) {
 
     const role = data.role.charAt(0).toUpperCase() + data.role.slice(1);
     visibleUserId = session.user.id;
+    startMessageCopyUsage(visibleUserId);
     staffDisplayName = data.display_name;
     templateEditors.setOwner(visibleUserId, data.role);
     setCommunityOwner(visibleUserId);
@@ -144,6 +174,7 @@ if (!window.supabase) {
         (event === "TOKEN_REFRESHED" || event === "SIGNED_IN")) return;
     const currentRevision = ++revision;
     visibleUserId = null;
+    setMessageCopyUsage(null);
     staffDisplayName = "";
     templateEditors.setOwner(null);
     setCommunityOwner(null);

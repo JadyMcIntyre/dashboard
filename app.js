@@ -610,8 +610,15 @@ function messageNeedsDetails(body) {
 async function copyMessageTemplate(template) {
   const personalised = messageForPersonalisation(template);
   if (!personalised) return false;
-  if (messageNeedsDetails(personalised.body)) return copyPersonalisedMessage(personalised);
-  await copyText(personalised.body);
+  const copyUsage = messageCopyUsage;
+  if (messageNeedsDetails(personalised.body)) {
+    if (!await copyPersonalisedMessage(personalised)) return false;
+  } else {
+    await copyText(personalised.body);
+  }
+  if (template.key && copyUsage && copyUsage === messageCopyUsage) {
+    void copyUsage.record(template.key);
+  }
   return true;
 }
 
@@ -780,6 +787,27 @@ let selectedVoicemailIndex = 0;
 let activeMessages = [];
 let activeVoicemails = [];
 
+const messageSort = document.querySelector("#message-sort");
+const messagesView = messagesGrid.closest("[data-workspace-view]");
+let messageCopyUsage = null;
+let messageSortCounts = new Map();
+
+function refreshMessageSort() {
+  messageSortCounts = new Map(messageCopyUsage?.counts);
+  renderMessages();
+}
+
+function setMessageCopyUsage(usage) {
+  messageCopyUsage = usage;
+  messageSort.value = "default";
+  messageSortCounts = new Map();
+}
+
+messageSort.addEventListener("change", refreshMessageSort);
+document.addEventListener("workspace-view-change", () => {
+  if (!messagesView.hidden && messageSort.value === "most-copied") refreshMessageSort();
+});
+
 function setActiveTemplates(kind, rows) {
   const items = rows.map((row) => ({
     key: row.default_message_key || row.id,
@@ -820,6 +848,12 @@ function renderMessages() {
         && (category === "all" || template.category === category)
         && `${template.subtitle} ${template.body}`.toLocaleLowerCase().includes(query);
     });
+  if (messageSort.value === "most-copied") {
+    visible.sort((first, second) =>
+      (messageSortCounts.get(second.key) ?? 0) - (messageSortCounts.get(first.key) ?? 0)
+      || first.index - second.index
+    );
+  }
   if (!visible.some((template) => template.index === selectedMessageIndex)) selectedMessageIndex = visible[0]?.index;
   messagesFilterNote.textContent = showAll
     ? "All clinics · Choose a template to read and copy."
