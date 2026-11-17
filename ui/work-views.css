@@ -114,3 +114,20 @@
 #treatment-pricing-form [role="status"]:empty,
 #treatment-pricing-status:empty { display: none; }
 #treatment-pricing-form .view-description { margin: 0; }
+
+#advisor-hours-panel > .advisor-hours-status:not(:empty) {
+  margin-block: 0 var(--ds-3);
+}
+#advisor-account-title { margin: 0; }
+#advisor-account-help {
+  margin: var(--ds-2) 0 var(--ds-5);
+  color: var(--ds-muted);
+  line-height: 1.5;
+}
+#advisor-account-dialog form { display: grid; gap: var(--ds-4); }
+#advisor-account-dialog .advisor-hours-status { margin: 0; }
+#advisor-account-dialog .advisor-account-actions {
+  justify-content: flex-end;
+  border-top: 1px solid var(--ds-border);
+  padding-top: var(--ds-4);
+}

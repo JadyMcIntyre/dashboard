@@ -138,7 +138,7 @@ function createAdvisorHours(client) {
       if (canEdit) {
         const button = document.createElement("button");
         button.type = "button";
-        button.className = "button-secondary";
+        button.className = "ds-button";
         button.textContent = "Edit";
         button.dataset.editAdvisor = advisor.id;
         button.setAttribute("aria-label", `Edit hours for ${advisor.name}`);
