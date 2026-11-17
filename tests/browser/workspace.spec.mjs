@@ -7,9 +7,11 @@ const treatment = (page, id) => page.locator(`[data-treatment-guide="${id}"]`);
 test('a manager can update the selected clinic and see the same contact across tools', async ({ page }) => {
   await page.addInitScript(() => { window.fixtureStaffRole = 'manager'; });
   await openWorkspace(page, 'light', 'hours-title');
-  const edit = page.getByRole('button', { name: 'Edit clinic contact' });
+  const manage = page.getByRole('link', { name: 'Manage clinic data' });
+  const edit = page.getByRole('button', { name: 'Edit Chelsea contact' });
   await expect(edit).toBeHidden();
-  await clinic(page, 'CHELSEA').click();
+  await manage.click();
+  await expect(page.getByRole('button', { name: /^Edit .* contact$/ })).toHaveCount(4);
   await edit.click();
   const dialog = page.getByRole('dialog', { name: 'Edit clinic contact' });
   await expect(dialog.getByLabel('Phone number')).toHaveValue('212-555-0103');
@@ -17,12 +19,18 @@ test('a manager can update the selected clinic and see the same contact across t
   await dialog.getByLabel('Address').fill('200 Example Avenue, Chelsea');
   await dialog.getByRole('button', { name: 'Save contact' }).click();
   await expect(dialog).toBeHidden();
+  await expect(edit).toBeFocused();
+  await expect(page.locator('#manage-clinic-contacts')).toContainText('200 Example Avenue, Chelsea');
+  await clinic(page, 'CHELSEA').click();
   await expect(page.locator('#context-phone')).toHaveText('212-555-0199');
-  await expect(page.locator('#hours-list')).toContainText('200 Example Avenue, Chelsea');
 
   await page.getByRole('button', { name: 'Account options' }).click();
   await page.getByLabel('Workspace view').selectOption('advisor');
   await page.keyboard.press('Escape');
+  await expect(manage).toBeHidden();
+  await expect(page).toHaveURL(/#insurance-title$/);
+  await page.getByRole('link', { name: 'Hours & contacts' }).click();
+  await expect(page.locator('#hours-list')).toContainText('200 Example Avenue, Chelsea');
   await expect(edit).toBeHidden();
   await page.getByRole('link', { name: 'Messages', exact: true }).click();
   await expect(page.getByRole('article', { name: 'Selected message' })).toContainText('212-555-0199');

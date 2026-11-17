@@ -97,7 +97,11 @@
 @media (max-width: 900px) { #resources-list { grid-template-columns: minmax(0, 1fr); } }
 @media (max-width: 420px) { .staff-access .staff-sign-in-panel.ds-card { padding: var(--ds-5); } }
 
-#edit-clinic-contact { margin-bottom: var(--ds-3); }
+.manage-clinic-heading { margin-bottom: var(--ds-3); }
+.manage-clinic-contacts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 290px), 1fr)); gap: var(--ds-3); }
+.manage-clinic-contact { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--ds-3); }
+.manage-clinic-contact h4 { margin-bottom: var(--ds-2); }
+.manage-clinic-contact p { color: var(--ds-body); line-height: 1.5; }
 #clinic-contact-form { display: grid; gap: var(--ds-3); }
 #clinic-contact-form .view-description,
 #clinic-contact-form [role="status"] { margin: 0; color: var(--ds-muted); }

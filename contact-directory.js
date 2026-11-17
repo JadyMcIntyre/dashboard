@@ -90,7 +90,7 @@ function applyContactDirectory({ organization, clinicsById, emails }) {
 
 
 function createClinicContactEditor(client) {
-  const edit = document.querySelector("#edit-clinic-contact");
+  const list = document.querySelector("#manage-clinic-contacts");
   const dialog = document.querySelector("#clinic-contact-editor");
   const form = document.querySelector("#clinic-contact-form");
   const phone = form.elements.phone;
@@ -103,12 +103,23 @@ function createClinicContactEditor(client) {
   let saving = false;
   let revision = 0;
 
-  function updateVisibility() {
-    edit.hidden = !directory?.clinicsById.has(selectedLocationId);
+  function renderContacts() {
+    list.innerHTML = directory ? Object.keys(clinicLocations).map(id => directory.clinicsById.get(id)).map(clinic => `
+      <article class="ds-card manage-clinic-contact">
+        <div>
+          <h4>${escapeHtml(clinic.name)}</h4>
+          <p>${escapeHtml(clinic.phone)}</p>
+          <p>${escapeHtml(clinic.address)}</p>
+        </div>
+        <button class="ds-button" type="button" data-edit-clinic="${escapeHtml(clinic.clinic_id)}"
+          aria-label="Edit ${escapeHtml(clinic.name)} contact">Edit</button>
+      </article>`).join("") : "";
   }
 
-  edit.addEventListener("click", () => {
-    original = directory?.clinicsById.get(selectedLocationId);
+  list.addEventListener("click", (event) => {
+    const edit = event.target.closest("[data-edit-clinic]");
+    if (!edit) return;
+    original = directory?.clinicsById.get(edit.dataset.editClinic);
     if (!original) return;
     document.querySelector("#clinic-contact-editor-name").textContent = original.name;
     phone.value = original.phone;
@@ -120,7 +131,6 @@ function createClinicContactEditor(client) {
   dialog.addEventListener("cancel", (event) => {
     if (saving) event.preventDefault();
   });
-  document.addEventListener("workspace-clinic-change", updateVisibility);
 
   function setSaving(value) {
     saving = value;
@@ -162,6 +172,8 @@ function createClinicContactEditor(client) {
       renderVoicemails();
       if (addressChanged) document.querySelector("#travel-results").hidden = true;
       dialog.close();
+      renderContacts();
+      list.querySelector(`[data-edit-clinic="${CSS.escape(data.clinic_id)}"]`)?.focus({ preventScroll: true });
       showToast("Clinic contact saved.");
     } catch {
       if (request === revision) status.textContent = "Could not save the clinic contact. Try again.";
@@ -176,6 +188,6 @@ function createClinicContactEditor(client) {
     original = null;
     dialog.close();
     setSaving(false);
-    updateVisibility();
+    renderContacts();
   };
 }

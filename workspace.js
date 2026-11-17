@@ -10,6 +10,7 @@ const viewNames = {
   "messages-title": "Messages",
   "templates-title": "Manage templates",
   "advisor-hours-title": "Advisor hours",
+  "manage-clinic-data-title": "Manage clinic data",
   "voicemail-title": "Voicemail scripts",
   "travel-title": "Travel & transport",
   "hours-title": "Hours & contacts",
@@ -90,6 +91,7 @@ const workspaceViewMode = document.querySelector("#workspace-view-mode");
 const advisorViews = new Set(["messages-title", "voicemail-title"]);
 
 function isWorkspaceViewAvailable(view) {
+  if (view === "manage-clinic-data-title") return workspaceShell.dataset.mode === "manager";
   return workspaceShell.dataset.mode !== "manager" || !advisorViews.has(view);
 }
 
@@ -100,9 +102,12 @@ function applyWorkspaceViewMode(mode) {
     link.hidden = !isWorkspaceViewAvailable(link.hash.slice(1));
   });
 
-  if (!isWorkspaceViewAvailable(window.location.hash.slice(1))) {
+  const requestedView = window.location.hash.slice(1);
+  if (!isWorkspaceViewAvailable(requestedView)) {
     history.replaceState(history.state, "", "#insurance-title");
     showWorkspaceView("insurance-title");
+  } else if (requestedView === "manage-clinic-data-title") {
+    showWorkspaceView(requestedView);
   }
 }
 
@@ -225,7 +230,7 @@ const searchIcons = {
   "insurance-title": "insurance", "treatment-title": "treatment",
   "vitamins-title": "vitamins", "messages-title": "messages",
   "voicemail-title": "voicemail", "hours-title": "hours",
-  "advisor-hours-title": "calendar", "resources-title": "resources",
+  "manage-clinic-data-title": "clinic", "advisor-hours-title": "calendar", "resources-title": "resources",
   "travel-title": "travel", "financing-title": "financing", "templates-title": "templates"
 };
 const callShortcuts = ["insurance-title", "treatment-title", "messages-title", "hours-title"];
