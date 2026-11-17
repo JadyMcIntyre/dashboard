@@ -85,8 +85,29 @@ document.querySelector("#staff-sign-out").addEventListener("click", () => {
   accountMenu.hidePopover();
 });
 
+const workspaceViewControl = document.querySelector("#workspace-view-control");
+const workspaceViewMode = document.querySelector("#workspace-view-mode");
+const advisorViews = new Set(["messages-title", "voicemail-title"]);
+
+function isWorkspaceViewAvailable(view) {
+  return workspaceShell.dataset.mode !== "manager" || !advisorViews.has(view);
+}
+
+function applyWorkspaceViewMode(mode) {
+  workspaceShell.dataset.mode = mode;
+  workspaceViewMode.value = mode;
+  document.querySelectorAll('.workspace-nav a[href^="#"]').forEach((link) => {
+    link.hidden = !isWorkspaceViewAvailable(link.hash.slice(1));
+  });
+
+  if (!isWorkspaceViewAvailable(window.location.hash.slice(1))) {
+    history.replaceState(history.state, "", "#insurance-title");
+    showWorkspaceView("insurance-title");
+  }
+}
+
 function showWorkspaceView(id, updateUrl = false) {
-  const view = Object.hasOwn(viewNames, id) ? id : "insurance-title";
+  const view = Object.hasOwn(viewNames, id) && isWorkspaceViewAvailable(id) ? id : "insurance-title";
   if (updateUrl && window.location.hash !== `#${view}`) history.pushState(null, "", `#${view}`);
   document.querySelectorAll("[data-workspace-view]").forEach((panel) => {
     panel.hidden = panel.dataset.workspaceView !== view;
@@ -234,11 +255,12 @@ function highlightSearchResult(index, scroll = true) {
 function renderWorkspaceSearch() {
   const query = workspaceSearch.value.trim().toLocaleLowerCase();
   const currentView = document.querySelector('[data-workspace-view]:not([hidden])')?.dataset.workspaceView;
-  const suggestions = callShortcuts.filter(view => view !== currentView);
-  const shortcuts = Object.entries(viewNames).map(([view, title]) => ({ view, title, subtitle: "" }));
+  const suggestions = callShortcuts.filter(view => view !== currentView && isWorkspaceViewAvailable(view));
+  const shortcuts = Object.entries(viewNames).filter(([view]) => isWorkspaceViewAvailable(view)).map(([view, title]) => ({ view, title, subtitle: "" }));
   searchClear.hidden = !workspaceSearch.value;
   const matches = query
     ? [...buildWorkspaceSearchEntries(), ...shortcuts.filter(({ view }) => view !== "travel-title")]
+      .filter((entry) => isWorkspaceViewAvailable(entry.view))
       .map((entry) => ({ entry, rank: searchRank(entry, query) }))
       .filter(({ rank }) => rank >= 0)
       .sort((a, b) => a.rank - b.rank
