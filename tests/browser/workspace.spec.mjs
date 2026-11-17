@@ -72,6 +72,42 @@ test('clinic opening hours update both advisor displays and hide editing in advi
   await expect(page.locator('#hours-list [data-weekday="Tuesday"]')).toContainText('11:00 AM - 3:30 PM');
 });
 
+test('managers can link an existing schedule and add an advisor account to the roster', async ({ page }) => {
+  await page.addInitScript(() => { window.fixtureStaffRole = 'manager'; });
+  await openWorkspace(page, 'light', 'advisor-hours-title');
+  const taylor = page.getByRole('row', { name: /Taylor/ });
+  await taylor.getByRole('button', { name: 'Link account for Taylor' }).click();
+  const link = page.getByRole('dialog', { name: 'Link account for Taylor' });
+  await link.getByLabel('Advisor email').fill('taylor@example.test');
+  await link.getByRole('button', { name: 'Link account' }).click();
+  await expect(link).toBeHidden();
+  await expect(taylor).toContainText('9:15 AM – 5:30 PM');
+  await expect(taylor.getByRole('button', { name: 'Link account for Taylor' })).toHaveCount(0);
+
+  const addButton = page.getByRole('button', { name: 'Add advisor', exact: true });
+  await addButton.click();
+  const add = page.getByRole('dialog', { name: 'Add advisor' });
+  await add.getByLabel('Advisor email').fill('unknown@example.test');
+  await add.getByRole('button', { name: 'Add advisor', exact: true }).click();
+  await expect(add.getByRole('status')).toContainText('No existing advisor account');
+  await add.getByLabel('Advisor email').fill('jordan@example.test');
+  await add.getByRole('button', { name: 'Add advisor', exact: true }).click();
+  const hours = page.getByRole('dialog', { name: 'Edit Jordan’s hours' });
+  await expect(hours).toBeVisible();
+  await expect(hours.getByRole('switch', { name: 'Monday working' })).not.toBeChecked();
+  await hours.getByRole('switch', { name: 'Monday working' }).check();
+  await hours.getByLabel('Monday start').fill('09:00');
+  await hours.getByLabel('Monday end').fill('17:00');
+  await hours.getByRole('button', { name: 'Save hours' }).click();
+  await expect(hours).toBeHidden();
+  await expect(page.getByRole('row', { name: /Jordan/ })).toContainText('9:00 AM – 5:00 PM');
+
+  await page.getByRole('button', { name: 'Account options' }).click();
+  await page.getByLabel('Workspace view').selectOption('advisor');
+  await page.keyboard.press('Escape');
+  await expect(addButton).toBeHidden();
+});
+
 test('a manager can edit Chelsea IV ketamine pricing for the treatment guide', async ({ page }) => {
   await page.addInitScript(() => { window.fixtureStaffRole = 'manager'; });
   await openWorkspace(page, 'dark');

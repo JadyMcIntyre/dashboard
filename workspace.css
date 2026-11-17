@@ -299,6 +299,7 @@
   .sidebar-theme-thumb { transition: none; }
 }
 
+.advisor-hours-heading > .template-toolbar { pointer-events: auto; }
 .advisor-hours-heading { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
 .advisor-hours-table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 0.75rem; }
 .advisor-hours-table-wrap:has(table[hidden]) { display: none; }

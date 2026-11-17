@@ -12,11 +12,40 @@ function createAdvisorHours(client) {
   const form = dialog.querySelector("form");
   const fields = form.querySelector("fieldset");
   const formStatus = form.querySelector("[role=status]");
+  const addAdvisor = panel.querySelector("[data-add-advisor]");
+  const accountDialog = panel.querySelector("#advisor-account-dialog");
+  const accountForm = accountDialog.querySelector("form");
+  const accountStatus = accountForm.querySelector("[role=status]");
+  const accountEmail = accountForm.elements.email;
+  const accountSubmit = accountForm.querySelector("[type=submit]");
+  const accountCancel = accountForm.querySelector("[data-cancel-advisor-account]");
   const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
   let userId = null;
   let canEdit = false;
   let revision = 0;
   let editing = null;
+  let rosterTarget = null;
+  let accessRevision = 0;
+
+  function setAssigning(assigning) {
+    accountEmail.readOnly = assigning;
+    accountSubmit.disabled = assigning;
+    accountCancel.disabled = assigning;
+  }
+
+  function openAccountDialog(advisor = null) {
+    if (!canEdit) return;
+    rosterTarget = advisor;
+    accountForm.reset();
+    accountStatus.textContent = "";
+    accountDialog.querySelector("h3").textContent = advisor ? `Link account for ${advisor.name}` : "Add advisor";
+    accountDialog.querySelector("#advisor-account-help").textContent = advisor
+      ? "Enter the email of an existing advisor. The saved hours will stay with this roster entry."
+      : "Enter the email of an existing advisor account. You can set their weekly hours next.";
+    accountSubmit.textContent = advisor ? "Link account" : "Add advisor";
+    accountDialog.showModal();
+    accountEmail.focus();
+  }
 
   function formatTime(time) {
     const [hour, minute] = time.split(":").map(Number);
@@ -77,6 +106,7 @@ function createAdvisorHours(client) {
   }
 
   function render(advisors) {
+    addAdvisor.hidden = !canEdit;
     table.tHead.querySelector("[data-advisor-hours-actions]").hidden = !canEdit;
     body.replaceChildren(...advisors.map((advisor) => {
       const row = document.createElement("tr");
@@ -101,7 +131,7 @@ function createAdvisorHours(client) {
             cell.append(nextDay);
           }
         } else {
-          cell.textContent = "Off";
+          cell.textContent = advisor.advisor_weekly_hours.length ? "Off" : "—";
           cell.className = "advisor-hours-off";
         }
       });
@@ -110,9 +140,22 @@ function createAdvisorHours(client) {
         button.type = "button";
         button.className = "button-secondary";
         button.textContent = "Edit";
+        button.dataset.editAdvisor = advisor.id;
         button.setAttribute("aria-label", `Edit hours for ${advisor.name}`);
         button.addEventListener("click", () => edit(advisor));
-        row.insertCell().append(button);
+        const actions = document.createElement("div");
+        actions.className = "template-toolbar";
+        actions.append(button);
+        if (!advisor.user_id) {
+          const link = document.createElement("button");
+          link.type = "button";
+          link.className = "ds-button";
+          link.textContent = "Link account";
+          link.setAttribute("aria-label", `Link account for ${advisor.name}`);
+          link.addEventListener("click", () => openAccountDialog(advisor));
+          actions.append(link);
+        }
+        row.insertCell().append(actions);
       }
       return row;
     }));
@@ -131,10 +174,51 @@ function createAdvisorHours(client) {
       if (error) throw error;
       render(data);
       status.textContent = data.length ? message : "No advisor schedules are available.";
+      return data;
     } catch {
       if (request === revision) status.textContent = "Could not load advisor hours. Try Refresh.";
     }
   }
+
+  addAdvisor.addEventListener("click", () => openAccountDialog());
+  accountCancel.addEventListener("click", () => accountDialog.close());
+  accountDialog.addEventListener("cancel", event => {
+    if (accountSubmit.disabled) event.preventDefault();
+  });
+
+  accountForm.addEventListener("submit", async event => {
+    event.preventDefault();
+    if (!canEdit || accountSubmit.disabled) return;
+    const request = accessRevision;
+    const target = rosterTarget;
+    setAssigning(true);
+    accountStatus.textContent = "Saving…";
+    try {
+      const { data: advisorId, error } = await client.rpc("assign_advisor_roster", {
+        account_email: accountEmail.value.trim(), roster_id: target?.id ?? null
+      });
+      if (request !== accessRevision) return;
+      if (error) {
+        const messages = {
+          PT404: "No existing advisor account matches that email.",
+          PT409: "This roster entry is already linked or no longer available.",
+          23505: "That account or name is already on the roster. Use Link account on an unlinked entry."
+        };
+        accountStatus.textContent = messages[error.code] ?? "Could not update the roster. Try again.";
+        return;
+      }
+      accountDialog.close();
+      const advisors = await load(target ? "Advisor account linked." : "Advisor added. Set their weekly hours.");
+      if (request !== accessRevision || panel.hidden) return;
+      const advisor = advisors?.find(entry => entry.id === advisorId);
+      if (!target && advisor) edit(advisor);
+      else if (target) body.querySelector(`[data-edit-advisor="${target.id}"]`)?.focus();
+    } catch {
+      if (request === accessRevision) accountStatus.textContent = "Could not update the roster. Try again.";
+    } finally {
+      if (request === accessRevision) setAssigning(false);
+    }
+  });
 
   panel.querySelector("[data-advisor-hours-refresh]").addEventListener("click", () => void load());
   document.addEventListener("workspace-view-change", () => { if (!panel.hidden) void load(); });
@@ -160,7 +244,7 @@ function createAdvisorHours(client) {
     }
     const changes = shifts.filter(({ weekday, starts_at, ends_at }) => {
       const prior = editing.advisor_weekly_hours.find((shift) => shift.weekday === weekday);
-      return starts_at !== (prior?.starts_at?.slice(0, 5) || null) ||
+      return !editing.advisor_weekly_hours.length || starts_at !== (prior?.starts_at?.slice(0, 5) || null) ||
         ends_at !== (prior?.ends_at?.slice(0, 5) || null);
     });
     if (!changes.length) {
@@ -189,6 +273,9 @@ function createAdvisorHours(client) {
 
   return (owner, role) => {
     ++revision;
+    ++accessRevision;
+    accountDialog.close();
+    setAssigning(false);
     userId = owner;
     canEdit = role === "manager" || role === "owner";
     editing = null;

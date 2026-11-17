@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!-- Renue Wellness Dashboard | Original design and development by J Mc Intyre, 2026. -->
 
-<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/><title>Renue Wellness · Care workspace</title><meta content="Renue Wellness clinic reference, patient messages and intake tools." name="description"/><link href="./resources/brand/renue-mark.svg" rel="icon" type="image/svg+xml"/><script src="./theme.js?v=sidebar-switch"></script><link as="font" crossorigin="" href="./resources/brand/fonts/gotham-book.woff2" rel="preload" type="font/woff2"/><link href="./styles.css?v=ux2" rel="stylesheet"/><link href="./brand.css?v=ux2" rel="stylesheet"/><link href="./vitamins.css?v=workspace-integrated" rel="stylesheet"/><link href="./workspace.css?v=advisor-day-switch" rel="stylesheet"/><link href="./theme.css?v=ux-final" rel="stylesheet"/><link rel="stylesheet" href="./staff-access.css?v=remember-email"/><meta name="author" content="J Mc Intyre"/><meta name="creator" content="J Mc Intyre"/><link rel="stylesheet" href="./developer-attribution.css"/>
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/><title>Renue Wellness · Care workspace</title><meta content="Renue Wellness clinic reference, patient messages and intake tools." name="description"/><link href="./resources/brand/renue-mark.svg" rel="icon" type="image/svg+xml"/><script src="./theme.js?v=sidebar-switch"></script><link as="font" crossorigin="" href="./resources/brand/fonts/gotham-book.woff2" rel="preload" type="font/woff2"/><link href="./styles.css?v=ux2" rel="stylesheet"/><link href="./brand.css?v=ux2" rel="stylesheet"/><link href="./vitamins.css?v=workspace-integrated" rel="stylesheet"/><link href="./workspace.css?v=roster-management" rel="stylesheet"/><link href="./theme.css?v=ux-final" rel="stylesheet"/><link rel="stylesheet" href="./staff-access.css?v=remember-email"/><meta name="author" content="J Mc Intyre"/><meta name="creator" content="J Mc Intyre"/><link rel="stylesheet" href="./developer-attribution.css"/>
 <meta property="og:type" content="website"/>
 <meta property="og:site_name" content="Renue Wellness"/>
 <meta property="og:title" content="Renue Wellness Dashboard"/>
@@ -246,7 +246,8 @@
 </div>
 </section><section id="advisor-hours-panel" class="panel workspace-panel ds-work-view" data-workspace-view="advisor-hours-title" aria-labelledby="advisor-hours-title" hidden>
 <div class="section-heading advisor-hours-heading"><h2 id="advisor-hours-title">Weekly advisor schedule</h2>
-<button class="button-secondary ds-icon-button template-icon-button" type="button" data-advisor-hours-refresh aria-label="Refresh advisor hours" title="Refresh advisor hours"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7v5h-5M4 17v-5h5M6 8a7 7 0 0 1 11.8-1.7L20 9M4 15l2.2 2.7A7 7 0 0 0 18 16"/></svg></button></div>
+<div class="template-toolbar"><button class="ds-button" data-variant="primary" type="button" data-add-advisor hidden>Add advisor</button>
+<button class="button-secondary ds-icon-button template-icon-button" type="button" data-advisor-hours-refresh aria-label="Refresh advisor hours" title="Refresh advisor hours"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7v5h-5M4 17v-5h5M6 8a7 7 0 0 1 11.8-1.7L20 9M4 15l2.2 2.7A7 7 0 0 0 18 16"/></svg></button></div></div>
 <p class="advisor-hours-status" role="status"></p>
 <div class="advisor-hours-table-wrap">
 <table class="advisor-hours-table ds-table" hidden>
@@ -260,6 +261,18 @@
 <fieldset aria-label="Weekly shifts"></fieldset>
 <p class="advisor-hours-status" role="status"></p>
 <div class="template-toolbar"><button class="button ds-button" data-variant="primary" type="submit">Save hours</button><button class="button-secondary ds-button" type="button" data-advisor-hours-cancel>Cancel</button></div>
+</form>
+</dialog>
+<dialog class="ds-dialog" id="advisor-account-dialog" aria-labelledby="advisor-account-title">
+<h3 id="advisor-account-title">Add advisor</h3>
+<p class="view-description" id="advisor-account-help"></p>
+<form>
+<label class="ds-field">Advisor email<input class="ds-input" type="email" name="email" required maxlength="254" autocomplete="off" aria-describedby="advisor-account-help"></label>
+<p class="advisor-hours-status" role="status"></p>
+<div class="template-toolbar">
+<button class="ds-button" data-variant="primary" type="submit">Add advisor</button>
+<button class="ds-button" type="button" data-cancel-advisor-account>Cancel</button>
+</div>
 </form>
 </dialog>
 </section>
@@ -400,4 +413,4 @@
 </div>
 </form>
 </div>
-</div><div aria-live="polite" class="toast" id="toast" role="status"></div><script src="./vitamins-data.js?v=1"></script><script src="./care-content.js?v=treatment-pricing"></script><script src="./contact-directory.js?v=manage-clinic-data"></script><script src="./clinic-hours.js?v=1"></script><script src="./app.js?v=clinic-hours"></script><script src="./vitamins.js?v=workspace-components"></script><script src="./treatment-pricing.js?v=1"></script><script src="./care-tools.js?v=treatment-pricing"></script><script src="./workspace.js?v=treatment-pricing"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.89.0/dist/umd/supabase.js"></script><script src="./personal-templates.js?v=workspace-components"></script><script src="./advisor-hours.js?v=working-switch"></script><script src="./supabase-config.js"></script><script src="./staff-access.js?v=clinic-hours"></script></body></html>
+</div><div aria-live="polite" class="toast" id="toast" role="status"></div><script src="./vitamins-data.js?v=1"></script><script src="./care-content.js?v=treatment-pricing"></script><script src="./contact-directory.js?v=manage-clinic-data"></script><script src="./clinic-hours.js?v=1"></script><script src="./app.js?v=clinic-hours"></script><script src="./vitamins.js?v=workspace-components"></script><script src="./treatment-pricing.js?v=1"></script><script src="./care-tools.js?v=treatment-pricing"></script><script src="./workspace.js?v=treatment-pricing"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.89.0/dist/umd/supabase.js"></script><script src="./personal-templates.js?v=workspace-components"></script><script src="./advisor-hours.js?v=roster-management"></script><script src="./supabase-config.js"></script><script src="./staff-access.js?v=clinic-hours"></script></body></html>

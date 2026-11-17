@@ -6,7 +6,8 @@
     company_email_contacts: [{ id: 1, label: 'Intake support', email: 'intake@example.test' }],
     advisor_roster: [
       { id: 1, name: 'Alex', user_id: 'test-advisor', advisor_weekly_hours: [{ weekday: 1, starts_at: '08:30', ends_at: '17:30' }] },
-      { id: 2, name: 'Morgan', user_id: 'test-colleague', advisor_weekly_hours: [{ weekday: 1, starts_at: '10:00', ends_at: '19:00' }] }
+      { id: 2, name: 'Morgan', user_id: 'test-colleague', advisor_weekly_hours: [{ weekday: 1, starts_at: '10:00', ends_at: '19:00' }] },
+      { id: 3, name: 'Taylor', user_id: null, advisor_weekly_hours: [{ weekday: 1, starts_at: '09:15', ends_at: '17:30' }] }
     ],
     organization_contacts: {
       fax: '212-555-0100', website_url: 'https://renue.example.test',
@@ -49,7 +50,17 @@
           update(values) { changes = values; return query; },
           eq(key, value) { filters.set(key, value); return query; },
           order: () => query,
-          is(key, value) { filters.set(key, value); return query; }, in: () => query, neq: () => query, upsert: () => query, or: () => query,
+          is(key, value) { filters.set(key, value); return query; }, in: () => query, neq: () => query, or: () => query,
+          async upsert(shifts) {
+            if (table !== 'advisor_weekly_hours') return response;
+            for (const { advisor_id, ...shift } of shifts) {
+              const hours = data.advisor_roster.find(advisor => advisor.id === advisor_id).advisor_weekly_hours;
+              const index = hours.findIndex(entry => entry.weekday === shift.weekday);
+              if (index < 0) hours.push(shift);
+              else hours[index] = shift;
+            }
+            return { error: null };
+          },
           async maybeSingle() {
             if (!['clinic_contacts', 'clinic_treatment_prices', 'clinic_opening_hours'].includes(table) || !changes) return response;
             const row = data[table].find(clinic =>
@@ -63,7 +74,25 @@
         };
         return query;
       },
-      async rpc() { return { data: null, error: null }; }
+      async rpc(name, args) {
+        if (name !== 'assign_advisor_roster') return { data: null, error: null };
+        const accounts = {
+          'jordan@example.test': { name: 'Jordan', user_id: 'test-jordan' },
+          'taylor@example.test': { name: 'Taylor', user_id: 'test-taylor' }
+        };
+        const account = accounts[args.account_email];
+        if (!account) return { data: null, error: { code: 'PT404' } };
+        const roster = data.advisor_roster;
+        if (args.roster_id === null) {
+          const id = roster.length + 1;
+          roster.push({ ...account, id, advisor_weekly_hours: [] });
+          return { data: id, error: null };
+        }
+        const row = roster.find(advisor => advisor.id === args.roster_id && !advisor.user_id);
+        if (!row) return { data: null, error: { code: 'PT409' } };
+        row.user_id = account.user_id;
+        return { data: row.id, error: null };
+      }
     })
   };
 })();
