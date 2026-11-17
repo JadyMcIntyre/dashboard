@@ -2,7 +2,7 @@
   const staff = { user: { id: 'test-advisor' } };
   let onAuthState;
   const data = {
-    staff_profiles: { display_name: 'Alex', role: 'advisor' },
+    staff_profiles: { display_name: 'Alex', role: window.fixtureStaffRole || 'advisor' },
     company_email_contacts: [{ id: 1, label: 'Intake support', email: 'intake@example.test' }],
     advisor_roster: [
       { id: 1, name: 'Alex', user_id: 'test-advisor', advisor_weekly_hours: [{ weekday: 1, starts_at: '08:30', ends_at: '17:30' }] },

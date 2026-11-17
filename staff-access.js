@@ -80,6 +80,16 @@ if (!window.supabase || !window.renueSupabaseConfig) {
   let revision = 0;
   let submitting = false;
   let visibleUserId = null;
+  let managerRole = null;
+
+  workspaceViewMode.addEventListener("change", () => {
+    if (!visibleUserId || !managerRole) return;
+    const mode = workspaceViewMode.value;
+    const viewRole = mode === "advisor" ? "advisor" : managerRole;
+    templateEditors.setOwner(visibleUserId, viewRole);
+    setAdvisorHoursOwner(visibleUserId, viewRole);
+    applyWorkspaceViewMode(mode);
+  });
   let inviteSession = null;
 
   function startMessageCopyUsage(userId) {
@@ -137,6 +147,9 @@ if (!window.supabase || !window.renueSupabaseConfig) {
     templateEditors.setOwner(visibleUserId, data.role);
     setCommunityOwner(visibleUserId);
     setAdvisorHoursOwner(visibleUserId, data.role);
+    managerRole = ["manager", "owner"].includes(data.role) ? data.role : null;
+    workspaceViewControl.hidden = !managerRole;
+    applyWorkspaceViewMode(managerRole ? "manager" : "advisor");
     renderVoicemails();
     account.textContent = data.display_name + " · " + role;
     signIn.reset();
@@ -173,6 +186,8 @@ if (!window.supabase || !window.renueSupabaseConfig) {
         (event === "TOKEN_REFRESHED" || event === "SIGNED_IN")) return;
     const currentRevision = ++revision;
     visibleUserId = null;
+    managerRole = null;
+    workspaceViewControl.hidden = true;
     setMessageCopyUsage(null);
     staffDisplayName = "";
     templateEditors.setOwner(null);

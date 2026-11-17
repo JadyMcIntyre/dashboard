@@ -4,6 +4,39 @@ import { openSignIn, openWorkspace } from './workspace-fixture.mjs';
 const clinic = (page, id) => page.locator(`input[name="call-state"][value="${id}"] + span`);
 const treatment = (page, id) => page.locator(`[data-treatment-guide="${id}"]`);
 
+test('managers can switch between management and advisor views', async ({ page }) => {
+  await page.addInitScript(() => { window.fixtureStaffRole = 'manager'; });
+  await openWorkspace(page, 'light', 'messages-title');
+  const nav = page.getByRole('navigation', { name: 'Workspace tools' });
+  const account = page.getByRole('button', { name: 'Account options' });
+  const mode = page.getByLabel('Workspace view');
+  await expect(page).toHaveURL(/#insurance-title$/);
+  await expect(nav.getByRole('link', { name: 'Messages', exact: true })).toBeHidden();
+  await expect(nav.getByRole('link', { name: 'Voicemail scripts', exact: true })).toBeHidden();
+  await page.keyboard.press('Control+k');
+  await page.locator('#workspace-search').fill('Clinic callback');
+  await expect(page.getByRole('option')).toHaveCount(0);
+  await page.keyboard.press('Escape');
+
+  await nav.getByRole('link', { name: 'Advisor hours' }).click();
+  await expect(page.getByRole('button', { name: 'Edit hours for Morgan' })).toBeVisible();
+  await account.click();
+  await expect(mode).toHaveValue('manager');
+  await mode.selectOption('advisor');
+  await page.keyboard.press('Escape');
+  await expect(page.getByRole('button', { name: 'Edit hours for Morgan' })).toHaveCount(0);
+  await expect(nav.getByRole('link', { name: 'Voicemail scripts', exact: true })).toBeVisible();
+  await nav.getByRole('link', { name: 'Messages', exact: true }).click();
+  await expect(page.getByRole('article', { name: 'Selected message' })).toBeVisible();
+
+  await account.click();
+  await mode.selectOption('manager');
+  await page.keyboard.press('Escape');
+  await expect(page).toHaveURL(/#insurance-title$/);
+  await nav.getByRole('link', { name: 'Advisor hours' }).click();
+  await expect(page.getByRole('button', { name: 'Edit hours for Morgan' })).toBeVisible();
+});
+
 test('staff sign-in, password visibility and sign-out keep the workspace gated', async ({ page }) => {
   await openSignIn(page, 'light');
   await expect(page.locator('.workspace-shell')).toBeHidden();
