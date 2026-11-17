@@ -12,7 +12,7 @@
 <meta property="og:image:width" content="1200"/>
 <meta property="og:image:height" content="630"/>
 <meta property="og:image:alt" content="Renue Wellness logo"/>
-<link rel="stylesheet" href="./assets/renue-ui.css?v=treatment-pricing"/>
+<link rel="stylesheet" href="./assets/renue-ui.css?v=clinic-hours"/>
 </head><body class="workspace-page"><a class="skip-link" href="#workspace-main">Skip to content</a><main id="staff-access" class="staff-access">
   <section class="panel staff-sign-in-panel ds-card" aria-labelledby="staff-access-title">
     <img alt="Renue Wellness" width="169" src="./resources/brand/renue-logo.svg"/>
@@ -290,6 +290,24 @@
     </div>
   </form>
 </dialog>
+  <section class="clinic-opening-hours-section" aria-labelledby="manage-clinic-hours-title">
+    <h3 id="manage-clinic-hours-title">Clinic opening hours</h3>
+    <p class="view-description">Weekly schedules in each clinic’s local time.</p>
+    <div id="manage-clinic-hours-list" class="template-toolbar"></div>
+    <p id="manage-clinic-hours-status" role="status"></p>
+    <dialog class="ds-dialog advisor-hours-dialog" id="clinic-hours-editor" aria-labelledby="clinic-hours-editor-title">
+      <h3 id="clinic-hours-editor-title">Edit opening hours</h3>
+      <p class="view-description">Use the switch to open or close each day. Times are local to the clinic.</p>
+      <form>
+        <fieldset aria-label="Weekly opening hours"></fieldset>
+        <p role="status"></p>
+        <div class="template-toolbar">
+          <button class="ds-button" data-variant="primary" type="submit">Save opening hours</button>
+          <button class="ds-button" type="button" data-cancel-clinic-hours>Cancel</button>
+        </div>
+      </form>
+    </dialog>
+  </section>
   <section class="treatment-pricing-section" aria-labelledby="manage-treatment-pricing">
     <h3 id="manage-treatment-pricing">Treatment pricing</h3>
     <p class="view-description">IV ketamine · Prices per session in USD</p>
@@ -382,4 +400,4 @@
 </div>
 </form>
 </div>
-</div><div aria-live="polite" class="toast" id="toast" role="status"></div><script src="./vitamins-data.js?v=1"></script><script src="./care-content.js?v=treatment-pricing"></script><script src="./contact-directory.js?v=manage-clinic-data"></script><script src="./app.js?v=workspace-components"></script><script src="./vitamins.js?v=workspace-components"></script><script src="./treatment-pricing.js?v=1"></script><script src="./care-tools.js?v=treatment-pricing"></script><script src="./workspace.js?v=treatment-pricing"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.89.0/dist/umd/supabase.js"></script><script src="./personal-templates.js?v=workspace-components"></script><script src="./advisor-hours.js?v=working-switch"></script><script src="./supabase-config.js"></script><script src="./staff-access.js?v=treatment-pricing"></script></body></html>
+</div><div aria-live="polite" class="toast" id="toast" role="status"></div><script src="./vitamins-data.js?v=1"></script><script src="./care-content.js?v=treatment-pricing"></script><script src="./contact-directory.js?v=manage-clinic-data"></script><script src="./clinic-hours.js?v=1"></script><script src="./app.js?v=clinic-hours"></script><script src="./vitamins.js?v=workspace-components"></script><script src="./treatment-pricing.js?v=1"></script><script src="./care-tools.js?v=treatment-pricing"></script><script src="./workspace.js?v=treatment-pricing"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.89.0/dist/umd/supabase.js"></script><script src="./personal-templates.js?v=workspace-components"></script><script src="./advisor-hours.js?v=working-switch"></script><script src="./supabase-config.js"></script><script src="./staff-access.js?v=clinic-hours"></script></body></html>

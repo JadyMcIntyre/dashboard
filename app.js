@@ -746,7 +746,7 @@ function updateFabHours() {
   }
 
   const clinic = clinicLocations[selectedLocationId];
-  const location = officeHours.find((office) => office.location === clinic.hoursName);
+  const location = getClinicOfficeHours(selectedLocationId);
   if (!location) {
     fabHoursEl.textContent = "";
     return;
@@ -1034,7 +1034,7 @@ function renderHours() {
   }
 
   const clinic = clinicLocations[selectedLocationId];
-  const office = officeHours.find((entry) => entry.location === clinic?.hoursName);
+  const office = getClinicOfficeHours(selectedLocationId);
   if (!office) {
     hoursList.innerHTML = `
       <article class="hours-card hours-card-empty">

@@ -41,6 +41,37 @@ test('a manager can update the selected clinic and see the same contact across t
     .toHaveAttribute('href', /destination=200\+Example\+Avenue/);
 });
 
+test('clinic opening hours update both advisor displays and hide editing in advisor view', async ({ page }) => {
+  await page.addInitScript(() => { window.fixtureStaffRole = 'manager'; });
+  await openWorkspace(page, 'light', 'hours-title');
+  await page.clock.setFixedTime(new Date('2026-11-17T16:00:00Z'));
+  await clinic(page, 'CHELSEA').click();
+  await expect(page.locator('#fab-hours')).toContainText('Closed');
+  await page.getByRole('link', { name: 'Manage clinic data' }).click();
+  const edit = page.locator('[data-edit-clinic-hours="CHELSEA"]');
+  await edit.click();
+  const dialog = page.getByRole('dialog');
+  const tuesday = dialog.getByRole('switch', { name: 'Tuesday open' });
+  await expect(tuesday).not.toBeChecked();
+  await expect(dialog.getByLabel('Tuesday opens')).toBeHidden();
+  await tuesday.check();
+  await dialog.getByLabel('Tuesday opens').fill('11:00');
+  await dialog.getByLabel('Tuesday closes').fill('10:00');
+  await dialog.getByRole('button', { name: 'Save opening hours' }).click();
+  await expect(dialog.getByRole('status')).toContainText('Closing time must be after opening time');
+  await dialog.getByLabel('Tuesday closes').fill('15:30');
+  await dialog.getByRole('button', { name: 'Save opening hours' }).click();
+  await expect(dialog).toBeHidden();
+  await expect(page.locator('#fab-hours')).toHaveText('Tue 11:00 AM-3:30 PM');
+
+  await page.getByRole('button', { name: 'Account options' }).click();
+  await page.getByLabel('Workspace view').selectOption('advisor');
+  await page.keyboard.press('Escape');
+  await expect(edit).toBeHidden();
+  await page.getByRole('link', { name: 'Hours & contacts' }).click();
+  await expect(page.locator('#hours-list [data-weekday="Tuesday"]')).toContainText('11:00 AM - 3:30 PM');
+});
+
 test('a manager can edit Chelsea IV ketamine pricing for the treatment guide', async ({ page }) => {
   await page.addInitScript(() => { window.fixtureStaffRole = 'manager'; });
   await openWorkspace(page, 'dark');

@@ -77,6 +77,7 @@ if (!window.supabase || !window.renueSupabaseConfig) {
   const setAdvisorHoursOwner = createAdvisorHours(client);
   const setClinicContactEditor = createClinicContactEditor(client);
   const setTreatmentPricingEditor = createTreatmentPricingEditor(client);
+  const setClinicHoursEditor = createClinicHoursEditor(client);
   let clinicDirectory = null;
   const templateEditors = createPersonalTemplateEditors(client);
   const setCommunityOwner = createTemplateCommunity(client, templateEditors.manageSharedTemplate);
@@ -93,6 +94,7 @@ if (!window.supabase || !window.renueSupabaseConfig) {
     setAdvisorHoursOwner(visibleUserId, viewRole);
     setClinicContactEditor(visibleUserId, viewRole, clinicDirectory);
     setTreatmentPricingEditor(viewRole);
+    setClinicHoursEditor(viewRole);
     applyWorkspaceViewMode(mode);
   });
   let inviteSession = null;
@@ -139,7 +141,9 @@ if (!window.supabase || !window.renueSupabaseConfig) {
       return;
     }
 
-    const [directory, pricing] = await Promise.all([fetchContactDirectory(client), fetchIvkPricing(client)]);
+    const [directory, pricing, schedules] = await Promise.all([
+      fetchContactDirectory(client), fetchIvkPricing(client), fetchClinicSchedules(client)
+    ]);
     if (currentRevision !== revision) return;
     await workspaceInitialisation;
     if (currentRevision !== revision) return;
@@ -155,6 +159,7 @@ if (!window.supabase || !window.renueSupabaseConfig) {
     setAdvisorHoursOwner(visibleUserId, data.role);
     setClinicContactEditor(visibleUserId, data.role, clinicDirectory);
     setTreatmentPricingEditor(data.role, pricing);
+    setClinicHoursEditor(data.role, schedules);
     managerRole = ["manager", "owner"].includes(data.role) ? data.role : null;
     workspaceViewControl.hidden = !managerRole;
     applyWorkspaceViewMode(managerRole ? "manager" : "advisor");
@@ -203,6 +208,7 @@ if (!window.supabase || !window.renueSupabaseConfig) {
     setAdvisorHoursOwner(null);
     setClinicContactEditor(null);
     setTreatmentPricingEditor(null, null);
+    setClinicHoursEditor(null, new Map());
     clinicDirectory = null;
     closeAppointmentModal(null);
     workspace.hidden = true;

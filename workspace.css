@@ -318,7 +318,7 @@
 .advisor-hours-status { color: var(--muted); }
 .advisor-hours-status:empty { display: none; }
 .advisor-hours-dialog h3 { margin: 0 0 .4rem; }
-#advisor-hours-panel .advisor-hours-dialog { width: min(520px, calc(100% - 32px)); }
+#advisor-hours-panel .advisor-hours-dialog, #clinic-hours-editor { width: min(520px, calc(100% - 32px)); }
 .advisor-hours-field-row {
   display: grid;
   grid-template-columns: minmax(84px, .8fr) minmax(100px, .9fr) minmax(0, 2fr);

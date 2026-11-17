@@ -13,6 +13,9 @@
       carecredit_url: 'https://carecredit.example.test', advance_care_url: 'https://advance-care.example.test',
       access_a_ride_url: 'https://transport.example.test', access_a_ride_phone: '212-555-0101'
     },
+    clinic_opening_hours: [
+      { clinic_id: 'CHELSEA', schedule: [['10:00', '18:30'], ['09:30', '20:30'], null, ['12:00', '20:30'], ['09:30', '20:30'], null, null] }
+    ],
     clinic_treatment_prices: [
       ['NY', 500, 450, null], ['CHELSEA', 500, 450, 400],
       ['NJ', 525, 475, null], ['FL', null, null, null]
@@ -48,9 +51,9 @@
           order: () => query,
           is(key, value) { filters.set(key, value); return query; }, in: () => query, neq: () => query, upsert: () => query, or: () => query,
           async maybeSingle() {
-            if (!['clinic_contacts', 'clinic_treatment_prices'].includes(table) || !changes) return response;
+            if (!['clinic_contacts', 'clinic_treatment_prices', 'clinic_opening_hours'].includes(table) || !changes) return response;
             const row = data[table].find(clinic =>
-              [...filters].every(([key, value]) => clinic[key] === value)
+              [...filters].every(([key, value]) => key === 'schedule' ? JSON.stringify(clinic[key]) === value : clinic[key] === value)
             );
             if (row) Object.assign(row, changes);
             return { data: row ? { ...row } : null, error: null };
