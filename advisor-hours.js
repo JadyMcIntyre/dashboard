@@ -33,7 +33,22 @@ function createAdvisorHours(client) {
       row.className = "advisor-hours-field-row";
       const dayLabel = document.createElement("strong");
       dayLabel.textContent = day;
-      row.append(dayLabel);
+      const working = document.createElement("input");
+      working.type = "checkbox";
+      working.name = `working-${weekday}`;
+      working.className = "advisor-hours-switch";
+      working.setAttribute("role", "switch");
+      working.setAttribute("aria-label", `${day} working`);
+      working.checked = Boolean(shift?.starts_at || shift?.ends_at);
+
+      const state = document.createElement("label");
+      state.className = "advisor-hours-day-state";
+      const stateText = document.createElement("span");
+      stateText.setAttribute("aria-hidden", "true");
+      state.append(working, stateText);
+      const times = document.createElement("div");
+      times.className = "advisor-hours-times";
+      row.append(dayLabel, state, times);
       for (const [key, labelText] of [["starts_at", "Start"], ["ends_at", "End"]]) {
         const label = document.createElement("label");
         label.className = "field";
@@ -44,8 +59,18 @@ function createAdvisorHours(client) {
         input.setAttribute("aria-label", `${day} ${labelText.toLowerCase()}`);
         input.value = shift?.[key]?.slice(0, 5) || "";
         label.append(input);
-        row.append(label);
+        times.append(label);
       }
+      function updateDay() {
+        stateText.textContent = working.checked ? "Working" : "Day off";
+        times.hidden = !working.checked;
+        times.querySelectorAll("input").forEach(input => {
+          input.disabled = !working.checked;
+          input.required = working.checked;
+        });
+      }
+      working.addEventListener("change", updateDay);
+      updateDay();
       return row;
     }));
     dialog.showModal();
@@ -118,16 +143,19 @@ function createAdvisorHours(client) {
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
     if (!editing || !userId || !canEdit || fields.disabled) return;
-    const shifts = weekdays.map((_, weekday) => ({
-      advisor_id: editing.id,
-      weekday,
-      starts_at: form.elements[`starts_at-${weekday}`].value || null,
-      ends_at: form.elements[`ends_at-${weekday}`].value || null,
-    }));
+    const shifts = weekdays.map((_, weekday) => {
+      const working = form.elements[`working-${weekday}`].checked;
+      return {
+        advisor_id: editing.id,
+        weekday,
+        starts_at: working ? form.elements[`starts_at-${weekday}`].value : null,
+        ends_at: working ? form.elements[`ends_at-${weekday}`].value : null,
+      };
+    });
     const invalid = shifts.find(({ starts_at, ends_at }) =>
-      Boolean(starts_at) !== Boolean(ends_at) || (starts_at && starts_at === ends_at));
+      starts_at !== null && (!starts_at || !ends_at || starts_at === ends_at));
     if (invalid) {
-      formStatus.textContent = `Enter different start and end times for ${weekdays[invalid.weekday]}, or leave both blank for a day off.`;
+      formStatus.textContent = `Enter different start and end times for ${weekdays[invalid.weekday]}, or turn its Working switch off.`;
       return;
     }
     const changes = shifts.filter(({ weekday, starts_at, ends_at }) => {

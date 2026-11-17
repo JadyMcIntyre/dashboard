@@ -57,6 +57,18 @@ test('managers can switch between management and advisor views', async ({ page }
 
   await nav.getByRole('link', { name: 'Advisor hours' }).click();
   await expect(page.getByRole('button', { name: 'Edit hours for Morgan' })).toBeVisible();
+  await page.getByRole('button', { name: 'Edit hours for Morgan' }).click();
+  const hours = page.getByRole('dialog', { name: /Edit Morgan/ });
+  const monday = hours.getByRole('switch', { name: 'Monday working' });
+  const start = hours.getByLabel('Monday start');
+  await expect(hours.getByRole('switch', { name: 'Sunday working' })).not.toBeChecked();
+  await expect(hours.getByLabel('Sunday start')).toBeHidden();
+  await expect(start).toHaveValue('10:00');
+  await monday.click();
+  await expect(start).toBeHidden();
+  await monday.click();
+  await expect(start).toHaveValue('10:00');
+  await hours.getByRole('button', { name: 'Cancel' }).click();
   await account.click();
   await expect(mode).toHaveValue('manager');
   await mode.selectOption('advisor');
