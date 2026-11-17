@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!-- Renue Wellness Dashboard | Original design and development by J Mc Intyre, 2026. -->
 
-<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/><title>Renue Wellness · Care workspace</title><meta content="Renue Wellness clinic reference, patient messages and intake tools." name="description"/><link href="./resources/brand/renue-mark.svg" rel="icon" type="image/svg+xml"/><script src="./theme.js?v=sidebar-switch"></script><link as="font" crossorigin="" href="./resources/brand/fonts/gotham-book.woff2" rel="preload" type="font/woff2"/><link href="./styles.css?v=ux2" rel="stylesheet"/><link href="./brand.css?v=ux2" rel="stylesheet"/><link href="./vitamins.css?v=workspace-integrated" rel="stylesheet"/><link href="./workspace.css?v=message-card-drag" rel="stylesheet"/><link href="./theme.css?v=ux-final" rel="stylesheet"/><link rel="stylesheet" href="./staff-access.css?v=remember-email"/><meta name="author" content="J Mc Intyre"/><meta name="creator" content="J Mc Intyre"/><link rel="stylesheet" href="./developer-attribution.css"/>
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/><title>Renue Wellness · Care workspace</title><meta content="Renue Wellness clinic reference, patient messages and intake tools." name="description"/><link href="./resources/brand/renue-mark.svg" rel="icon" type="image/svg+xml"/><script src="./theme.js?v=sidebar-switch"></script><link as="font" crossorigin="" href="./resources/brand/fonts/gotham-book.woff2" rel="preload" type="font/woff2"/><link href="./styles.css?v=ux2" rel="stylesheet"/><link href="./brand.css?v=ux2" rel="stylesheet"/><link href="./vitamins.css?v=workspace-integrated" rel="stylesheet"/><link href="./workspace.css?v=advisor-day-switch" rel="stylesheet"/><link href="./theme.css?v=ux-final" rel="stylesheet"/><link rel="stylesheet" href="./staff-access.css?v=remember-email"/><meta name="author" content="J Mc Intyre"/><meta name="creator" content="J Mc Intyre"/><link rel="stylesheet" href="./developer-attribution.css"/>
 <meta property="og:type" content="website"/>
 <meta property="og:site_name" content="Renue Wellness"/>
 <meta property="og:title" content="Renue Wellness Dashboard"/>
@@ -12,41 +12,42 @@
 <meta property="og:image:width" content="1200"/>
 <meta property="og:image:height" content="630"/>
 <meta property="og:image:alt" content="Renue Wellness logo"/>
+<link rel="stylesheet" href="./assets/renue-ui.css?v=clinic-hours"/>
 </head><body class="workspace-page"><a class="skip-link" href="#workspace-main">Skip to content</a><main id="staff-access" class="staff-access">
-  <section class="panel staff-sign-in-panel" aria-labelledby="staff-access-title">
+  <section class="panel staff-sign-in-panel ds-card" aria-labelledby="staff-access-title">
     <img alt="Renue Wellness" width="169" src="./resources/brand/renue-logo.svg"/>
     <h1 id="staff-access-title">Staff sign-in</h1>
     <form id="staff-sign-in" method="post">
-      <label class="field">Email<input name="email" type="email" autocomplete="username" required/></label>
+      <label class="field">Email<input class="ds-input" name="email" type="email" autocomplete="username" required/></label>
       <div class="field">
         <label for="sign-in-password">Password</label>
         <div class="password-field">
-          <input id="sign-in-password" name="password" type="password" autocomplete="current-password" required/>
+          <input class="ds-input" id="sign-in-password" name="password" type="password" autocomplete="current-password" required/>
           <button class="password-visibility" type="button" aria-controls="sign-in-password" aria-label="Show password" hidden>Show</button>
         </div>
       </div>
       <label class="remember-email"><input name="remember_email" type="checkbox"/> Remember email on this device</label>
-      <button class="button" type="submit" disabled>Sign in</button>
+      <button class="button ds-button" data-variant="primary" type="submit" disabled>Sign in</button>
       <p id="staff-sign-in-status" role="status">Checking your session…</p>
     </form>
     <form id="staff-set-password" method="post" hidden>
-      <label class="field">First name<input name="first_name" type="text" autocomplete="given-name" maxlength="60" aria-describedby="staff-first-name-help" required/></label>
+      <label class="field">First name<input class="ds-input" name="first_name" type="text" autocomplete="given-name" maxlength="60" aria-describedby="staff-first-name-help" required/></label>
       <p class="muted" id="staff-first-name-help">Enter only your first name. It will appear in the dashboard and be filled in when you use your name in messages and voicemail scripts.</p>
       <div class="field">
         <label for="new-staff-password">New password</label>
         <div class="password-field">
-          <input id="new-staff-password" name="password" type="password" autocomplete="new-password" minlength="8" required/>
+          <input class="ds-input" id="new-staff-password" name="password" type="password" autocomplete="new-password" minlength="8" required/>
           <button class="password-visibility" type="button" aria-controls="new-staff-password" aria-label="Show new password" hidden>Show</button>
         </div>
       </div>
       <div class="field">
         <label for="confirm-staff-password">Confirm password</label>
         <div class="password-field">
-          <input id="confirm-staff-password" name="confirmation" type="password" autocomplete="new-password" minlength="8" required/>
+          <input class="ds-input" id="confirm-staff-password" name="confirmation" type="password" autocomplete="new-password" minlength="8" required/>
           <button class="password-visibility" type="button" aria-controls="confirm-staff-password" aria-label="Show confirm password" hidden>Show</button>
         </div>
       </div>
-      <button class="button" type="submit">Set password</button>
+      <button class="button ds-button" data-variant="primary" type="submit">Set password</button>
       <p role="status"></p>
     </form>
     <footer class="sign-in-attribution-footer"><img class="developer-attribution" src="./resources/developer/j-mc-intyre-monogram.svg" width="190" height="55" alt="Designed &amp; built by J Mc Intyre"/></footer>
@@ -56,25 +57,42 @@
 <aside class="workspace-sidebar">
 <div class="sidebar-header">
 <a aria-label="Renue Wellness insurance reference" class="brand-home" href="#insurance-title"><img class="sidebar-logo" alt="" height="37" src="./resources/brand/renue-logo.svg" width="169"/></a>
-<button class="sidebar-toggle" id="sidebar-toggle" type="button" aria-controls="workspace-nav" aria-expanded="true" aria-label="Collapse sidebar" title="Collapse sidebar"><img class="sidebar-mark" alt="" width="28" height="28" src="./resources/brand/renue-mark.svg"/><svg class="sidebar-toggle-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h18v16H3Z M9 4v16 M16 9l-3 3 3 3"/></svg></button>
+<button class="sidebar-toggle" id="sidebar-toggle" type="button" aria-controls="workspace-nav" aria-expanded="true" aria-label="Collapse sidebar" title="Collapse sidebar"><img class="sidebar-mark" alt="" width="28" height="28" src="./resources/brand/renue-mark.svg"/><svg class="sidebar-toggle-icon ds-icon" aria-hidden="true" focusable="false"><use href="./assets/renue-icons.svg#panel-left"></use></svg></button>
 </div>
-<nav id="workspace-nav" aria-label="Workspace tools" class="section-nav workspace-nav"><div aria-label="During a call" class="workspace-nav-group" role="group"><h2 class="nav-group-label">During a call</h2><a href="#insurance-title"><svg class="sidebar-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s7-3 7-10V5l-7-3-7 3v7c0 7 7 10 7 10Z M9 12l2 2 4-4"/></svg><span class="sidebar-label">Insurance</span></a><a href="#treatment-title"><svg class="sidebar-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6v15 M3 4h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5v15h-5a4 4 0 0 0-4 2 4 4 0 0 0-4-2H3Z"/></svg><span class="sidebar-label">Treatment guide</span></a><a href="#travel-title"><svg class="sidebar-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-8-8 18-2-8-8-2Z"/></svg><span class="sidebar-label">Travel &amp; transport</span></a><a href="#hours-title"><svg class="sidebar-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Z M12 6v6l4 2"/></svg><span class="sidebar-label">Hours &amp; contacts</span></a><a href="#financing-title"><svg class="sidebar-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18v14H3Z M3 10h18 M6 15h4"/></svg><span class="sidebar-label">Financing</span></a><a href="#vitamins-title"><svg class="sidebar-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3h8 M9 3v4l-3 3v10h12V10l-3-3V3 M6 13h12 M10 16h4"/></svg><span class="sidebar-label">Vitamins &amp; IV</span></a></div><div aria-label="Follow-up" class="workspace-nav-group" role="group"><h2 class="nav-group-label">Follow-up</h2><a href="#messages-title"><svg class="sidebar-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v12H9l-5 4Z M8 9h8 M8 12h5"/></svg><span class="sidebar-label">Messages</span></a><a href="#voicemail-title"><svg class="sidebar-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z M17 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z M7 16h10"/></svg><span class="sidebar-label">Voicemail scripts</span></a><a href="#resources-title"><svg class="sidebar-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 15l6-6 M8 17l-1 1a3.5 3.5 0 0 1-5-5l4-4a3.5 3.5 0 0 1 5 0 M16 7l1-1a3.5 3.5 0 0 1 5 5l-4 4a3.5 3.5 0 0 1-5 0"/></svg><span class="sidebar-label">Resources</span></a></div><div aria-label="Workspace" class="workspace-nav-group" role="group"><h2 class="nav-group-label">Workspace</h2><a href="#templates-title"><svg class="sidebar-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h9l4 4v16H6Z M14 2v5h5 M9 11h7 M9 15h7 M9 18h5"/></svg><span class="sidebar-label">Manage templates</span></a><a href="#advisor-hours-title"><svg class="sidebar-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v15H4z M8 3v4m8-4v4M4 10h16m-12 4h2m4 0h2m-8 3h2"/></svg><span class="sidebar-label">Advisor hours</span></a></div></nav>
+<nav id="workspace-nav" aria-label="Workspace tools" class="section-nav workspace-nav"><div aria-label="During a call" class="workspace-nav-group" role="group"><h2 class="nav-group-label">During a call</h2><a href="#insurance-title"><svg class="sidebar-icon ds-icon" aria-hidden="true" focusable="false"><use href="./assets/renue-icons.svg#insurance"></use></svg><span class="sidebar-label">Insurance</span></a><a href="#treatment-title"><svg class="sidebar-icon ds-icon" aria-hidden="true" focusable="false"><use href="./assets/renue-icons.svg#treatment"></use></svg><span class="sidebar-label">Treatment guide</span></a><a href="#travel-title"><svg class="sidebar-icon ds-icon" aria-hidden="true" focusable="false"><use href="./assets/renue-icons.svg#travel"></use></svg><span class="sidebar-label">Travel &amp; transport</span></a><a href="#hours-title"><svg class="sidebar-icon ds-icon" aria-hidden="true" focusable="false"><use href="./assets/renue-icons.svg#hours"></use></svg><span class="sidebar-label">Hours &amp; contacts</span></a><a href="#financing-title"><svg class="sidebar-icon ds-icon" aria-hidden="true" focusable="false"><use href="./assets/renue-icons.svg#financing"></use></svg><span class="sidebar-label">Financing</span></a><a href="#vitamins-title"><svg class="sidebar-icon ds-icon" aria-hidden="true" focusable="false"><use href="./assets/renue-icons.svg#vitamins"></use></svg><span class="sidebar-label">Vitamins &amp; IV</span></a></div><div aria-label="Follow-up" class="workspace-nav-group" role="group"><h2 class="nav-group-label">Follow-up</h2><a href="#messages-title"><svg class="sidebar-icon ds-icon" aria-hidden="true" focusable="false"><use href="./assets/renue-icons.svg#messages"></use></svg><span class="sidebar-label">Messages</span></a><a href="#voicemail-title"><svg class="sidebar-icon ds-icon" aria-hidden="true" focusable="false"><use href="./assets/renue-icons.svg#voicemail"></use></svg><span class="sidebar-label">Voicemail scripts</span></a><a href="#resources-title"><svg class="sidebar-icon ds-icon" aria-hidden="true" focusable="false"><use href="./assets/renue-icons.svg#resources"></use></svg><span class="sidebar-label">Resources</span></a></div><div id="workspace-management-nav" aria-label="Workspace" class="workspace-nav-group" role="group"><h2 class="nav-group-label">Workspace</h2><a href="#templates-title"><svg class="sidebar-icon ds-icon" aria-hidden="true" focusable="false"><use href="./assets/renue-icons.svg#templates"></use></svg><span class="sidebar-label">Manage templates</span></a><a href="#manage-clinic-data-title" hidden><svg class="sidebar-icon ds-icon" aria-hidden="true" focusable="false"><use href="./assets/renue-icons.svg#clinic"></use></svg><span class="sidebar-label">Manage clinic data</span></a><a href="#advisor-hours-title"><svg class="sidebar-icon ds-icon" aria-hidden="true" focusable="false"><use href="./assets/renue-icons.svg#calendar"></use></svg><span class="sidebar-label">Advisor hours</span></a></div></nav>
 <div class="sidebar-bottom">
-<div class="staff-account"><span id="staff-account"></span>
-<label class="sidebar-theme-switch" title="Dark mode">
-<span class="sidebar-theme-label sidebar-theme-light" aria-hidden="true">Light</span>
-<input class="visually-hidden" data-theme-switch type="checkbox" role="switch" aria-label="Dark mode"/>
-<span class="sidebar-theme-track" aria-hidden="true"><span class="sidebar-theme-thumb">
-<svg class="sidebar-theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg>
-<svg class="sidebar-theme-moon" viewBox="0 0 24 24" fill="currentColor"><path d="M21.5 13.3A9.5 9.5 0 1 1 10.7 2.5a7.6 7.6 0 0 0 10.8 10.8Z"/></svg>
-</span></span>
-<span class="sidebar-theme-label sidebar-theme-dark" aria-hidden="true">Dark</span>
-</label>
-<button id="staff-sign-out" type="button" class="button-secondary" title="Sign out"><svg class="sidebar-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4H4v16h6 M9 12h12 M17 8l4 4-4 4"/></svg><span class="sidebar-label">Sign out</span></button></div>
+<div class="staff-account">
+  <button type="button" class="ds-button account-trigger" id="workspace-account-trigger" popovertarget="workspace-account-menu" aria-label="Account options" aria-describedby="staff-account">
+    <span class="account-avatar"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="./assets/renue-icons.svg#user"></use></svg></span>
+    <span id="staff-account"></span>
+    <svg class="ds-icon account-chevron" aria-hidden="true" focusable="false"><use href="./assets/renue-icons.svg#account-toggle"></use></svg>
+  </button>
+  <div class="account-popover ds-card" id="workspace-account-menu" popover>
+    <label class="account-theme-row" id="workspace-view-control" hidden>
+      <span>Workspace view</span>
+      <select class="ds-input" id="workspace-view-mode">
+        <option value="manager">Manager</option>
+        <option value="advisor">Advisor</option>
+      </select>
+    </label>
+    <div class="account-theme-row">
+      <span><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="./assets/renue-icons.svg#palette"></use></svg> Appearance</span>
+      <label class="sidebar-theme-switch" title="Dark mode">
+        <span class="sidebar-theme-label sidebar-theme-light" aria-hidden="true">Light</span>
+        <input class="visually-hidden" data-theme-switch type="checkbox" role="switch" aria-label="Dark mode"/>
+        <span class="sidebar-theme-track" aria-hidden="true"><span class="sidebar-theme-thumb">
+          <svg class="ds-icon sidebar-theme-sun" aria-hidden="true" focusable="false"><use href="./assets/renue-icons.svg#sun"></use></svg><svg class="ds-icon sidebar-theme-moon" aria-hidden="true" focusable="false"><use href="./assets/renue-icons.svg#moon"></use></svg>
+        </span></span>
+        <span class="sidebar-theme-label sidebar-theme-dark" aria-hidden="true">Dark</span>
+      </label>
+    </div>
+    <button id="staff-sign-out" type="button" class="button-secondary ds-button" data-variant="ghost" title="Sign out"><svg class="sidebar-icon ds-icon" aria-hidden="true" focusable="false"><use href="./assets/renue-icons.svg#sign-out"></use></svg><span class="sidebar-label">Sign out</span></button>
+  </div>
+</div>
 </div>
 </aside>
-<div class="workspace-content"><header class="workspace-topbar"><div><h1 id="workspace-view-title">Insurance</h1></div><div class="workspace-search"><label class="visually-hidden" for="workspace-search">Search the workspace</label><input aria-controls="workspace-search-results" autocomplete="off" id="workspace-search" placeholder="Search insurance, scripts, resources…" type="search"/><kbd aria-hidden="true">/</kbd></div></header>
-<section aria-label="Current clinic" class="clinic-context"><div class="clinic-selection"><span class="context-label">Working with</span><fieldset class="flow-state-picker flow-state-picker-compact">
+<div class="workspace-content"><header class="workspace-topbar"><div><h1 id="workspace-view-title">Insurance</h1></div><button type="button" class="workspace-search ds-button" id="workspace-search-trigger" aria-haspopup="dialog" aria-controls="workspace-search-results" aria-keyshortcuts="Control+k Meta+k /"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="./assets/renue-icons.svg#search"></use></svg><span>Search workspace</span><kbd class="ds-key" id="workspace-search-key" aria-hidden="true">Ctrl K</kbd></button></header>
+<section aria-label="Current clinic" class="clinic-context"><div class="clinic-selection"><span class="context-label"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="./assets/renue-icons.svg#clinic"></use></svg>Working clinic</span><fieldset class="flow-state-picker flow-state-picker-compact">
 <legend>Call location</legend>
 <label class="flow-state-option">
 <input name="call-state" type="radio" value="NY"/>
@@ -92,70 +110,79 @@
 <input name="call-state" type="radio" value="FL"/>
 <span>FL · Crestview</span>
 </label>
-</fieldset></div><div class="clinic-context-details"><div><span class="context-label">Clinic contact</span><a hidden="" id="context-phone"></a><span id="context-address">Select a clinic to see its contact details.</span></div><div class="workspace-clock"><span class="clock-label">NYC · Chelsea</span><p class="hero-time" id="hero-time">--</p><p class="fab-hours" id="fab-hours"></p></div></div></section>
-<section aria-label="Search results" class="workspace-search-results" hidden="" id="workspace-search-results"><div class="search-results-heading"><h2>Search results</h2><button class="button-secondary" id="workspace-search-close" type="button">Close search</button></div><p id="workspace-search-status" role="status"></p><div id="workspace-search-items"></div></section>
+</fieldset></div><div class="clinic-context-details"><div class="clinic-contact"><span class="context-label"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="./assets/renue-icons.svg#phone"></use></svg> Clinic contact</span><div class="clinic-contact-value"><a hidden="" id="context-phone"></a><button type="button" class="ds-icon-button clinic-copy" data-copy-clinic="phone" title="Copy clinic phone number" aria-label="Copy clinic phone number" hidden><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="./assets/renue-icons.svg#copy"></use></svg></button></div><div class="clinic-contact-value"><span id="context-address">Select a clinic to see its contact details.</span><button type="button" class="ds-icon-button clinic-copy" data-copy-clinic="address" title="Copy clinic address" aria-label="Copy clinic address" hidden><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="./assets/renue-icons.svg#copy"></use></svg></button></div></div><div class="workspace-clock"><span class="context-label">Local time</span><span class="clock-label visually-hidden">NYC · Chelsea</span><p class="hero-time" id="hero-time">--</p><p class="fab-hours" id="fab-hours"></p></div></div></section>
+<dialog class="workspace-search-results ds-dialog" id="workspace-search-results" aria-label="Search workspace">
+  <div class="command-header ds-search">
+    <svg class="ds-icon" aria-hidden="true" focusable="false"><use href="./assets/renue-icons.svg#search"></use></svg>
+    <label class="visually-hidden" for="workspace-search">Search the workspace</label>
+    <input class="ds-input" id="workspace-search" aria-controls="workspace-search-items" aria-expanded="true" role="combobox" aria-autocomplete="list" autocomplete="off" placeholder="Search insurers, scripts, treatments…" type="search" autofocus/>
+    <button type="button" class="ds-icon-button" id="workspace-search-clear" aria-label="Clear search" title="Clear search" hidden><svg class="ds-icon" aria-hidden="true"><use href="./assets/renue-icons.svg#close"></use></svg></button>
+    <button type="button" class="ds-button" id="workspace-search-close" aria-label="Close search"><kbd class="ds-key">Esc</kbd></button>
+  </div>
+  <p id="workspace-search-status" class="visually-hidden" role="status"></p>
+  <div id="workspace-search-items" role="listbox" aria-label="Search results"></div>
+  <p id="workspace-search-empty" class="ds-empty" hidden>No results. Try an insurer, template name, ingredient, or resource.</p>
+  <footer class="command-footer"><span><kbd class="ds-key">↑</kbd> <kbd class="ds-key">↓</kbd> Navigate</span><span><kbd class="ds-key">↵</kbd> Open</span></footer>
+</dialog>
 <div id="workspace-main" tabindex="-1"><main class="dashboard">
-<section aria-label="Customer travel" aria-labelledby="travel-title" class="panel panel-full travel-panel" data-workspace-view="travel-title" hidden="">
-<div class="section-heading"><div><p class="section-kicker">Plan the journey</p><h2 id="travel-title">Customer travel</h2></div></div>
+<section aria-label="Customer travel" aria-labelledby="travel-title" class="panel panel-full travel-panel ds-work-view" data-workspace-view="travel-title" hidden="">
+<div class="section-heading"><div><h2 class="visually-hidden" id="travel-title">Customer travel</h2></div></div>
 <p class="travel-description">Enter the customer's starting point, then open a clinic's route in Google Maps to see distance and estimated travel time.</p>
-<p class="transport-policy"><strong>Patients must not drive themselves.</strong> Arrange transport and confirm the clinic’s pickup and escort requirements before the appointment.</p>
-<form class="travel-form" id="travel-form">
-<label class="field travel-origin-field"><span>Customer address or ZIP code</span><input aria-describedby="travel-help" id="travel-origin" maxlength="300" placeholder="e.g. 10001 or a full street address" required="" type="text"/></label>
-<label class="field"><span>Travel by</span><select id="travel-mode"><option value="driving">Car (with a driver)</option><option value="transit">Public transit</option><option value="walking">Walking</option></select></label>
-<button class="button" type="submit">Find directions <span aria-hidden="true">↗</span></button>
-<button class="button-secondary" type="reset">Clear</button>
+<p class="transport-policy ds-notice"><strong>Patients must not drive themselves.</strong> Arrange transport and confirm the clinic’s pickup and escort requirements before the appointment.</p>
+<form class="travel-form ds-card" id="travel-form">
+<label class="field travel-origin-field"><span>Customer address or ZIP code</span><input aria-describedby="travel-help" class="ds-input" id="travel-origin" maxlength="300" placeholder="e.g. 10001 or a full street address" required="" type="text"/></label>
+<label class="field"><span>Travel by</span><select class="ds-input" id="travel-mode"><option value="driving">Car (with a driver)</option><option value="transit">Public transit</option><option value="walking">Walking</option></select></label>
+<button class="button ds-button" data-variant="primary" type="submit">Find directions <span aria-hidden="true">↗</span></button>
+<button class="button-secondary ds-button" type="reset">Clear</button>
 </form>
 <p class="travel-help" id="travel-help">Routes open in a new Google Maps tab. A full address gives a more precise starting point than a ZIP code.</p>
-<aside aria-labelledby="transport-support-title" class="transport-support">
+<aside aria-labelledby="transport-support-title" class="transport-support ds-card">
 <div><p class="section-kicker">Transport support</p><h3 id="transport-support-title">Access-A-Ride</h3><span class="transport-area">NYC area · Eligibility required</span></div>
 <div class="transport-support-details"><p>For people whose disability prevents them from using public buses or subways for some or all trips. MTA assessment and approval are required; age 65+ or Medicare alone does not establish eligibility.</p><p>Confirm that the patient is enrolled, the pickup and clinic addresses are covered, and the arrangement meets the clinic’s transport requirements.</p><div class="transport-links"><a id="access-a-ride-link" rel="noopener noreferrer" target="_blank">Eligibility &amp; application ↗</a><a id="access-a-ride-phone"></a></div></div>
-</aside><aside aria-labelledby="mass-transport-title" class="transport-support"><div><p class="section-kicker">Transport support</p><h3 id="mass-transport-title">MASS</h3><span class="transport-area">Medicaid insurance patients only</span></div><div class="transport-support-details"><p>Transport option for patients with Medicaid insurance only.</p><p>Confirm booking arrangements and the clinic’s pickup and escort requirements before the appointment.</p></div></aside>
+</aside><aside aria-labelledby="mass-transport-title" class="transport-support ds-card"><div><p class="section-kicker">Transport support</p><h3 id="mass-transport-title">MASS</h3><span class="transport-area">Medicaid insurance patients only</span></div><div class="transport-support-details"><p>Transport option for patients with Medicaid insurance only.</p><p>Confirm booking arrangements and the clinic’s pickup and escort requirements before the appointment.</p></div></aside>
 <div class="travel-results" hidden="" id="travel-results"><p class="travel-summary" id="travel-summary" role="status"></p><div class="travel-clinics" id="travel-clinics"></div></div>
 </section>
 <section aria-label="Insurance" aria-labelledby="insurance-title" class="panel panel-full" data-workspace-view="insurance-title" hidden="">
 <div class="section-heading">
 <div>
-<p class="section-kicker">Reference</p>
-<h2 id="insurance-title">Insurance</h2>
+<h2 class="visually-hidden" id="insurance-title">Insurance</h2>
 </div>
 </div>
-<div class="insurance-find"><label for="insurance-search">Find an insurer</label><input id="insurance-search" placeholder="Search this clinic’s insurance lists…" type="search"/><p id="insurance-search-status" role="status"></p></div><div class="insurance-table-container" id="insurance-table-container"></div>
+<div class="insurance-find"><label for="insurance-search">Find an insurer</label><div class="ds-search"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="./assets/renue-icons.svg#search"></use></svg><input class="ds-input" id="insurance-search" placeholder="Search this clinic’s insurance lists…" type="search"/></div><p id="insurance-search-status" role="status"></p></div><div class="insurance-table-container" id="insurance-table-container"></div>
 </section>
 <section aria-label="Text Messages" aria-labelledby="messages-title" class="panel workspace-panel" data-workspace-view="messages-title" hidden=""><div class="section-heading"><div>
-<p class="section-kicker">Quick Send</p>
-<h2 id="messages-title">Text Messages</h2>
+<h2 class="visually-hidden" id="messages-title">Text Messages</h2>
 </div></div>
 
 <div class="message-filter-bar"><p id="messages-filter-note" role="status"></p><label class="message-filter-toggle"><input id="show-all-messages" type="checkbox"/> Show all clinics</label></div>
-<div class="content-find-bar"><label class="content-search-field">Find a template<input id="message-search" placeholder="Search wording or template name…" type="search"/></label><label>Template type<select id="message-category"><option value="all">All templates</option><option value="Clinic callback">Clinic callbacks</option><option value="Appointments">Appointments</option><option value="Follow-up">Follow-up</option><option value="Treatment information">Treatment information</option><option value="Financing">Financing</option></select></label><label>Sort by<select id="message-sort"><option value="default">Default order</option><option value="most-copied">Most copied</option></select></label><button class="button-secondary" id="message-clear" type="button">Clear filters</button></div><div class="card-grid" id="messages-grid"></div>
+<div class="content-find-bar"><label class="content-search-field">Find a template<input class="ds-input" id="message-search" placeholder="Search wording or template name…" type="search"/></label><label>Template type<select class="ds-input" id="message-category"><option value="all">All templates</option><option value="Clinic callback">Clinic callbacks</option><option value="Appointments">Appointments</option><option value="Follow-up">Follow-up</option><option value="Treatment information">Treatment information</option><option value="Financing">Financing</option></select></label><label>Sort by<select class="ds-input" id="message-sort"><option value="default">Default order</option><option value="most-copied">Most copied</option></select></label><button class="ds-button" id="message-clear" type="button">Clear filters</button></div><div class="card-grid" id="messages-grid"></div>
 </section>
 <section aria-label="Voicemail Scripts" aria-labelledby="voicemail-title" class="panel workspace-panel" data-workspace-view="voicemail-title" hidden=""><div class="section-heading"><div>
-<p class="section-kicker">Readouts</p>
-<h2 id="voicemail-title">Voicemail Scripts</h2>
+<h2 class="visually-hidden" id="voicemail-title">Voicemail Scripts</h2>
 </div></div>
 
 <div class="voicemail-grid" id="voicemail-list"></div>
 </section>
-<section class="panel workspace-panel template-settings" data-workspace-view="templates-title" aria-labelledby="templates-title" hidden>
+<section class="panel workspace-panel template-settings ds-work-view" data-workspace-view="templates-title" aria-labelledby="templates-title" hidden>
 <h2 id="templates-title" class="visually-hidden">Manage templates</h2>
 <datalist id="template-tags"><option value="Clinic callback"></option><option value="Follow-up"></option><option value="Appointments"></option><option value="Treatment information"></option><option value="Financing"></option></datalist>
-<div class="template-tabs" role="group" aria-label="Template management">
-<button class="button-secondary" type="button" data-template-tab="message" aria-pressed="true">Messages</button>
-<button class="button-secondary" type="button" data-template-tab="voicemail" aria-pressed="false">Voicemail scripts</button>
-<button class="button-secondary" type="button" data-template-tab="community" aria-pressed="false">Community</button>
+<div class="template-tabs ds-segmented" role="group" aria-label="Template management">
+<button class="button-secondary ds-segment" type="button" data-template-tab="message" aria-pressed="true">Messages</button>
+<button class="button-secondary ds-segment" type="button" data-template-tab="voicemail" aria-pressed="false">Voicemail scripts</button>
+<button class="button-secondary ds-segment" type="button" data-template-tab="community" aria-pressed="false">Community</button>
 </div>
 <div data-template-pane="message">
-<div class="personal-templates template-card" data-personal-templates="message">
+<div class="personal-templates template-card ds-card" data-personal-templates="message">
 <div class="template-card-heading"><div><h3>My messages</h3><p>Templates saved to your library.</p></div>
-<div class="template-toolbar"><button class="button-secondary template-icon-button" type="button" data-refresh-templates aria-label="Refresh templates" title="Refresh templates"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7v5h-5M4 17v-5h5M6 8a7 7 0 0 1 11.8-1.7L20 9M4 15l2.2 2.7A7 7 0 0 0 18 16"/></svg></button>
-<button class="button-secondary" type="button" data-select-templates aria-pressed="false">Select</button>
-<button class="button" type="button" data-new-template>New template</button></div></div>
+<div class="template-toolbar"><button class="button-secondary ds-icon-button template-icon-button" type="button" data-refresh-templates aria-label="Refresh templates" title="Refresh templates"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7v5h-5M4 17v-5h5M6 8a7 7 0 0 1 11.8-1.7L20 9M4 15l2.2 2.7A7 7 0 0 0 18 16"/></svg></button>
+<button class="button-secondary ds-button" type="button" data-select-templates aria-pressed="false">Select</button>
+<button class="button ds-button" data-variant="primary" type="button" data-new-template>New template</button></div></div>
 <div class="template-toolbar template-selection" hidden>
 <label><input type="checkbox" data-select-all/> Select all</label>
-<button class="button-secondary" type="button" data-delete-selected disabled>Delete selected</button>
+<button class="button-secondary ds-button" type="button" data-delete-selected disabled>Delete selected</button>
 </div>
 <ul></ul>
-<dialog class="template-dialog" aria-labelledby="message-template-dialog-title"><h4 id="message-template-dialog-title">New template</h4>
+<dialog class="template-dialog ds-dialog" aria-labelledby="message-template-dialog-title"><h4 id="message-template-dialog-title">New template</h4>
 <form method="post">
 <fieldset disabled>
 <label class="field">Title<input name="title" maxlength="160" required/></label>
@@ -170,25 +197,25 @@
 <div class="message-mention-menu" hidden><p>Suggestions</p><div id="message-mention-options" role="listbox" aria-label="Template suggestions"></div></div>
 </div>
 <p id="message-mention-help" class="muted">Type @ for names, clinic numbers, and links.</p>
-<button class="button" type="submit">Add template</button>
-<button class="button-secondary" type="reset">Cancel</button>
+<button class="button ds-button" data-variant="primary" type="submit">Add template</button>
+<button class="button-secondary ds-button" type="reset">Cancel</button>
 </fieldset>
 <p data-editor-status role="status"></p>
 </form></dialog>
 <p role="status"></p>
 </div></div>
 <div data-template-pane="voicemail" hidden>
-<div class="personal-templates template-card" data-personal-templates="voicemail">
+<div class="personal-templates template-card ds-card" data-personal-templates="voicemail">
 <div class="template-card-heading"><div><h3>My voicemail scripts</h3><p>Templates saved to your library.</p></div>
-<div class="template-toolbar"><button class="button-secondary template-icon-button" type="button" data-refresh-templates aria-label="Refresh templates" title="Refresh templates"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7v5h-5M4 17v-5h5M6 8a7 7 0 0 1 11.8-1.7L20 9M4 15l2.2 2.7A7 7 0 0 0 18 16"/></svg></button>
-<button class="button-secondary" type="button" data-select-templates aria-pressed="false">Select</button>
-<button class="button" type="button" data-new-template>New template</button></div></div>
+<div class="template-toolbar"><button class="button-secondary ds-icon-button template-icon-button" type="button" data-refresh-templates aria-label="Refresh templates" title="Refresh templates"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7v5h-5M4 17v-5h5M6 8a7 7 0 0 1 11.8-1.7L20 9M4 15l2.2 2.7A7 7 0 0 0 18 16"/></svg></button>
+<button class="button-secondary ds-button" type="button" data-select-templates aria-pressed="false">Select</button>
+<button class="button ds-button" data-variant="primary" type="button" data-new-template>New template</button></div></div>
 <div class="template-toolbar template-selection" hidden>
 <label><input type="checkbox" data-select-all/> Select all</label>
-<button class="button-secondary" type="button" data-delete-selected disabled>Delete selected</button>
+<button class="button-secondary ds-button" type="button" data-delete-selected disabled>Delete selected</button>
 </div>
 <ul></ul>
-<dialog class="template-dialog" aria-labelledby="voicemail-template-dialog-title"><h4 id="voicemail-template-dialog-title">New template</h4>
+<dialog class="template-dialog ds-dialog" aria-labelledby="voicemail-template-dialog-title"><h4 id="voicemail-template-dialog-title">New template</h4>
 <form method="post">
 <fieldset disabled>
 <label class="field">Title<input name="title" maxlength="160" required/></label>
@@ -203,65 +230,134 @@
 <div class="message-mention-menu" hidden><p>Suggestions</p><div id="voicemail-mention-options" role="listbox" aria-label="Template suggestions"></div></div>
 </div>
 <p id="voicemail-mention-help" class="muted">Type @ for names, clinic numbers, and links.</p>
-<button class="button" type="submit">Add template</button>
-<button class="button-secondary" type="reset">Cancel</button>
+<button class="button ds-button" data-variant="primary" type="submit">Add template</button>
+<button class="button-secondary ds-button" type="reset">Cancel</button>
 </fieldset>
 <p data-editor-status role="status"></p>
 </form></dialog>
 <p role="status"></p>
 </div></div>
-<div data-template-pane="community" class="template-card" hidden>
+<div data-template-pane="community" class="template-card ds-card" hidden>
 <div class="template-card-heading"><div><h3>Template library</h3><p>Find company defaults and templates shared by Renue staff.</p></div><div class="template-toolbar">
-<label class="field">Template type<select id="community-template-kind"><option value="all">All templates</option><option value="message">Messages</option><option value="voicemail">Voicemail scripts</option></select></label>
-<button class="button-secondary template-icon-button" type="button" id="community-template-refresh" aria-label="Refresh templates" title="Refresh templates"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7v5h-5M4 17v-5h5M6 8a7 7 0 0 1 11.8-1.7L20 9M4 15l2.2 2.7A7 7 0 0 0 18 16"/></svg></button></div></div>
+<label class="field">Template type<select class="ds-input" id="community-template-kind"><option value="all">All templates</option><option value="message">Messages</option><option value="voicemail">Voicemail scripts</option></select></label>
+<button class="button-secondary ds-icon-button template-icon-button" type="button" id="community-template-refresh" aria-label="Refresh templates" title="Refresh templates"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7v5h-5M4 17v-5h5M6 8a7 7 0 0 1 11.8-1.7L20 9M4 15l2.2 2.7A7 7 0 0 0 18 16"/></svg></button></div></div>
 <p id="community-template-status" role="status"></p>
 <div id="community-template-list"></div>
 </div>
-</section><section id="advisor-hours-panel" class="panel workspace-panel" data-workspace-view="advisor-hours-title" aria-labelledby="advisor-hours-title" hidden>
+</section><section id="advisor-hours-panel" class="panel workspace-panel ds-work-view" data-workspace-view="advisor-hours-title" aria-labelledby="advisor-hours-title" hidden>
 <div class="section-heading advisor-hours-heading"><h2 id="advisor-hours-title">Weekly advisor schedule</h2>
-<button class="button-secondary template-icon-button" type="button" data-advisor-hours-refresh aria-label="Refresh advisor hours" title="Refresh advisor hours"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7v5h-5M4 17v-5h5M6 8a7 7 0 0 1 11.8-1.7L20 9M4 15l2.2 2.7A7 7 0 0 0 18 16"/></svg></button></div>
+<button class="button-secondary ds-icon-button template-icon-button" type="button" data-advisor-hours-refresh aria-label="Refresh advisor hours" title="Refresh advisor hours"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7v5h-5M4 17v-5h5M6 8a7 7 0 0 1 11.8-1.7L20 9M4 15l2.2 2.7A7 7 0 0 0 18 16"/></svg></button></div>
 <p class="advisor-hours-status" role="status"></p>
 <div class="advisor-hours-table-wrap">
-<table class="advisor-hours-table" hidden>
+<table class="advisor-hours-table ds-table" hidden>
 <thead><tr><th scope="col">Advisor</th><th scope="col">Sunday</th><th scope="col">Monday</th><th scope="col">Tuesday</th><th scope="col">Wednesday</th><th scope="col">Thursday</th><th scope="col">Friday</th><th scope="col">Saturday</th><th scope="col" data-advisor-hours-actions>Actions</th></tr></thead><tbody></tbody>
 </table>
 </div>
-<dialog class="template-dialog advisor-hours-dialog" aria-labelledby="advisor-hours-editor-title">
+<dialog class="template-dialog ds-dialog advisor-hours-dialog" aria-labelledby="advisor-hours-editor-title">
 <h3 id="advisor-hours-editor-title">Edit advisor hours</h3>
-<p class="view-description">Leave both fields blank for a day off. An end time before the start time ends the next day.</p>
+<p class="view-description">Switch off any day the advisor is off. An end time before the start time ends the next day.</p>
 <form>
 <fieldset aria-label="Weekly shifts"></fieldset>
 <p class="advisor-hours-status" role="status"></p>
-<div class="template-toolbar"><button class="button" type="submit">Save hours</button><button class="button-secondary" type="button" data-advisor-hours-cancel>Cancel</button></div>
+<div class="template-toolbar"><button class="button ds-button" data-variant="primary" type="submit">Save hours</button><button class="button-secondary ds-button" type="button" data-advisor-hours-cancel>Cancel</button></div>
 </form>
 </dialog>
 </section>
-<section aria-label="Testimonials / Resources" aria-labelledby="resources-title" class="panel workspace-panel" data-workspace-view="resources-title" hidden=""><div class="section-heading"><div>
-<p class="section-kicker">Links</p>
-<h2 id="resources-title">Testimonials / Resources</h2>
+<section aria-label="Testimonials / Resources" aria-labelledby="resources-title" class="panel workspace-panel ds-work-view" data-workspace-view="resources-title" hidden=""><div class="section-heading"><div>
+<h2 class="visually-hidden" id="resources-title">Testimonials / Resources</h2>
 </div></div>
-<div class="content-find-bar"><label class="content-search-field">Find a resource<input id="resource-search" placeholder="Search title, treatment or when to send…" type="search"/></label><label>Resource type<select id="resource-category"><option value="all">All resources</option><option value="Education">Education &amp; preparation</option><option value="IVK testimonials">IVK testimonials</option><option value="Spravato testimonials">Spravato testimonials</option><option value="TMS testimonials">TMS testimonials</option><option value="Other">Other links</option></select></label><button class="button-secondary" id="resource-clear" type="button">Clear filters</button></div><p class="content-result-count" id="resource-count" role="status"></p><div class="stack" id="resources-list"></div>
+<div class="content-find-bar"><label class="content-search-field">Find a resource<input class="ds-input" id="resource-search" placeholder="Search title, treatment or when to send…" type="search"/></label><label>Resource type<select class="ds-input" id="resource-category"><option value="all">All resources</option><option value="Education">Education &amp; preparation</option><option value="IVK testimonials">IVK testimonials</option><option value="Spravato testimonials">Spravato testimonials</option><option value="TMS testimonials">TMS testimonials</option><option value="Other">Other links</option></select></label><button class="button-secondary ds-button" id="resource-clear" type="button">Clear filters</button></div><p class="content-result-count" id="resource-count" role="status"></p><div class="stack" id="resources-list"></div>
 </section>
-<section aria-label="Financing Options" aria-labelledby="financing-title" class="panel workspace-panel" data-workspace-view="financing-title" hidden=""><div class="section-heading"><div>
-<p class="section-kicker">Reference</p>
-<h2 id="financing-title">Financing Options</h2>
+<section aria-label="Financing Options" aria-labelledby="financing-title" class="panel workspace-panel ds-work-view" data-workspace-view="financing-title" hidden=""><div class="section-heading"><div>
+<h2 class="visually-hidden" id="financing-title">Financing Options</h2>
 </div></div>
 <article class="financing-card" id="financing-content"></article>
 </section>
-<section aria-label="Clinic hours and contacts" class="panel workspace-panel" data-workspace-view="hours-title" hidden=""><div class="section-heading"><div><p class="section-kicker">Clinic reference</p><h2 id="hours-title">Hours &amp; contacts</h2></div></div><p class="view-description">Hours are shown in the selected clinic’s local time.</p><div class="hours-layout"><div id="hours-list"></div><div class="hours-shared-contacts"><div class="shared-contact"><div><span class="context-label">Fax · All locations</span><strong id="organization-fax"></strong></div><button class="button-secondary" data-copy-contact type="button">Copy fax number</button></div><details class="company-emails" id="company-emails"><summary><span>Company emails</span><span class="email-count"></span><span aria-hidden="true" class="summary-icon"></span></summary><div class="company-email-table-wrap"><table class="company-email-table"><caption class="visually-hidden">Company email directory</caption><thead><tr><th scope="col">Team / Purpose</th><th scope="col">Email address</th></tr></thead><tbody></tbody></table></div></details></div></div></section><section aria-label="Vitamins and IV menu" class="panel workspace-panel vitamins-panel" data-workspace-view="vitamins-title" hidden=""><div class="section-heading"><div><p class="section-kicker">New Jersey · Paramus</p><h2 id="vitamins-title">Vitamins &amp; IV</h2></div></div><p class="view-description">Available at the Paramus clinic, New Jersey. Browse 8 IV therapies, 4 vitamin shots and 1 add-on by treatment, ingredient or price.</p>
-<div class="menu-toolbar">
-<div class="menu-search"><label for="menu-search">Find a treatment or ingredient</label><input id="menu-search" placeholder="Try B12, magnesium or hydration…" type="search"/></div>
+<section class="panel workspace-panel ds-work-view" data-workspace-view="manage-clinic-data-title" aria-labelledby="manage-clinic-data-title" hidden>
+  <h2 class="visually-hidden" id="manage-clinic-data-title">Manage clinic data</h2>
+  <h3 class="manage-clinic-heading">Clinic contacts</h3>
+  <div id="manage-clinic-contacts" class="manage-clinic-contacts"></div>
+<dialog class="ds-dialog" id="clinic-contact-editor" aria-labelledby="clinic-contact-editor-title">
+  <h3 id="clinic-contact-editor-title">Edit clinic contact</h3>
+  <form id="clinic-contact-form">
+    <p class="view-description" id="clinic-contact-editor-name"></p>
+    <label class="ds-field">Phone number<input class="ds-input" name="phone" type="tel" maxlength="40" required/></label>
+    <label class="ds-field">Address<input class="ds-input" name="address" type="text" maxlength="300" required/></label>
+    <p role="status"></p>
+    <div class="template-toolbar">
+      <button class="ds-button" data-variant="primary" type="submit">Save contact</button>
+      <button class="ds-button" type="button" data-cancel-clinic-contact>Cancel</button>
+    </div>
+  </form>
+</dialog>
+  <section class="clinic-opening-hours-section" aria-labelledby="manage-clinic-hours-title">
+    <h3 id="manage-clinic-hours-title">Clinic opening hours</h3>
+    <p class="view-description">Weekly schedules in each clinic’s local time.</p>
+    <div id="manage-clinic-hours-list" class="template-toolbar"></div>
+    <p id="manage-clinic-hours-status" role="status"></p>
+    <dialog class="ds-dialog advisor-hours-dialog" id="clinic-hours-editor" aria-labelledby="clinic-hours-editor-title">
+      <h3 id="clinic-hours-editor-title">Edit opening hours</h3>
+      <p class="view-description">Use the switch to open or close each day. Times are local to the clinic.</p>
+      <form>
+        <fieldset aria-label="Weekly opening hours"></fieldset>
+        <p role="status"></p>
+        <div class="template-toolbar">
+          <button class="ds-button" data-variant="primary" type="submit">Save opening hours</button>
+          <button class="ds-button" type="button" data-cancel-clinic-hours>Cancel</button>
+        </div>
+      </form>
+    </dialog>
+  </section>
+  <section class="treatment-pricing-section" aria-labelledby="manage-treatment-pricing">
+    <h3 id="manage-treatment-pricing">Treatment pricing</h3>
+    <p class="view-description">IV ketamine · Prices per session in USD</p>
+    <p id="treatment-pricing-status" role="status"></p>
+    <div class="advisor-hours-table-wrap" id="treatment-pricing-table" hidden>
+      <table class="ds-table">
+        <thead><tr><th scope="col">Clinic</th><th scope="col">Standard</th><th scope="col">Promotional</th><th scope="col">Clinic offer</th><th scope="col">Actions</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <dialog class="ds-dialog" id="treatment-pricing-editor" aria-labelledby="treatment-pricing-editor-title">
+      <h3 id="treatment-pricing-editor-title"></h3>
+      <form id="treatment-pricing-form">
+        <label class="ds-field">Standard price (USD)<input class="ds-input" name="standard_price" type="number" min="0.01" max="99999999.99" step="0.01"/></label>
+        <label class="ds-field">Promotional price (USD)<input class="ds-input" name="promotional_price" type="number" min="0.01" max="99999999.99" step="0.01"/></label>
+        <label class="ds-field"><span id="treatment-pricing-offer-label">Clinic offer (USD)</span><input class="ds-input" name="offer_price" type="number" min="0.01" max="99999999.99" step="0.01"/></label>
+        <p class="view-description">Leave all prices blank when the clinic has no prices to display.</p>
+        <p role="status"></p>
+        <div class="template-toolbar">
+          <button class="ds-button" data-variant="primary" type="submit">Save prices</button>
+          <button class="ds-button" type="button" data-cancel-treatment-pricing>Cancel</button>
+        </div>
+      </form>
+    </dialog>
+  </section>
+</section>
+<section aria-label="Clinic hours and contacts" class="panel workspace-panel ds-work-view" data-workspace-view="hours-title" hidden=""><div class="section-heading"><div><h2 class="visually-hidden" id="hours-title">Hours &amp; contacts</h2></div></div><p class="view-description">Hours are shown in the selected clinic’s local time.</p>
+<div class="hours-layout"><div id="hours-list"></div><div class="hours-shared-contacts"><div class="shared-contact ds-card"><div><span class="context-label">Fax · All locations</span><strong id="organization-fax"></strong></div><button class="button-secondary ds-button" data-copy-contact type="button">Copy fax number</button></div><details class="company-emails ds-card" id="company-emails"><summary><span>Company emails</span><span class="email-count"></span><span aria-hidden="true" class="summary-icon"></span></summary><div class="company-email-table-wrap"><table class="company-email-table"><caption class="visually-hidden">Company email directory</caption><thead><tr><th scope="col">Team / Purpose</th><th scope="col">Email address</th></tr></thead><tbody></tbody></table></div></details></div></div></section><section aria-label="Vitamins and IV menu" class="panel workspace-panel vitamins-panel ds-work-view" data-workspace-view="vitamins-title" hidden=""><div class="section-heading"><div><h2 class="visually-hidden" id="vitamins-title">Vitamins &amp; IV</h2></div></div><p class="view-description">Available at the Paramus clinic, New Jersey. Browse 8 IV therapies, 4 vitamin shots and 1 add-on by treatment, ingredient or price.</p>
+<div class="menu-toolbar ds-card">
+<div class="menu-search"><label for="menu-search">Find a treatment or ingredient</label><input class="ds-input" id="menu-search" placeholder="Try B12, magnesium or hydration…" type="search"/></div>
 <fieldset class="menu-filters"><legend>Show</legend><label><input checked="" name="menu-category" type="radio" value="all"/><span>All options</span></label><label><input name="menu-category" type="radio" value="iv"/><span>IV therapies</span></label><label><input name="menu-category" type="radio" value="shot"/><span>Vitamin shots</span></label><label><input name="menu-category" type="radio" value="addon"/><span>Add-on</span></label></fieldset>
-<div class="menu-sort"><label for="menu-sort">Sort by</label><select id="menu-sort"><option value="menu">Menu order</option><option value="price-low">Price: low to high</option><option value="price-high">Price: high to low</option></select></div>
+<div class="menu-sort"><label for="menu-sort">Sort by</label><select class="ds-input" id="menu-sort"><option value="menu">Menu order</option><option value="price-low">Price: low to high</option><option value="price-high">Price: high to low</option></select></div>
 </div>
-<div class="menu-results-bar"><p id="menu-count" role="status"></p><div class="menu-results-actions"><span>Prices in USD</span><button aria-pressed="false" id="menu-expand" type="button">Expand descriptions</button></div></div>
+<div class="menu-results-bar"><p id="menu-count" role="status"></p><div class="menu-results-actions"><span>Prices in USD</span><button aria-pressed="false" class="ds-button" id="menu-expand" type="button">Expand descriptions</button></div></div>
 <div class="vitamin-grid" id="vitamin-grid"></div>
-<div class="menu-empty" hidden="" id="menu-empty"><h2>No matching options</h2><p>Try another name, ingredient or category.</p><button class="button-secondary" id="menu-reset" type="button">Show the full menu</button></div>
+<div class="menu-empty" hidden="" id="menu-empty"><h2>No matching options</h2><p>Try another name, ingredient or category.</p><button class="button-secondary ds-button" id="menu-reset" type="button">Show the full menu</button></div>
 <aside class="menu-source-note"><strong>Vitamins &amp; IV treatment information.</strong><p>Confirm treatment suitability, dosage and infusion time with the clinician.</p>
 <details><summary>View original brochure pages</summary><div class="brochure-links"><a href="./resources/vitamins/brochure-1.png" rel="noopener" target="_blank">Shots ↗</a><a href="./resources/vitamins/brochure-2.png" rel="noopener" target="_blank">Recovery, hydration &amp; add-on ↗</a><a href="./resources/vitamins/brochure-3.png" rel="noopener" target="_blank">NAD+, migraine &amp; alpha lipoic acid ↗</a><a href="./resources/vitamins/brochure-4.png" rel="noopener" target="_blank">Immunity, beauty &amp; Myer’s ↗</a></div></details>
 </aside>
 <noscript><p>Enable JavaScript to view and search the menu. The original brochure links above remain available.</p></noscript>
-</section><section aria-label="Treatment guide" class="panel workspace-panel" data-workspace-view="treatment-title" hidden=""><div class="section-heading"><div><p class="section-kicker">During a call</p><h2 id="treatment-title">Treatment guide</h2></div></div><p class="view-description">Practical clinic reference for treatment schedules, payment and preparation. Confirm suitability and the individual treatment plan with the provider.</p><div aria-label="Choose a treatment" class="treatment-guide-tabs" role="group"><button aria-pressed="true" class="button-secondary" data-treatment-guide="ivk" type="button">IV ketamine</button><button aria-pressed="false" class="button-secondary" data-treatment-guide="spravato" type="button">Spravato</button><button aria-pressed="false" class="button-secondary" data-treatment-guide="tms" type="button">TMS</button></div><div id="treatment-guide-content"></div></section></main></div><footer class="workspace-note workspace-attribution-footer"><span>Renue Wellness · Care team reference</span><img class="developer-attribution" src="./resources/developer/j-mc-intyre-monogram.svg" width="190" height="55" alt="Designed &amp; built by J Mc Intyre"/></footer></div></div><div aria-hidden="true" class="modal" id="appointment-modal">
+</section><section aria-label="Treatment guide" class="panel workspace-panel" data-workspace-view="treatment-title" hidden=""><div class="treatment-pilot-header">
+  <h2 id="treatment-title">Choose a treatment</h2>
+  <div aria-label="Choose a treatment" class="treatment-guide-tabs ds-segmented" role="group">
+    <button aria-pressed="true" class="button-secondary ds-segment" data-treatment-guide="ivk" type="button"><span class="treatment-option-icon"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="./assets/renue-icons.svg#infusion"></use></svg></span><span class="treatment-option-copy"><strong>IV ketamine</strong><small>Infusions</small></span><svg class="ds-icon treatment-option-check" aria-hidden="true" focusable="false"><use href="./assets/renue-icons.svg#check"></use></svg></button>
+    <button aria-pressed="false" class="button-secondary ds-segment" data-treatment-guide="spravato" type="button"><span class="treatment-option-icon"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="./assets/renue-icons.svg#spray"></use></svg></span><span class="treatment-option-copy"><strong>Spravato</strong><small>Nasal spray</small></span><svg class="ds-icon treatment-option-check" aria-hidden="true" focusable="false"><use href="./assets/renue-icons.svg#check"></use></svg></button>
+    <button aria-pressed="false" class="button-secondary ds-segment" data-treatment-guide="tms" type="button"><span class="treatment-option-icon"><svg class="ds-icon" aria-hidden="true" focusable="false"><use href="./assets/renue-icons.svg#activity"></use></svg></span><span class="treatment-option-copy"><strong>TMS</strong><small>Magnetic stimulation</small></span><svg class="ds-icon treatment-option-check" aria-hidden="true" focusable="false"><use href="./assets/renue-icons.svg#check"></use></svg></button>
+  </div>
+</div>
+<p class="view-description treatment-pilot-description">Practical clinic reference for treatment schedules, payment and preparation. Confirm suitability and the individual treatment plan with the provider.</p>
+<div id="treatment-guide-content"></div></section></main></div><footer class="workspace-note workspace-attribution-footer"><span>Renue Wellness · Care team reference</span><img class="developer-attribution" src="./resources/developer/j-mc-intyre-monogram.svg" width="190" height="55" alt="Designed &amp; built by J Mc Intyre"/></footer></div></div><div aria-hidden="true" class="modal" id="appointment-modal">
 <div class="modal-backdrop" data-close-appointment-modal=""></div>
 <div aria-labelledby="appointment-modal-title" aria-modal="true" class="modal-dialog" role="dialog">
 <div class="modal-header">
@@ -304,4 +400,4 @@
 </div>
 </form>
 </div>
-</div><div aria-live="polite" class="toast" id="toast" role="status"></div><script src="./vitamins-data.js?v=1"></script><script src="./care-content.js?v=clinic-number"></script><script src="./contact-directory.js?v=sidebar-rail"></script><script src="./app.js?v=message-card-drag"></script><script src="./vitamins.js?v=direct-copy"></script><script src="./care-tools.js?v=clinic-ivk-prices"></script><script src="./workspace.js?v=advisor-hours"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.89.0/dist/umd/supabase.js"></script><script src="./personal-templates.js?v=most-copied"></script><script src="./advisor-hours.js?v=emma-hours-label"></script><script src="./staff-access.js?v=message-order"></script></body></html>
+</div><div aria-live="polite" class="toast" id="toast" role="status"></div><script src="./vitamins-data.js?v=1"></script><script src="./care-content.js?v=treatment-pricing"></script><script src="./contact-directory.js?v=manage-clinic-data"></script><script src="./clinic-hours.js?v=1"></script><script src="./app.js?v=clinic-hours"></script><script src="./vitamins.js?v=workspace-components"></script><script src="./treatment-pricing.js?v=1"></script><script src="./care-tools.js?v=treatment-pricing"></script><script src="./workspace.js?v=treatment-pricing"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.89.0/dist/umd/supabase.js"></script><script src="./personal-templates.js?v=workspace-components"></script><script src="./advisor-hours.js?v=working-switch"></script><script src="./supabase-config.js"></script><script src="./staff-access.js?v=clinic-hours"></script></body></html>

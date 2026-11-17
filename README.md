@@ -8,46 +8,51 @@ Desktop staff-reference prototype for clinic information, treatment guidance, pa
 
 ## Run locally
 
-No dependency installation or build step is needed. From this folder, run:
+Use Node 24, Python 3 and Git from this checkout.
 
 ```sh
-python3 -m http.server 4173 --bind 127.0.0.1
+npm ci
+python3 scripts/build.py
+python3 -m http.server 4173 --bind 127.0.0.1 --directory dist
 ```
 
-Open [the local dashboard](http://127.0.0.1:4173/). Use an HTTP server rather than opening `index.html` directly, because the app fetches clinic hours and voicemail content.
+Open [the compiled dashboard](http://127.0.0.1:4173/). The app fetches clinic hours and voicemail content over HTTP.
 
-## Publish on GitHub Pages
+## Build and publish
 
-1. Commit and push these files to the repository's `main` branch.
-2. In the repository, open **Settings → Pages**.
-3. Under **Build and deployment**, select **Deploy from a branch**.
-4. Select **main** and **/ (root)**, then save.
-5. Wait for deployment to finish and use the URL shown in Pages settings.
+Publish `dist/` as the static site. On Cloudflare Pages, keep `dist` as the output directory and use this build command:
 
-For this repository, the expected URL is [https://jadymcintyre.github.io/dashboard/](https://jadymcintyre.github.io/dashboard/). It will work after Pages is enabled and the deployment succeeds. GitHub may require an eligible plan to publish from a private repository.
+```sh
+npm ci && python3 -m unittest discover -s tests -v && python3 scripts/build.py
+```
 
-The empty `.nojekyll` file disables Jekyll processing so the HTML, CSS, JavaScript, assets and template placeholders are served directly. All application paths are relative, including the old `vitamins.html` redirect, to support a repository subdirectory. No custom domain is needed for testing.
+GitHub Pages staging publishes a staging build from `develop`. See [Deployment and environment setup](docs/deployment.md) for branch policy, the manual settings, and the shared or isolated Supabase options.
 
-**Visibility:** ordinary GitHub Pages hosting is public, even if the repository is private. Supabase sign-in protects authenticated workflows and database records according to their access policies. Assets bundled into the static site are publicly downloadable. Do not add secrets or patient records to this repository. GitHub Enterprise Cloud has separate private-Pages capabilities.
+GitHub Pages and Cloudflare Pages serve public static assets. Supabase sign-in protects authenticated workflows and database records according to their access policies. Keep secrets and patient records out of the repository and static output.
 
-## Build and verify provenance
+The Python build recreates `dist/` and writes `build-provenance.json` with the original developer, application name and version, creation year, Git commit, and UTC timestamp. `sourceDirty` indicates working-tree changes. Use a clean checkout of the signed release tag for distributable builds.
 
-Run these commands from the Git checkout with Python 3 and Git installed.
+## Design system and browser checks
+
+- `ui/tokens.css` defines light and dark semantic roles, type, spacing, radius, focus and motion. Legacy variables in `brand.css` and `theme.css` continue to serve screens outside the pilot.
+- `ui/components.css` defines owned primitives. The local Tailwind compiler expands `@apply` utilities and excludes Preflight. `ui/workspace.css` and `ui/treatment.css` apply the system to the shell and Treatment Guide. `ui/intake.css` brings the same primitives to Insurance, Messages, and Voicemail scripts.
+- The compiled stylesheet loads after the existing theme and workspace sheets. Shell and Treatment Guide rules override the legacy pill controls, sidebar breakpoints and guide fact grid within their existing selectors. Legacy forms, tables and dialogs retain their current CSS until their screens are migrated.
+- `scripts/build-ui.mjs` creates the compiled stylesheet and a local SVG sprite containing only the selected Lucide icons. It also bundles Inter and both upstream licenses.
+- To preview the components, build as above, then serve the **repository root locally** with `python3 -m http.server 4174 --bind 127.0.0.1` and open [the playground](http://127.0.0.1:4174/dev/playground.html). The playground uses synthetic examples and has no authentication or database access. It shows default, hover, focus-visible, selected, pressed and disabled controls in either theme.
 
 ```sh
 python3 -m unittest discover -s tests -v
-python3 scripts/build.py
+npx playwright install chromium
+npm run test:browser
 ```
 
-The tests verify footer attribution and metadata in both source HTML and built output. The build recreates the generated `dist/` directory and adds `build-provenance.json`, which records the original developer, application name and version, creation year, full Git commit hash, and UTC build time. `sourceDirty` indicates changes in the working tree. Use a clean checkout of the signed release tag for distributable builds. Update the application version in `scripts/build-info.json` when cutting a release. Version `0.1.0` is the initial version for this build process.
-
-To publish provenance on Cloudflare Pages, set the build command to `python3 -m unittest discover -s tests -v && python3 scripts/build.py` and the output directory to `dist`. Deploying the repository root directly, as in the GitHub Pages branch setup above, still serves the attribution but skips generated provenance. The GitHub Actions workflow verifies attribution on pushes and pull requests.
+Playwright starts a fresh local build and stubs Supabase with synthetic data. The functional suite covers staff sign-in/out and account popover keyboard controls, treatment selection and clinic pricing, related routes and history, keyboard command palette navigation, preferences, clinic contact copying, insurance rules, voicemail readouts, message reordering and personalised clipboard copying. On macOS it compares the two themes at 1440 and 1024 px against checked-in screenshots. Linux CI runs the same functional and layout assertions and uploads screenshots for review. To refresh the macOS references intentionally, run `RENUE_BROWSER_CHANNEL=chrome npm run test:browser -- --update-snapshots` with Chrome installed, then inspect the diffs.
 
 ## Current features
 
 - During-a-call views: insurance, treatment guide, travel and transport, hours and contacts, financing, vitamins and IV.
 - Follow-up views: messages, voicemail scripts and resources.
-- Workspace-wide search, clinic-specific content and local clinic clocks.
+- A workspace command palette (Cmd/Ctrl+K or /), clinic-specific content, local clinic clocks and contact copy controls.
 - Personalised message copying and copyable patient-resource links.
 - Light/dark mode and last selected clinic remembered in the browser.
 

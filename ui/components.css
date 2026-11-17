@@ -1,0 +1,107 @@
+.ds-icon {
+  @apply block shrink-0;
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.ds-button, .ds-icon-button, .ds-segment {
+  @apply inline-flex items-center justify-center;
+  --control-bg: var(--ds-surface);
+  --control-hover: var(--ds-hover);
+  --control-pressed: var(--ds-pressed);
+  --control-fg: var(--ds-text);
+  --control-line: var(--ds-control-border);
+  gap: var(--ds-2);
+  min-height: var(--ds-control);
+  padding: 0 var(--ds-3);
+  border: 1px solid var(--control-line);
+  border-radius: var(--ds-radius);
+  background: var(--control-bg);
+  color: var(--control-fg);
+  font: 550 var(--ds-type-body)/1.25 var(--ds-font);
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color var(--ds-motion), border-color var(--ds-motion), color var(--ds-motion);
+}
+/* Keep the existing class hooks without inheriting the legacy focus fill. */
+.ds-button:is(.button, .button-secondary):focus-visible:not(:hover, :active) {
+  background: var(--control-bg);
+  color: var(--control-fg);
+  border-color: var(--control-line);
+}
+.ds-icon-button { width: var(--ds-control); padding: 0; }
+.ds-button[data-variant="primary"] {
+  --control-bg: var(--ds-primary);
+  --control-hover: var(--ds-primary-hover);
+  --control-pressed: var(--ds-primary-pressed);
+  --control-fg: var(--ds-on-primary);
+  --control-line: transparent;
+}
+.ds-button[data-variant="ghost"], .ds-segment {
+  --control-bg: transparent;
+  --control-line: transparent;
+}
+.ds-segment { border-radius: var(--ds-radius-sm); }
+.ds-segment[aria-pressed="true"], .ds-button[aria-pressed="true"]:not([data-variant="primary"]) {
+  --control-bg: var(--ds-selected);
+  --control-fg: var(--ds-text);
+  --control-line: var(--ds-border);
+}
+:is(.ds-button, .ds-icon-button, .ds-segment):hover:not(:disabled) { background: var(--control-hover); color: var(--control-fg); border-color: var(--control-line); }
+:is(.ds-button, .ds-icon-button, .ds-segment):active:not(:disabled) { background: var(--control-pressed); }
+:is(.ds-button, .ds-icon-button, .ds-segment):disabled { opacity: .48; cursor: default; }
+
+.ds-input {
+  min-height: var(--ds-control);
+  min-width: 0;
+  padding: 0 var(--ds-3);
+  border: 1px solid var(--ds-control-border);
+  border-radius: var(--ds-radius);
+  background: var(--ds-surface);
+  color: var(--ds-text);
+  font: 400 var(--ds-type-body)/1.45 var(--ds-font);
+}
+.ds-input:hover:not(:disabled) { border-color: var(--ds-muted); }
+.ds-input::placeholder { color: var(--ds-muted); }
+.ds-input:disabled { background: var(--ds-raised); color: var(--ds-muted); }
+.ds-field { @apply grid; gap: var(--ds-2); color: var(--ds-body); font-size: var(--ds-type-body); font-weight: 550; }
+.ds-search { position: relative; }
+.ds-search .ds-input { width: 100%; padding-inline: 34px 36px; }
+.ds-search > .ds-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--ds-muted); pointer-events: none; }
+.ds-key { border: 1px solid var(--ds-border); border-radius: var(--ds-radius-sm); color: var(--ds-muted); padding: 1px 5px; font: 500 var(--ds-type-caption)/1.4 var(--ds-font); }
+
+.ds-card, .ds-dialog {
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-radius-panel);
+  background: var(--ds-surface);
+  color: var(--ds-text);
+}
+.ds-card { padding: var(--ds-4); }
+.ds-dialog { width: min(420px, calc(100% - 32px)); padding: var(--ds-6); box-shadow: var(--ds-shadow); }
+.ds-dialog::backdrop { background: var(--ds-overlay); }
+
+.ds-segmented { @apply flex flex-wrap items-center; gap: var(--ds-1); padding: var(--ds-1); border: 1px solid var(--ds-border); border-radius: var(--ds-radius); background: var(--ds-raised); }
+.ds-table { width: 100%; border-collapse: collapse; color: var(--ds-body); font-size: var(--ds-type-body); }
+.ds-table th, .ds-table td { padding: var(--ds-3); border-bottom: 1px solid var(--ds-border); text-align: start; }
+.ds-table thead th { background: var(--ds-raised); color: var(--ds-text); }
+.ds-table tbody tr:hover { background: var(--ds-raised); }
+
+.ds-notice, .ds-toast, .ds-empty { @apply flex items-start; gap: var(--ds-2); padding: var(--ds-3); border-radius: var(--ds-radius); font-size: var(--ds-type-body); line-height: 1.5; }
+.ds-notice { background: var(--ds-warning-soft); color: var(--ds-warning); }
+.ds-notice .ds-icon, .ds-toast .ds-icon { margin-top: 2px; }
+.ds-toast { background: var(--ds-positive-soft); color: var(--ds-positive); border: 1px solid var(--ds-border); }
+.ds-empty { border: 1px dashed var(--ds-control-border); color: var(--ds-muted); }
+.ds-loading { width: 100%; height: 12px; border-radius: var(--ds-radius-sm); background: var(--ds-hover); }
+.ds-tip { position: relative; }
+.ds-tip:hover [role="tooltip"], .ds-tip:focus-within [role="tooltip"] { visibility: visible; }
+.ds-tip [role="tooltip"] { visibility: hidden; position: absolute; z-index: 2; bottom: calc(100% + 6px); left: 0; padding: 5px var(--ds-2); border-radius: var(--ds-radius-sm); background: var(--ds-text); color: var(--ds-surface); white-space: nowrap; font-size: var(--ds-type-small); }
+
+.ds-button:focus-visible, .ds-icon-button:focus-visible, .ds-input:focus-visible, .ds-segment:focus-visible {
+  outline: 2px solid var(--ds-focus);
+  outline-offset: 2px;
+}

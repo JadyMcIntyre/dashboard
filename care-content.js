@@ -223,7 +223,7 @@ const treatmentGuides = [
         "Integration therapy is not offered during the treatment session. Discuss between-session therapy and ongoing support with the provider."
       ]
     ],
-    "note": "Chelsea’s $400 opening sale applies only to Chelsea. Standard and promotional prices follow the selected clinic."
+    "note": "Prices shown are for the selected clinic."
   },
   {
     "id": "spravato",
@@ -309,8 +309,8 @@ const treatmentGuides = [
   }
 ];
 
-const ivkPricingByClinic = {
-  NY: { standard: 500, promo: 450 },
-  CHELSEA: { standard: 500, promo: 450, openingSale: 400 },
-  NJ: { standard: 525, promo: 475 },
+const legacyIvkPricing = {
+  NY: { standard_price: 500, promotional_price: 450 },
+  CHELSEA: { standard_price: 500, promotional_price: 450, offer_price: 400 },
+  NJ: { standard_price: 525, promotional_price: 475 },
 };

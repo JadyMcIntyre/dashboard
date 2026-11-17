@@ -290,7 +290,7 @@
   transition: transform 180ms ease;
 }
 .sidebar-theme-thumb svg { width: 13px; height: 13px; }
-.sidebar-theme-moon,
+.sidebar-theme-thumb .sidebar-theme-moon,
 .sidebar-theme-switch input:checked + .sidebar-theme-track .sidebar-theme-sun { display: none; }
 .sidebar-theme-switch input:checked + .sidebar-theme-track .sidebar-theme-moon { display: block; }
 .sidebar-theme-switch input:checked + .sidebar-theme-track .sidebar-theme-thumb { transform: translateX(21px); }
@@ -318,9 +318,53 @@
 .advisor-hours-status { color: var(--muted); }
 .advisor-hours-status:empty { display: none; }
 .advisor-hours-dialog h3 { margin: 0 0 .4rem; }
-.advisor-hours-field-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr); align-items: center; gap: .6rem; padding: .4rem 0; border-bottom: 1px solid var(--line); }
+#advisor-hours-panel .advisor-hours-dialog, #clinic-hours-editor { width: min(520px, calc(100% - 32px)); }
+.advisor-hours-field-row {
+  display: grid;
+  grid-template-columns: minmax(84px, .8fr) minmax(100px, .9fr) minmax(0, 2fr);
+  align-items: center;
+  gap: .65rem;
+  min-height: 55px;
+  padding: .45rem 0;
+  border-bottom: 1px solid var(--ds-border);
+}
+.advisor-hours-day-state {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ds-muted);
+  font-size: var(--ds-type-small);
+  cursor: pointer;
+}
+.advisor-hours-switch {
+  appearance: none;
+  flex: 0 0 30px;
+  height: 18px;
+  margin: 0;
+  border: 1px solid var(--ds-control-border);
+  border-radius: 999px;
+  background: var(--ds-selected);
+  cursor: pointer;
+}
+.advisor-hours-switch::before {
+  content: "";
+  display: block;
+  width: 12px;
+  height: 12px;
+  margin: 2px;
+  border-radius: 50%;
+  background: var(--ds-muted);
+}
+.advisor-hours-switch:checked { background: var(--ds-primary); border-color: var(--ds-primary); }
+.advisor-hours-switch:checked::before { transform: translateX(12px); background: var(--ds-on-primary); }
+.advisor-hours-switch:focus-visible { outline: 2px solid var(--ds-focus); outline-offset: 2px; }
+.advisor-hours-times { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; }
 .advisor-hours-field-row .field { margin: 0; }
-.advisor-hours-field-row input { min-width: 0; }
+.advisor-hours-field-row input[type="time"] { min-width: 0; width: 100%; }
+@media (max-width: 480px) {
+  .advisor-hours-field-row { grid-template-columns: 1fr auto; }
+  .advisor-hours-times { grid-column: 1 / -1; }
+}
 .advisor-hours-dialog .template-toolbar { margin-top: 1rem; }
 
 #appointment-copy-help { color: var(--muted); font-size: .85rem; }

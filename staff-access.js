@@ -54,7 +54,7 @@ rememberEmail.addEventListener("change", () => {
   if (!rememberEmail.checked) saveRememberedEmail("");
 });
 
-if (!window.supabase) {
+if (!window.supabase || !window.renueSupabaseConfig) {
   signInStatus.textContent = "Sign-in could not load. Refresh the page to try again.";
 } else {
   const authRedirect = new URLSearchParams(window.location.hash.slice(1));
@@ -72,16 +72,31 @@ if (!window.supabase) {
     } catch { /* Keep this invitation open for this page. */ }
   }
 
-  const client = window.supabase.createClient(
-    "https://xzpgodvdffpazhcvzxkq.supabase.co",
-    "sb_publishable_A-tlM6YuoENyosTMzY0mqQ_aNj7iWqM"
-  );
+  const { url, publishableKey } = window.renueSupabaseConfig;
+  const client = window.supabase.createClient(url, publishableKey);
   const setAdvisorHoursOwner = createAdvisorHours(client);
+  const setClinicContactEditor = createClinicContactEditor(client);
+  const setTreatmentPricingEditor = createTreatmentPricingEditor(client);
+  const setClinicHoursEditor = createClinicHoursEditor(client);
+  let clinicDirectory = null;
   const templateEditors = createPersonalTemplateEditors(client);
   const setCommunityOwner = createTemplateCommunity(client, templateEditors.manageSharedTemplate);
   let revision = 0;
   let submitting = false;
   let visibleUserId = null;
+  let managerRole = null;
+
+  workspaceViewMode.addEventListener("change", () => {
+    if (!visibleUserId || !managerRole) return;
+    const mode = workspaceViewMode.value;
+    const viewRole = mode === "advisor" ? "advisor" : managerRole;
+    templateEditors.setOwner(visibleUserId, viewRole);
+    setAdvisorHoursOwner(visibleUserId, viewRole);
+    setClinicContactEditor(visibleUserId, viewRole, clinicDirectory);
+    setTreatmentPricingEditor(viewRole);
+    setClinicHoursEditor(viewRole);
+    applyWorkspaceViewMode(mode);
+  });
   let inviteSession = null;
 
   function startMessageCopyUsage(userId) {
@@ -126,10 +141,13 @@ if (!window.supabase) {
       return;
     }
 
-    const directory = await fetchContactDirectory(client);
+    const [directory, pricing, schedules] = await Promise.all([
+      fetchContactDirectory(client), fetchIvkPricing(client), fetchClinicSchedules(client)
+    ]);
     if (currentRevision !== revision) return;
     await workspaceInitialisation;
     if (currentRevision !== revision) return;
+    clinicDirectory = directory;
     applyContactDirectory(directory);
 
     const role = data.role.charAt(0).toUpperCase() + data.role.slice(1);
@@ -139,6 +157,12 @@ if (!window.supabase) {
     templateEditors.setOwner(visibleUserId, data.role);
     setCommunityOwner(visibleUserId);
     setAdvisorHoursOwner(visibleUserId, data.role);
+    setClinicContactEditor(visibleUserId, data.role, clinicDirectory);
+    setTreatmentPricingEditor(data.role, pricing);
+    setClinicHoursEditor(data.role, schedules);
+    managerRole = ["manager", "owner"].includes(data.role) ? data.role : null;
+    workspaceViewControl.hidden = !managerRole;
+    applyWorkspaceViewMode(managerRole ? "manager" : "advisor");
     renderVoicemails();
     account.textContent = data.display_name + " · " + role;
     signIn.reset();
@@ -175,11 +199,17 @@ if (!window.supabase) {
         (event === "TOKEN_REFRESHED" || event === "SIGNED_IN")) return;
     const currentRevision = ++revision;
     visibleUserId = null;
+    managerRole = null;
+    workspaceViewControl.hidden = true;
     setMessageCopyUsage(null);
     staffDisplayName = "";
     templateEditors.setOwner(null);
     setCommunityOwner(null);
     setAdvisorHoursOwner(null);
+    setClinicContactEditor(null);
+    setTreatmentPricingEditor(null, null);
+    setClinicHoursEditor(null, new Map());
+    clinicDirectory = null;
     closeAppointmentModal(null);
     workspace.hidden = true;
     account.textContent = "";

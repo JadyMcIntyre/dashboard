@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Renue UI playground</title>
+  <link rel="stylesheet" href="../dist/assets/renue-ui.css">
+  <link rel="stylesheet" href="./playground.css">
+</head>
+<body>
+  <header class="playground-header">
+    <div><h1>Renue UI playground</h1><p>Workspace components in light and dark</p></div>
+    <label class="ds-field">Theme
+      <select class="ds-input" id="playground-theme"><option value="light">Light</option><option value="dark">Dark</option></select>
+    </label>
+  </header>
+  <main class="playground-grid">
+    <section class="ds-card state-gallery" aria-labelledby="states-heading">
+      <h2 id="states-heading">Control states</h2>
+      <div class="state-grid">
+        <div><p>Default</p><button type="button" class="ds-button" data-variant="primary">Save</button><button type="button" class="ds-button">Cancel</button></div>
+        <div><p>Hover</p><button type="button" class="ds-button" data-variant="primary" data-preview-state="hover">Save</button><button type="button" class="ds-button" data-preview-state="hover">Cancel</button></div>
+        <div><p>Focus visible</p><button type="button" class="ds-button" data-variant="primary" data-preview-state="focus">Save</button><input class="ds-input" data-preview-state="focus" aria-label="Focused input example" value="Chelsea"></div>
+        <div><p>Selected</p><button type="button" class="ds-button" aria-pressed="true">Pinned</button><button type="button" class="ds-segment" aria-pressed="true">Selected</button></div>
+        <div><p>Pressed</p><button type="button" class="ds-button" data-variant="primary" data-preview-state="pressed">Save</button><button type="button" class="ds-button" data-preview-state="pressed">Cancel</button></div>
+        <div><p>Disabled</p><button type="button" class="ds-button" data-variant="primary" disabled>Save</button><button type="button" class="ds-button" disabled>Cancel</button></div>
+      </div>
+    </section>
+    <section class="ds-card">
+      <h2>Buttons and tooltip</h2>
+      <div class="playground-row">
+        <button type="button" class="ds-button" data-variant="primary">Save changes</button>
+        <button type="button" class="ds-button">Cancel</button>
+        <button type="button" class="ds-button" disabled>Unavailable</button>
+        <span class="ds-tip">
+          <button class="ds-icon-button" aria-label="Information" aria-describedby="info-tip" type="button"><svg class="ds-icon" aria-hidden="true"><use href="../dist/assets/renue-icons.svg#info"></use></svg></button>
+          <span id="info-tip" role="tooltip">Information</span>
+        </span>
+      </div>
+    </section>
+    <section class="ds-card">
+      <h2>Inputs and dropdowns</h2>
+      <label class="ds-field">Display name<input class="ds-input" placeholder="First name"></label>
+      <label class="ds-field">Clinic<select class="ds-input"><option>Chelsea</option><option>Paramus</option></select></label>
+      <label class="ds-field">Unavailable<input class="ds-input" value="Disabled input" disabled></label>
+    </section>
+    <section class="ds-card">
+      <h2>Search and shortcut</h2>
+      <div class="ds-search">
+        <svg class="ds-icon" aria-hidden="true"><use href="../dist/assets/renue-icons.svg#search"></use></svg>
+        <input class="ds-input" aria-label="Search the library" placeholder="Search the library…" type="search">
+        <kbd class="ds-key playground-key" aria-hidden="true">/</kbd>
+      </div>
+    </section>
+    <section class="ds-card">
+      <h2>Segmented controls</h2>
+      <div class="ds-segmented" aria-label="Schedule period" role="group">
+        <button class="ds-segment" type="button" aria-pressed="true">This week</button>
+        <button class="ds-segment" type="button" aria-pressed="false">Next week</button>
+        <button class="ds-segment" type="button" disabled>Archived</button>
+      </div>
+    </section>
+    <section class="ds-card">
+      <h2>Navigation</h2>
+      <aside class="workspace-sidebar playground-sidebar">
+        <nav class="workspace-nav" aria-label="Example navigation">
+          <a href="#clinical" aria-current="page"><svg class="ds-icon" aria-hidden="true"><use href="../dist/assets/renue-icons.svg#treatment"></use></svg>Treatment guide</a>
+          <a href="#hours"><svg class="ds-icon" aria-hidden="true"><use href="../dist/assets/renue-icons.svg#hours"></use></svg>Hours &amp; contacts</a>
+        </nav>
+      </aside>
+    </section>
+    <section class="ds-card">
+      <h2>Table</h2>
+      <table class="ds-table">
+        <thead><tr><th scope="col">Clinic</th><th scope="col">Schedule</th></tr></thead>
+        <tbody><tr><th scope="row">Chelsea</th><td>9:30 AM–7:00 PM</td></tr><tr><th scope="row">Paramus</th><td>8:30 AM–6:00 PM</td></tr></tbody>
+      </table>
+    </section>
+    <section class="ds-card">
+      <h2>Dialog</h2>
+      <button type="button" class="ds-button" id="open-dialog">Open dialog</button>
+      <dialog class="ds-dialog" aria-labelledby="dialog-title">
+        <h2 id="dialog-title">Update display name</h2>
+        <form method="dialog" class="playground-row">
+          <button type="submit" class="ds-button">Cancel</button>
+          <button type="submit" class="ds-button" data-variant="primary">Save</button>
+        </form>
+      </dialog>
+    </section>
+    <section class="ds-card">
+      <h2>Feedback</h2>
+      <p class="ds-notice"><svg class="ds-icon" aria-hidden="true"><use href="../dist/assets/renue-icons.svg#info"></use></svg>Confirm availability with the selected clinic.</p>
+      <p class="ds-toast" role="status"><svg class="ds-icon" aria-hidden="true"><use href="../dist/assets/renue-icons.svg#check"></use></svg>Changes saved.</p>
+      <p class="ds-empty"><svg class="ds-icon" aria-hidden="true"><use href="../dist/assets/renue-icons.svg#inbox"></use></svg>No matching templates.</p>
+      <div class="playground-load" role="status" aria-label="Loading templates"><div class="ds-loading"></div><div class="ds-loading"></div></div>
+    </section>
+  </main>
+  <script src="./playground.js"></script>
+</body>
+</html>
