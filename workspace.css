@@ -290,7 +290,7 @@
   transition: transform 180ms ease;
 }
 .sidebar-theme-thumb svg { width: 13px; height: 13px; }
-.sidebar-theme-moon,
+.sidebar-theme-thumb .sidebar-theme-moon,
 .sidebar-theme-switch input:checked + .sidebar-theme-track .sidebar-theme-sun { display: none; }
 .sidebar-theme-switch input:checked + .sidebar-theme-track .sidebar-theme-moon { display: block; }
 .sidebar-theme-switch input:checked + .sidebar-theme-track .sidebar-theme-thumb { transform: translateX(21px); }
