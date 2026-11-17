@@ -6,6 +6,7 @@
 function createAdvisorHours(client) {
   const panel = document.querySelector("#advisor-hours-panel");
   const status = panel.querySelector("[role=status]");
+  const setAdvisorInvitations = createAdvisorInvitations(client);
   const table = panel.querySelector("table");
   const body = table.tBodies[0];
   const dialog = panel.querySelector("dialog");
@@ -110,6 +111,7 @@ function createAdvisorHours(client) {
     table.tHead.querySelector("[data-advisor-hours-actions]").hidden = !canEdit;
     body.replaceChildren(...advisors.map((advisor) => {
       const row = document.createElement("tr");
+      const needsHours = advisor.advisor_weekly_hours.length === 0;
       const heading = document.createElement("th");
       heading.scope = "row";
       heading.textContent = advisor.name;
@@ -120,7 +122,12 @@ function createAdvisorHours(client) {
         heading.append(you);
       }
       row.append(heading);
-      weekdays.forEach((_, weekday) => {
+      if (needsHours) {
+        row.classList.add("advisor-hours-unscheduled");
+        const notice = row.insertCell();
+        notice.colSpan = weekdays.length;
+        notice.textContent = "Hours need to be set";
+      } else for (const [weekday] of weekdays.entries()) {
         const cell = row.insertCell();
         const shift = advisor.advisor_weekly_hours.find((entry) => entry.weekday === weekday);
         if (shift?.starts_at && shift.ends_at) {
@@ -131,17 +138,17 @@ function createAdvisorHours(client) {
             cell.append(nextDay);
           }
         } else {
-          cell.textContent = advisor.advisor_weekly_hours.length ? "Off" : "—";
+          cell.textContent = "Off";
           cell.className = "advisor-hours-off";
         }
-      });
+      }
       if (canEdit) {
         const button = document.createElement("button");
         button.type = "button";
         button.className = "ds-button";
-        button.textContent = "Edit";
+        button.textContent = needsHours ? "Set hours" : "Edit";
         button.dataset.editAdvisor = advisor.id;
-        button.setAttribute("aria-label", `Edit hours for ${advisor.name}`);
+        button.setAttribute("aria-label", `${needsHours ? "Set" : "Edit"} hours for ${advisor.name}`);
         button.addEventListener("click", () => edit(advisor));
         const actions = document.createElement("div");
         actions.className = "template-toolbar";
@@ -278,6 +285,7 @@ function createAdvisorHours(client) {
     setAssigning(false);
     userId = owner;
     canEdit = role === "manager" || role === "owner";
+    setAdvisorInvitations(canEdit);
     editing = null;
     dialog.close();
     fields.disabled = false;

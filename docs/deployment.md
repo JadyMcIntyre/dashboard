@@ -72,3 +72,18 @@ key.
 A normal `python3 scripts/build.py` retains the existing production browser
 configuration. For a local shared staging build, run
 `RENUE_STAGING_SUPABASE_MODE=shared python3 scripts/build.py --staging`.
+
+## Advisor invitations
+
+Apply the advisor invitations migration to the Supabase project before
+deploying the function. That project must have the existing Renue invitation
+setup triggers and the advisor roster schema. Deploy the function with
+`supabase functions deploy invite-advisor --project-ref <project-ref> --no-verify-jwt`.
+The function validates the caller's bearer token through Supabase Auth and
+checks their current staff role before sending an invitation. It uses the
+server-provided service-role key. Keep that key out of the static site.
+
+The function allows the existing staging and production origins and uses the
+project's configured Auth Site URL, invite template and email delivery.
+Verify with an authorised test recipient after deployment. Both sites share live
+invitations and roster records when staging is configured in shared mode.

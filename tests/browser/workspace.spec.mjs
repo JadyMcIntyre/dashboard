@@ -72,6 +72,23 @@ test('clinic opening hours update both advisor displays and hide editing in advi
   await expect(page.locator('#hours-list [data-weekday="Tuesday"]')).toContainText('11:00 AM - 3:30 PM');
 });
 
+test('managers can invite an advisor and see pending setup', async ({ page }) => {
+  await page.addInitScript(() => { window.fixtureStaffRole = 'manager'; });
+  await openWorkspace(page, 'light', 'advisor-hours-title');
+  const invitations = page.locator('#advisor-invitations');
+  await invitations.locator('summary').click();
+  await invitations.getByLabel('Work email').fill('future-advisor@example.test');
+  await invitations.getByRole('button', { name: 'Invite advisor' }).click();
+  await expect(invitations.getByRole('status')).toHaveText('Invitation sent.');
+  await expect(invitations.getByRole('listitem')).toContainText('future-advisor@example.test');
+  await expect(invitations.getByRole('listitem')).toContainText('Awaiting setup');
+
+  await page.getByRole('button', { name: 'Account options' }).click();
+  await page.getByLabel('Workspace view').selectOption('advisor');
+  await page.keyboard.press('Escape');
+  await expect(invitations).toBeHidden();
+});
+
 test('managers can link an existing schedule and add an advisor account to the roster', async ({ page }) => {
   await page.addInitScript(() => { window.fixtureStaffRole = 'manager'; });
   await openWorkspace(page, 'light', 'advisor-hours-title');
@@ -94,13 +111,16 @@ test('managers can link an existing schedule and add an advisor account to the r
   await add.getByRole('button', { name: 'Add advisor', exact: true }).click();
   const hours = page.getByRole('dialog', { name: 'Edit Jordan’s hours' });
   await expect(hours).toBeVisible();
+  const jordan = page.getByRole('row', { name: /Jordan/ });
+  await expect(jordan).toContainText('Hours need to be set');
   await expect(hours.getByRole('switch', { name: 'Monday working' })).not.toBeChecked();
   await hours.getByRole('switch', { name: 'Monday working' }).check();
   await hours.getByLabel('Monday start').fill('09:00');
   await hours.getByLabel('Monday end').fill('17:00');
   await hours.getByRole('button', { name: 'Save hours' }).click();
   await expect(hours).toBeHidden();
-  await expect(page.getByRole('row', { name: /Jordan/ })).toContainText('9:00 AM – 5:00 PM');
+  await expect(jordan).toContainText('9:00 AM – 5:00 PM');
+  await expect(jordan).not.toContainText('Hours need to be set');
 
   await page.getByRole('button', { name: 'Account options' }).click();
   await page.getByLabel('Workspace view').selectOption('advisor');

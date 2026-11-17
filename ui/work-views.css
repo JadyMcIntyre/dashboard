@@ -131,3 +131,31 @@
   border-top: 1px solid var(--ds-border);
   padding-top: var(--ds-4);
 }
+
+.advisor-hours-unscheduled { background: var(--ds-hover); }
+.advisor-hours-unscheduled > td[colspan] { color: var(--ds-muted); }
+
+.advisor-invitations {
+  margin-block-end: var(--ds-4);
+  padding: var(--ds-4);
+}
+.advisor-invitations summary { cursor: pointer; font-weight: 600; }
+.advisor-invitations form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: var(--ds-3);
+  margin-block: var(--ds-4);
+}
+.advisor-invitations .ds-field { flex: 1 1 240px; }
+.advisor-invitations ul { margin: 0; padding: 0; list-style: none; }
+.advisor-invitations li {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--ds-2);
+  padding-block: var(--ds-2);
+  border-top: 1px solid var(--ds-border);
+}
+.advisor-invitations li span { overflow-wrap: anywhere; }
+.advisor-invitations li strong { color: var(--ds-muted); }
