@@ -4,6 +4,35 @@ import { openSignIn, openWorkspace } from './workspace-fixture.mjs';
 const clinic = (page, id) => page.locator(`input[name="call-state"][value="${id}"] + span`);
 const treatment = (page, id) => page.locator(`[data-treatment-guide="${id}"]`);
 
+test('a manager can update the selected clinic and see the same contact across tools', async ({ page }) => {
+  await page.addInitScript(() => { window.fixtureStaffRole = 'manager'; });
+  await openWorkspace(page, 'light', 'hours-title');
+  const edit = page.getByRole('button', { name: 'Edit clinic contact' });
+  await expect(edit).toBeHidden();
+  await clinic(page, 'CHELSEA').click();
+  await edit.click();
+  const dialog = page.getByRole('dialog', { name: 'Edit clinic contact' });
+  await expect(dialog.getByLabel('Phone number')).toHaveValue('212-555-0103');
+  await dialog.getByLabel('Phone number').fill('212-555-0199');
+  await dialog.getByLabel('Address').fill('200 Example Avenue, Chelsea');
+  await dialog.getByRole('button', { name: 'Save contact' }).click();
+  await expect(dialog).toBeHidden();
+  await expect(page.locator('#context-phone')).toHaveText('212-555-0199');
+  await expect(page.locator('#hours-list')).toContainText('200 Example Avenue, Chelsea');
+
+  await page.getByRole('button', { name: 'Account options' }).click();
+  await page.getByLabel('Workspace view').selectOption('advisor');
+  await page.keyboard.press('Escape');
+  await expect(edit).toBeHidden();
+  await page.getByRole('link', { name: 'Messages', exact: true }).click();
+  await expect(page.getByRole('article', { name: 'Selected message' })).toContainText('212-555-0199');
+  await page.getByRole('link', { name: 'Travel & transport' }).click();
+  await page.locator('#travel-origin').fill('10001');
+  await page.getByRole('button', { name: 'Find directions' }).click();
+  await expect(page.getByRole('link', { name: /^Open directions to Chelsea/ }))
+    .toHaveAttribute('href', /destination=200\+Example\+Avenue/);
+});
+
 test('managers can switch between management and advisor views', async ({ page }) => {
   await page.addInitScript(() => { window.fixtureStaffRole = 'manager'; });
   await openWorkspace(page, 'light', 'messages-title');

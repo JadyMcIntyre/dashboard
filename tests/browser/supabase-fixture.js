@@ -33,11 +33,23 @@
         }
       },
       from(table) {
-        const response = { data: data[table] || [], error: null };
+        const response = { data: structuredClone(data[table] || []), error: null };
+        let changes;
+        const filters = new Map();
         const query = {
-          select: () => query, eq: () => query, order: () => query,
+          select: () => query,
+          update(values) { changes = values; return query; },
+          eq(key, value) { filters.set(key, value); return query; },
+          order: () => query,
           is: () => query, in: () => query, neq: () => query, upsert: () => query, or: () => query,
-          maybeSingle: async () => response,
+          async maybeSingle() {
+            if (table !== 'clinic_contacts' || !changes) return response;
+            const row = data.clinic_contacts.find(clinic =>
+              [...filters].every(([key, value]) => clinic[key] === value)
+            );
+            if (row) Object.assign(row, changes);
+            return { data: row ? { ...row } : null, error: null };
+          },
           single: async () => response,
           then: (resolve, reject) => Promise.resolve(response).then(resolve, reject)
         };

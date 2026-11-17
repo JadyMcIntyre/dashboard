@@ -75,6 +75,8 @@ if (!window.supabase || !window.renueSupabaseConfig) {
   const { url, publishableKey } = window.renueSupabaseConfig;
   const client = window.supabase.createClient(url, publishableKey);
   const setAdvisorHoursOwner = createAdvisorHours(client);
+  const setClinicContactEditor = createClinicContactEditor(client);
+  let clinicDirectory = null;
   const templateEditors = createPersonalTemplateEditors(client);
   const setCommunityOwner = createTemplateCommunity(client, templateEditors.manageSharedTemplate);
   let revision = 0;
@@ -88,6 +90,7 @@ if (!window.supabase || !window.renueSupabaseConfig) {
     const viewRole = mode === "advisor" ? "advisor" : managerRole;
     templateEditors.setOwner(visibleUserId, viewRole);
     setAdvisorHoursOwner(visibleUserId, viewRole);
+    setClinicContactEditor(visibleUserId, viewRole, clinicDirectory);
     applyWorkspaceViewMode(mode);
   });
   let inviteSession = null;
@@ -138,6 +141,7 @@ if (!window.supabase || !window.renueSupabaseConfig) {
     if (currentRevision !== revision) return;
     await workspaceInitialisation;
     if (currentRevision !== revision) return;
+    clinicDirectory = directory;
     applyContactDirectory(directory);
 
     const role = data.role.charAt(0).toUpperCase() + data.role.slice(1);
@@ -147,6 +151,7 @@ if (!window.supabase || !window.renueSupabaseConfig) {
     templateEditors.setOwner(visibleUserId, data.role);
     setCommunityOwner(visibleUserId);
     setAdvisorHoursOwner(visibleUserId, data.role);
+    setClinicContactEditor(visibleUserId, data.role, clinicDirectory);
     managerRole = ["manager", "owner"].includes(data.role) ? data.role : null;
     workspaceViewControl.hidden = !managerRole;
     applyWorkspaceViewMode(managerRole ? "manager" : "advisor");
@@ -193,6 +198,8 @@ if (!window.supabase || !window.renueSupabaseConfig) {
     templateEditors.setOwner(null);
     setCommunityOwner(null);
     setAdvisorHoursOwner(null);
+    setClinicContactEditor(null);
+    clinicDirectory = null;
     closeAppointmentModal(null);
     workspace.hidden = true;
     account.textContent = "";

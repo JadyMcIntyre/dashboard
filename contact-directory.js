@@ -88,3 +88,94 @@ function applyContactDirectory({ organization, clinicsById, emails }) {
   document.dispatchEvent(new Event("workspace-data-ready"));
 }
 
+
+function createClinicContactEditor(client) {
+  const edit = document.querySelector("#edit-clinic-contact");
+  const dialog = document.querySelector("#clinic-contact-editor");
+  const form = document.querySelector("#clinic-contact-form");
+  const phone = form.elements.phone;
+  const address = form.elements.address;
+  const status = form.querySelector("[role=status]");
+  const save = form.querySelector("[type=submit]");
+  const cancel = form.querySelector("[data-cancel-clinic-contact]");
+  let directory = null;
+  let original = null;
+  let saving = false;
+  let revision = 0;
+
+  function updateVisibility() {
+    edit.hidden = !directory?.clinicsById.has(selectedLocationId);
+  }
+
+  edit.addEventListener("click", () => {
+    original = directory?.clinicsById.get(selectedLocationId);
+    if (!original) return;
+    document.querySelector("#clinic-contact-editor-name").textContent = original.name;
+    phone.value = original.phone;
+    address.value = original.address;
+    status.textContent = "";
+    dialog.showModal();
+  });
+  cancel.addEventListener("click", () => dialog.close());
+  dialog.addEventListener("cancel", (event) => {
+    if (saving) event.preventDefault();
+  });
+  document.addEventListener("workspace-clinic-change", updateVisibility);
+
+  function setSaving(value) {
+    saving = value;
+    save.disabled = value;
+    cancel.disabled = value;
+    phone.readOnly = value;
+    address.readOnly = value;
+  }
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (!directory || !original || saving) return;
+    const values = { phone: phone.value.trim(), address: address.value.trim() };
+    if (!values.address || !/^[+\d().\s-]+$/.test(values.phone) ||
+        !/^(1)?\d{10}$/.test(values.phone.replace(/\D/g, ""))) {
+      status.textContent = "Enter a US phone number and a complete address.";
+      return;
+    }
+
+    const request = revision;
+    setSaving(true);
+    status.textContent = "Saving…";
+    try {
+      const { data, error } = await client.from("clinic_contacts").update(values)
+        .eq("clinic_id", original.clinic_id)
+        .eq("phone", original.phone).eq("address", original.address)
+        .select("clinic_id, name, phone, address").maybeSingle();
+      if (request !== revision) return;
+      if (error) throw error;
+      if (!data) {
+        status.textContent = "The contact could not be updated. Reload the dashboard and check for newer details.";
+        return;
+      }
+
+      const addressChanged = original.address !== data.address;
+      directory.clinicsById.set(data.clinic_id, data);
+      applyContactDirectory(directory);
+      renderMessages();
+      renderVoicemails();
+      if (addressChanged) document.querySelector("#travel-results").hidden = true;
+      dialog.close();
+      showToast("Clinic contact saved.");
+    } catch {
+      if (request === revision) status.textContent = "Could not save the clinic contact. Try again.";
+    } finally {
+      if (request === revision) setSaving(false);
+    }
+  });
+
+  return (userId, role, contacts) => {
+    ++revision;
+    directory = userId && ["manager", "owner"].includes(role) ? contacts : null;
+    original = null;
+    dialog.close();
+    setSaving(false);
+    updateVisibility();
+  };
+}

@@ -96,3 +96,9 @@
 
 @media (max-width: 900px) { #resources-list { grid-template-columns: minmax(0, 1fr); } }
 @media (max-width: 420px) { .staff-access .staff-sign-in-panel.ds-card { padding: var(--ds-5); } }
+
+#edit-clinic-contact { margin-bottom: var(--ds-3); }
+#clinic-contact-form { display: grid; gap: var(--ds-3); }
+#clinic-contact-form .view-description,
+#clinic-contact-form [role="status"] { margin: 0; color: var(--ds-muted); }
+#clinic-contact-form [role="status"]:empty { display: none; }
