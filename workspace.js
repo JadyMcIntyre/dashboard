@@ -89,6 +89,8 @@ document.querySelector("#staff-sign-out").addEventListener("click", () => {
 const workspaceViewControl = document.querySelector("#workspace-view-control");
 const workspaceViewMode = document.querySelector("#workspace-view-mode");
 const advisorViews = new Set(["messages-title", "voicemail-title"]);
+const workspaceNav = document.querySelector("#workspace-nav");
+const workspaceManagementNav = document.querySelector("#workspace-management-nav");
 
 function isWorkspaceViewAvailable(view) {
   if (view === "manage-clinic-data-title") return workspaceShell.dataset.mode === "manager";
@@ -98,6 +100,8 @@ function isWorkspaceViewAvailable(view) {
 function applyWorkspaceViewMode(mode) {
   workspaceShell.dataset.mode = mode;
   workspaceViewMode.value = mode;
+  if (mode === "manager") workspaceNav.prepend(workspaceManagementNav);
+  else workspaceNav.append(workspaceManagementNav);
   document.querySelectorAll('.workspace-nav a[href^="#"]').forEach((link) => {
     link.hidden = !isWorkspaceViewAvailable(link.hash.slice(1));
   });

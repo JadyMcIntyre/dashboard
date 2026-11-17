@@ -48,6 +48,7 @@ test('managers can switch between management and advisor views', async ({ page }
   const account = page.getByRole('button', { name: 'Account options' });
   const mode = page.getByLabel('Workspace view');
   await expect(page).toHaveURL(/#insurance-title$/);
+  await expect(nav.getByRole('link').first()).toHaveText('Manage templates');
   await expect(nav.getByRole('link', { name: 'Messages', exact: true })).toBeHidden();
   await expect(nav.getByRole('link', { name: 'Voicemail scripts', exact: true })).toBeHidden();
   await page.keyboard.press('Control+k');
@@ -74,6 +75,7 @@ test('managers can switch between management and advisor views', async ({ page }
   await mode.selectOption('advisor');
   await page.keyboard.press('Escape');
   await expect(page.getByRole('button', { name: 'Edit hours for Morgan' })).toHaveCount(0);
+  await expect(nav.getByRole('link').first()).toHaveText('Insurance');
   await expect(nav.getByRole('link', { name: 'Voicemail scripts', exact: true })).toBeVisible();
   await nav.getByRole('link', { name: 'Messages', exact: true }).click();
   await expect(page.getByRole('article', { name: 'Selected message' })).toBeVisible();
