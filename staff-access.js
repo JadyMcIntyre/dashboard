@@ -76,6 +76,7 @@ if (!window.supabase || !window.renueSupabaseConfig) {
   const client = window.supabase.createClient(url, publishableKey);
   const setAdvisorHoursOwner = createAdvisorHours(client);
   const setClinicContactEditor = createClinicContactEditor(client);
+  const setTreatmentPricingEditor = createTreatmentPricingEditor(client);
   let clinicDirectory = null;
   const templateEditors = createPersonalTemplateEditors(client);
   const setCommunityOwner = createTemplateCommunity(client, templateEditors.manageSharedTemplate);
@@ -91,6 +92,7 @@ if (!window.supabase || !window.renueSupabaseConfig) {
     templateEditors.setOwner(visibleUserId, viewRole);
     setAdvisorHoursOwner(visibleUserId, viewRole);
     setClinicContactEditor(visibleUserId, viewRole, clinicDirectory);
+    setTreatmentPricingEditor(viewRole);
     applyWorkspaceViewMode(mode);
   });
   let inviteSession = null;
@@ -137,7 +139,7 @@ if (!window.supabase || !window.renueSupabaseConfig) {
       return;
     }
 
-    const directory = await fetchContactDirectory(client);
+    const [directory, pricing] = await Promise.all([fetchContactDirectory(client), fetchIvkPricing(client)]);
     if (currentRevision !== revision) return;
     await workspaceInitialisation;
     if (currentRevision !== revision) return;
@@ -152,6 +154,7 @@ if (!window.supabase || !window.renueSupabaseConfig) {
     setCommunityOwner(visibleUserId);
     setAdvisorHoursOwner(visibleUserId, data.role);
     setClinicContactEditor(visibleUserId, data.role, clinicDirectory);
+    setTreatmentPricingEditor(data.role, pricing);
     managerRole = ["manager", "owner"].includes(data.role) ? data.role : null;
     workspaceViewControl.hidden = !managerRole;
     applyWorkspaceViewMode(managerRole ? "manager" : "advisor");
@@ -199,6 +202,7 @@ if (!window.supabase || !window.renueSupabaseConfig) {
     setCommunityOwner(null);
     setAdvisorHoursOwner(null);
     setClinicContactEditor(null);
+    setTreatmentPricingEditor(null, null);
     clinicDirectory = null;
     closeAppointmentModal(null);
     workspace.hidden = true;

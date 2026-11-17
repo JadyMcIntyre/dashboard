@@ -106,3 +106,10 @@
 #clinic-contact-form .view-description,
 #clinic-contact-form [role="status"] { margin: 0; color: var(--ds-muted); }
 #clinic-contact-form [role="status"]:empty { display: none; }
+
+.treatment-pricing-section { margin-top: var(--ds-6); }
+#treatment-pricing-table table { min-width: 520px; }
+#treatment-pricing-form { display: grid; gap: var(--ds-3); margin-top: var(--ds-3); }
+#treatment-pricing-form [role="status"]:empty,
+#treatment-pricing-status:empty { display: none; }
+#treatment-pricing-form .view-description { margin: 0; }

@@ -12,7 +12,7 @@ function treatmentIcon(name) {
 const treatmentGuideIcons = { ivk: "infusion", spravato: "spray", tms: "activity" };
 
 function renderGuideFact([label, value]) {
-  const price = value.match(/^(\$[\d,]+)( per session)$/);
+  const price = value.match(/^(\$[\d,.]+)( per session)$/);
   return `<div class="guide-fact${price ? " guide-fact-price" : ""}"><dt>${escapeHtml(label)}</dt><dd>${price
     ? `<strong>${escapeHtml(price[1])}</strong><span>${escapeHtml(price[2])}</span>`
     : escapeHtml(value)}</dd></div>`;
@@ -26,15 +26,24 @@ function renderTreatmentGuide() {
   let facts = guide.facts;
   let note = guide.note;
   if (guide.id === "ivk") {
-    const pricing = ivkPricingByClinic[selectedLocationId];
+    const pricing = getIvkPricing(selectedLocationId);
     facts = guide.facts.filter(([label]) => label !== "Pricing");
-    if (pricing) {
-      facts = [...facts, ["Standard price", `$${pricing.standard} per session`], ["Promotional price", `$${pricing.promo} per session`]];
-      if (pricing.openingSale) facts.push(["Chelsea opening sale", `$${pricing.openingSale} per session`]);
-      note = pricing.openingSale ? "Chelsea opening-sale rate: $400 per session, available only at Chelsea." : "Prices shown are for the selected clinic.";
+    if (pricing?.standard_price != null) {
+      facts.push(["Standard price", `${formatTreatmentPrice(pricing.standard_price)} per session`]);
+      if (pricing.promotional_price != null) {
+        facts.push(["Promotional price", `${formatTreatmentPrice(pricing.promotional_price)} per session`]);
+      }
+      if (pricing.offer_price != null) {
+        const offerLabel = selectedLocationId === "CHELSEA" ? "Chelsea opening sale" : "Clinic offer";
+        const amount = formatTreatmentPrice(pricing.offer_price);
+        facts.push([offerLabel, `${amount} per session`]);
+        note = selectedLocationId === "CHELSEA"
+          ? `Chelsea opening-sale rate: ${amount} per session, available only at Chelsea.`
+          : "Offer applies to the selected clinic.";
+      }
     } else {
-      facts = [...facts, ["Pricing", selectedLocationId ? "No IVK pricing listed for this clinic" : "Select a clinic to see its prices"]];
-      note = "Select New Hyde Park, Chelsea or Paramus for clinic-specific IVK pricing.";
+      facts.push(["Pricing", selectedLocationId ? "No IVK pricing listed for this clinic" : "Select a clinic to see its prices"]);
+      note = "Check the selected clinic before quoting a price.";
     }
   }
   document.querySelector("#treatment-guide-content").innerHTML = `

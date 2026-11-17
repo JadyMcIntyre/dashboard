@@ -41,6 +41,28 @@ test('a manager can update the selected clinic and see the same contact across t
     .toHaveAttribute('href', /destination=200\+Example\+Avenue/);
 });
 
+test('a manager can edit Chelsea IV ketamine pricing for the treatment guide', async ({ page }) => {
+  await page.addInitScript(() => { window.fixtureStaffRole = 'manager'; });
+  await openWorkspace(page, 'dark');
+  await page.getByRole('link', { name: 'Manage clinic data' }).click();
+  const edit = page.getByRole('button', { name: 'Edit Chelsea prices' });
+  await edit.click();
+  const dialog = page.getByRole('dialog', { name: 'Edit Chelsea prices' });
+  await expect(dialog.getByLabel('Chelsea opening sale (USD)')).toHaveValue('400');
+  await dialog.getByLabel('Chelsea opening sale (USD)').fill('425.50');
+  await dialog.getByRole('button', { name: 'Save prices' }).click();
+  await expect(dialog).toBeHidden();
+  await expect(edit).toBeFocused();
+  await expect(page.locator('#treatment-pricing-table').getByRole('row', { name: /Chelsea/ }))
+    .toContainText('$425.50');
+  await page.getByRole('link', { name: 'Treatment guide' }).click();
+  await clinic(page, 'CHELSEA').click();
+  await expect(page.locator('.guide-facts')).toContainText('$425.50 per session');
+  await clinic(page, 'NJ').click();
+  await expect(page.locator('.guide-facts')).toContainText('$475 per session');
+  await expect(page.locator('.guide-facts')).not.toContainText('$425.50');
+});
+
 test('managers can switch between management and advisor views', async ({ page }) => {
   await page.addInitScript(() => { window.fixtureStaffRole = 'manager'; });
   await openWorkspace(page, 'light', 'messages-title');

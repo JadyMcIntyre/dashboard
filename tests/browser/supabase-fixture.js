@@ -13,6 +13,11 @@
       carecredit_url: 'https://carecredit.example.test', advance_care_url: 'https://advance-care.example.test',
       access_a_ride_url: 'https://transport.example.test', access_a_ride_phone: '212-555-0101'
     },
+    clinic_treatment_prices: [
+      ['NY', 500, 450, null], ['CHELSEA', 500, 450, 400],
+      ['NJ', 525, 475, null], ['FL', null, null, null]
+    ].map(([clinic_id, standard_price, promotional_price, offer_price]) =>
+      ({ clinic_id, treatment: 'ivk', standard_price, promotional_price, offer_price })),
     clinic_contacts: [['NY', 'New Hyde Park'], ['CHELSEA', 'Chelsea'], ['NJ', 'Paramus'], ['FL', 'Crestview']]
       .map(([clinic_id, name], index) => ({ clinic_id, name, address: '100 Example Avenue, ' + name, phone: '212-555-010' + (index + 2) }))
   };
@@ -41,10 +46,10 @@
           update(values) { changes = values; return query; },
           eq(key, value) { filters.set(key, value); return query; },
           order: () => query,
-          is: () => query, in: () => query, neq: () => query, upsert: () => query, or: () => query,
+          is(key, value) { filters.set(key, value); return query; }, in: () => query, neq: () => query, upsert: () => query, or: () => query,
           async maybeSingle() {
-            if (table !== 'clinic_contacts' || !changes) return response;
-            const row = data.clinic_contacts.find(clinic =>
+            if (!['clinic_contacts', 'clinic_treatment_prices'].includes(table) || !changes) return response;
+            const row = data[table].find(clinic =>
               [...filters].every(([key, value]) => clinic[key] === value)
             );
             if (row) Object.assign(row, changes);

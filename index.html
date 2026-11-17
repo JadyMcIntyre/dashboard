@@ -12,7 +12,7 @@
 <meta property="og:image:width" content="1200"/>
 <meta property="og:image:height" content="630"/>
 <meta property="og:image:alt" content="Renue Wellness logo"/>
-<link rel="stylesheet" href="./assets/renue-ui.css?v=manage-clinic-data"/>
+<link rel="stylesheet" href="./assets/renue-ui.css?v=treatment-pricing"/>
 </head><body class="workspace-page"><a class="skip-link" href="#workspace-main">Skip to content</a><main id="staff-access" class="staff-access">
   <section class="panel staff-sign-in-panel ds-card" aria-labelledby="staff-access-title">
     <img alt="Renue Wellness" width="169" src="./resources/brand/renue-logo.svg"/>
@@ -290,6 +290,31 @@
     </div>
   </form>
 </dialog>
+  <section class="treatment-pricing-section" aria-labelledby="manage-treatment-pricing">
+    <h3 id="manage-treatment-pricing">Treatment pricing</h3>
+    <p class="view-description">IV ketamine · Prices per session in USD</p>
+    <p id="treatment-pricing-status" role="status"></p>
+    <div class="advisor-hours-table-wrap" id="treatment-pricing-table" hidden>
+      <table class="ds-table">
+        <thead><tr><th scope="col">Clinic</th><th scope="col">Standard</th><th scope="col">Promotional</th><th scope="col">Clinic offer</th><th scope="col">Actions</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <dialog class="ds-dialog" id="treatment-pricing-editor" aria-labelledby="treatment-pricing-editor-title">
+      <h3 id="treatment-pricing-editor-title"></h3>
+      <form id="treatment-pricing-form">
+        <label class="ds-field">Standard price (USD)<input class="ds-input" name="standard_price" type="number" min="0.01" max="99999999.99" step="0.01"/></label>
+        <label class="ds-field">Promotional price (USD)<input class="ds-input" name="promotional_price" type="number" min="0.01" max="99999999.99" step="0.01"/></label>
+        <label class="ds-field"><span id="treatment-pricing-offer-label">Clinic offer (USD)</span><input class="ds-input" name="offer_price" type="number" min="0.01" max="99999999.99" step="0.01"/></label>
+        <p class="view-description">Leave all prices blank when the clinic has no prices to display.</p>
+        <p role="status"></p>
+        <div class="template-toolbar">
+          <button class="ds-button" data-variant="primary" type="submit">Save prices</button>
+          <button class="ds-button" type="button" data-cancel-treatment-pricing>Cancel</button>
+        </div>
+      </form>
+    </dialog>
+  </section>
 </section>
 <section aria-label="Clinic hours and contacts" class="panel workspace-panel ds-work-view" data-workspace-view="hours-title" hidden=""><div class="section-heading"><div><h2 class="visually-hidden" id="hours-title">Hours &amp; contacts</h2></div></div><p class="view-description">Hours are shown in the selected clinic’s local time.</p>
 <div class="hours-layout"><div id="hours-list"></div><div class="hours-shared-contacts"><div class="shared-contact ds-card"><div><span class="context-label">Fax · All locations</span><strong id="organization-fax"></strong></div><button class="button-secondary ds-button" data-copy-contact type="button">Copy fax number</button></div><details class="company-emails ds-card" id="company-emails"><summary><span>Company emails</span><span class="email-count"></span><span aria-hidden="true" class="summary-icon"></span></summary><div class="company-email-table-wrap"><table class="company-email-table"><caption class="visually-hidden">Company email directory</caption><thead><tr><th scope="col">Team / Purpose</th><th scope="col">Email address</th></tr></thead><tbody></tbody></table></div></details></div></div></section><section aria-label="Vitamins and IV menu" class="panel workspace-panel vitamins-panel ds-work-view" data-workspace-view="vitamins-title" hidden=""><div class="section-heading"><div><h2 class="visually-hidden" id="vitamins-title">Vitamins &amp; IV</h2></div></div><p class="view-description">Available at the Paramus clinic, New Jersey. Browse 8 IV therapies, 4 vitamin shots and 1 add-on by treatment, ingredient or price.</p>
@@ -357,4 +382,4 @@
 </div>
 </form>
 </div>
-</div><div aria-live="polite" class="toast" id="toast" role="status"></div><script src="./vitamins-data.js?v=1"></script><script src="./care-content.js?v=clinic-number"></script><script src="./contact-directory.js?v=manage-clinic-data"></script><script src="./app.js?v=workspace-components"></script><script src="./vitamins.js?v=workspace-components"></script><script src="./care-tools.js?v=ui-treatment-refined"></script><script src="./workspace.js?v=manager-sidebar-order"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.89.0/dist/umd/supabase.js"></script><script src="./personal-templates.js?v=workspace-components"></script><script src="./advisor-hours.js?v=working-switch"></script><script src="./supabase-config.js"></script><script src="./staff-access.js?v=clinic-contact-editor"></script></body></html>
+</div><div aria-live="polite" class="toast" id="toast" role="status"></div><script src="./vitamins-data.js?v=1"></script><script src="./care-content.js?v=treatment-pricing"></script><script src="./contact-directory.js?v=manage-clinic-data"></script><script src="./app.js?v=workspace-components"></script><script src="./vitamins.js?v=workspace-components"></script><script src="./treatment-pricing.js?v=1"></script><script src="./care-tools.js?v=treatment-pricing"></script><script src="./workspace.js?v=treatment-pricing"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.89.0/dist/umd/supabase.js"></script><script src="./personal-templates.js?v=workspace-components"></script><script src="./advisor-hours.js?v=working-switch"></script><script src="./supabase-config.js"></script><script src="./staff-access.js?v=treatment-pricing"></script></body></html>

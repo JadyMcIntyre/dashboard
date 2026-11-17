@@ -193,9 +193,10 @@ function buildWorkspaceSearchEntries() {
       add(name, [clinic.address || office.addressLines.join(", "), clinic.phone].filter(Boolean).join(" · "),
         `hours ${clinic.hoursName} ${schedule} ${clinic.phone.replace(/\D/g, "")}`, "hours-title", { clinic: clinicId });
     }
-    const pricing = ivkPricingByClinic[clinicId];
-    if (pricing) {
-      add("IV ketamine pricing", name, Object.values(pricing).map((price) => `$${price}`).join(" "),
+    const pricing = getIvkPricing(clinicId);
+    if (pricing?.standard_price != null) {
+      const amounts = treatmentPriceFields.map(field => pricing[field]).filter(value => value != null);
+      add("IV ketamine pricing", name, amounts.map(formatTreatmentPrice).join(" "),
         "treatment-title", { treatment: "ivk", clinic: clinicId });
     }
   }
