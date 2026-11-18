@@ -72,14 +72,38 @@ test('clinic opening hours update both advisor displays and hide editing in advi
   await expect(page.locator('#hours-list [data-weekday="Tuesday"]')).toContainText('11:00 AM - 3:30 PM');
 });
 
+test('owners can change access and must confirm deleting another account', async ({ page }) => {
+  await page.addInitScript(() => { window.fixtureStaffRole = 'owner'; });
+  await openWorkspace(page, 'dark', 'manage-users-title');
+  const morgan = page.getByRole('row', { name: /morgan@example.test/ });
+  await morgan.getByRole('button', { name: 'Change access for Morgan' }).click();
+  const access = page.getByRole('dialog', { name: 'Change access level' });
+  await access.getByLabel('Access level').selectOption('manager');
+  await access.getByRole('button', { name: 'Save access' }).click();
+  await expect(morgan).toContainText('Manager');
+  await expect(page.getByRole('button', { name: 'Delete for Alex' })).toHaveCount(0);
+
+  const confirm = page.getByRole('dialog', { name: 'Delete staff account' });
+  await morgan.getByRole('button', { name: 'Delete for Morgan' }).click();
+  await expect(confirm).toContainText('morgan@example.test');
+  await expect(confirm.getByRole('button', { name: 'Cancel' })).toBeFocused();
+  await confirm.getByRole('button', { name: 'Cancel' }).click();
+  await expect(morgan).toBeVisible();
+  await morgan.getByRole('button', { name: 'Delete for Morgan' }).click();
+  await confirm.getByRole('button', { name: 'Delete account' }).click();
+  await expect(morgan).toHaveCount(0);
+});
+
 test('managers can invite an advisor and see pending setup', async ({ page }) => {
   await page.addInitScript(() => { window.fixtureStaffRole = 'manager'; });
   await openWorkspace(page, 'light', 'advisor-hours-title');
-  const invitations = page.locator('#advisor-invitations');
+  const invitations = page.locator('#advisor-invitations .advisor-invitations');
   await expect(invitations).toBeHidden();
   const manageUsers = page.getByRole('link', { name: 'Manage users' });
   await manageUsers.click();
   await expect(page).toHaveURL(/#manage-users-title$/);
+  await expect(page.getByRole('row', { name: /morgan@example.test/ })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Delete for Morgan' })).toHaveCount(0);
   await invitations.getByLabel('Work email').fill('future-advisor@example.test');
   await invitations.getByRole('button', { name: 'Invite advisor' }).click();
   await expect(invitations.getByRole('status')).toHaveText('Invitation sent.');

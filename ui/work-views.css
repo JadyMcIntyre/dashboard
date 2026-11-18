@@ -159,3 +159,14 @@
 }
 .advisor-invitations li span { overflow-wrap: anywhere; }
 .advisor-invitations li strong { color: var(--ds-muted); }
+
+.staff-directory { padding: var(--ds-4); margin-block-end: var(--ds-4); }
+.staff-directory h3, .staff-account-dialog h3 { margin: 0; }
+.staff-directory .advisor-hours-table-wrap { margin-block-start: var(--ds-3); }
+.staff-directory table { width: 100%; }
+.staff-directory td { overflow-wrap: anywhere; }
+.staff-directory [role=status], .staff-account-dialog p { color: var(--ds-muted); }
+.staff-directory [role=status]:empty, .staff-account-dialog [role=status]:empty { display: none; }
+.staff-account-dialog form { display: grid; gap: var(--ds-4); }
+.staff-account-dialog .template-toolbar { justify-content: flex-end; }
+.staff-account-dialog [data-variant="danger"] { color: var(--ds-danger, var(--ds-text)); }

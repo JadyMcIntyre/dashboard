@@ -87,3 +87,12 @@ The function allows the existing staging and production origins and uses the
 project's configured Auth Site URL, invite template and email delivery.
 Verify with an authorised test recipient after deployment. Both sites share live
 invitations and roster records when staging is configured in shared mode.
+
+## Staff directory
+
+Apply the staff accounts migration and deploy
+`supabase functions deploy delete-staff-account --project-ref <project-ref> --no-verify-jwt`.
+The directory is available to managers and owners. Role and deletion actions
+require an existing owner, established separately by an authorised Supabase
+administrator. Owners cannot manage their own account or other owners through
+these actions. Verify with disposable staff accounts after deployment.

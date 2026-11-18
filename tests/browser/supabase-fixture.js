@@ -5,6 +5,10 @@
     staff_profiles: { display_name: 'Alex', role: window.fixtureStaffRole || 'advisor' },
     company_email_contacts: [{ id: 1, label: 'Intake support', email: 'intake@example.test' }],
     advisor_invitations: [],
+    staff_accounts: [
+      { user_id: 'test-advisor', display_name: 'Alex', email: 'alex@example.test', role: window.fixtureStaffRole || 'advisor' },
+      { user_id: 'test-colleague', display_name: 'Morgan', email: 'morgan@example.test', role: 'advisor' }
+    ],
     advisor_roster: [
       { id: 1, name: 'Alex', user_id: 'test-advisor', advisor_weekly_hours: [{ weekday: 1, starts_at: '08:30', ends_at: '17:30' }] },
       { id: 2, name: 'Morgan', user_id: 'test-colleague', advisor_weekly_hours: [{ weekday: 1, starts_at: '10:00', ends_at: '19:00' }] },
@@ -44,6 +48,10 @@
       },
       functions: {
         async invoke(name, { body }) {
+          if (name === 'delete-staff-account') {
+            data.staff_accounts = data.staff_accounts.filter(account => account.user_id !== body.user_id);
+            return { error: null };
+          }
           if (name !== 'invite-advisor') return { error: new Error('Unexpected function') };
           data.advisor_invitations.push({ email: body.email, status: 'pending' });
           return { data: { code: 'invited' }, error: null };
@@ -83,6 +91,11 @@
         return query;
       },
       async rpc(name, args) {
+        if (name === 'list_staff_accounts') return { data: structuredClone(data.staff_accounts), error: null };
+        if (name === 'change_staff_access') {
+          data.staff_accounts.find(account => account.user_id === args.target_id).role = args.new_role;
+          return { error: null };
+        }
         if (name !== 'assign_advisor_roster') return { data: null, error: null };
         const accounts = {
           'jordan@example.test': { name: 'Jordan', user_id: 'test-jordan' },

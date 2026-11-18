@@ -4,7 +4,7 @@
  */
 
 function createAdvisorInvitations(client) {
-  const panel = document.querySelector("#advisor-invitations");
+  const panel = document.querySelector("#advisor-invitations .advisor-invitations");
   const form = panel.querySelector("form");
   const email = form.elements.email;
   const send = form.querySelector("button");
@@ -37,11 +37,11 @@ function createAdvisorInvitations(client) {
   }
 
   document.addEventListener("workspace-view-change", () => {
-    if (canInvite && !panel.hidden) void load();
+    if (canInvite && !panel.closest("[data-workspace-view]").hidden) void load();
   });
   form.addEventListener("submit", async event => {
     event.preventDefault();
-    if (!canInvite || panel.hidden || send.disabled) return;
+    if (!canInvite || panel.closest("[data-workspace-view]").hidden || send.disabled) return;
     const request = accessRevision;
     send.disabled = true;
     email.readOnly = true;
