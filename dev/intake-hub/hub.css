@@ -1,0 +1,39 @@
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--ds-bg, var(--bg)); color: var(--ds-text); font: 14px/1.55 "Inter Variable", Inter, system-ui, sans-serif; display:grid; grid-template-columns: 216px minmax(0,1fr); min-height:100vh; }
+aside { padding:24px 18px; border-right:1px solid var(--ds-border); background:var(--ds-surface); }
+.brand { width:128px; margin: 4px 0 20px; }
+aside > p { color:var(--ds-muted); font-weight:600; }
+nav { display:grid; gap:5px; margin-bottom:36px; }
+nav button { text-align:left; justify-content:flex-start; }
+aside > button { margin-top:12px; }
+main { padding:0 36px; max-width:1500px; width:100%; margin:auto; align-self:start; }
+header, footer, .actions { display:flex; align-items:center; flex-wrap:wrap; gap:10px; }
+header, footer { justify-content:space-between; padding:20px 0; border-bottom:1px solid var(--ds-border); }
+footer { margin-top:36px; border-top:1px solid var(--ds-border); border-bottom:0; color:var(--ds-muted); }
+.demo { color:var(--ds-muted); border:1px solid var(--ds-border); padding:4px 10px; border-radius:6px; }
+h1 { font-size:clamp(28px,4vw,42px); letter-spacing:-.045em; margin:30px 0 2px; }
+h2,h3,p { margin:0; }
+#heading p { color:var(--ds-muted); margin-bottom:24px; }
+.grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr)); gap:14px; }
+.ds-card { padding:18px; }
+.metric { display:flex; flex-direction:column; align-items:flex-start; height:auto; padding:16px; }
+.metric strong { font-size:30px; }
+.stack { display:grid; gap:14px; }
+.queue { display:flex; width:100%; justify-content:space-between; margin-top:8px; text-align:left; height:auto; white-space:normal; }
+small { color:var(--ds-muted); }
+#filters:not([hidden]) { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px; }
+.table-wrap { overflow:auto; border:1px solid var(--ds-border); border-radius:8px; }
+table { width:100%; text-align:left; }
+td,th { padding:10px 14px; white-space:nowrap; }
+dialog { max-height:90vh; overflow:auto; }
+#intake { width:min(550px,94vw); }
+dialog form { display:grid; gap:12px; margin-top:16px; }
+.record { width:min(590px,94vw); margin:0 0 0 auto; height:100%; max-height:100%; }
+.record > button { float:right; }
+.timeline { padding-left:20px; }
+.timeline li { padding:5px 0; overflow-wrap:anywhere; }
+meter { width:100%; }
+textarea { width:100%; }
+@media(max-width:750px){body{display:block} aside{padding:12px} nav{display:flex;flex-wrap:wrap;margin-bottom:10px}main{padding:0 14px}}
+
+[hidden] { display: none !important; }

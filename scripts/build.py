@@ -89,7 +89,10 @@ def build(output, *, staging=False):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--staging", action="store_true", help="Use the configured staging Supabase mode.")
+    parser.add_argument("--intake-demo", action="store_true", help="Include the synthetic Intake Hub in a local demo build.")
     args = parser.parse_args()
+    if args.intake_demo and (args.staging or os.environ.get("CI") or os.environ.get("CF_PAGES")):
+        parser.error("--intake-demo is available only for local builds.")
     dist = ROOT / "dist"
     if dist.exists():
         shutil.rmtree(dist)
@@ -97,4 +100,17 @@ if __name__ == "__main__":
         build(dist, staging=args.staging)
     except ValueError as error:
         parser.error(str(error))
+    if args.intake_demo:
+        demo = dist / "intake-hub"
+        shutil.copytree(ROOT / "dev" / "intake-hub", demo)
+        demo_index = demo / "index.html"
+        html = demo_index.read_text(encoding="utf-8")
+        demo_index.write_text(html.replace("../../dist/assets/", "../assets/").replace("../../resources/", "../resources/"), encoding="utf-8")
+        dashboard = dist / "index.html"
+        html = dashboard.read_text(encoding="utf-8")
+        link = '<a class="ds-button" href="./intake-hub/" target="_blank" rel="noopener">Intake Hub demo</a>'
+        marker = '<nav id="workspace-nav"'
+        if marker not in html:
+            raise RuntimeError("Workspace navigation is missing from the dashboard.")
+        dashboard.write_text(html.replace(marker, link + marker, 1), encoding="utf-8")
     print("Built dist/ with build-provenance.json")

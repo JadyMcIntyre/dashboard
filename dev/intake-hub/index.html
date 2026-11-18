@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="author" content="J Mc Intyre"><meta name="creator" content="J Mc Intyre">
+<title>Intake Hub · Renue Wellness</title>
+<link rel="stylesheet" href="../../dist/assets/renue-ui.css">
+<link rel="stylesheet" href="hub.css">
+</head>
+<body>
+<aside><img class="brand" src="../../resources/brand/renue-logo.svg" alt="Renue Wellness"><p>Intake Hub</p><nav aria-label="Intake Hub" id="nav"></nav>
+<label class="ds-field">Demo experience<select class="ds-input" id="role"><option>Advisor</option><option>Manager</option></select></label>
+<button class="ds-button" id="theme">Switch theme</button></aside>
+<main><header><span class="demo">Demo — Synthetic Data</span><div class="actions"><button class="ds-button" id="search">Find a patient <kbd>⌘ K</kbd></button><button class="ds-button" data-variant="primary" id="new">+ New Intake</button></div></header>
+<section id="heading"></section><section id="filters" aria-label="Record filters" hidden></section><section id="content"></section>
+<footer>Renue Wellness · Intake Hub <span>Designed &amp; built by J Mc Intyre</span></footer></main>
+<dialog class="ds-dialog" id="intake" aria-labelledby="intake-title"><h2 id="intake-title">New intake</h2><form id="intake-form">
+<label class="ds-field">Patient name<input class="ds-input" name="patient" required maxlength="80"></label>
+<label class="ds-field">Treatment of interest<select class="ds-input" name="treatment"><option>Unsure</option><option>IVK</option><option>SPV</option><option>TMS</option></select></label>
+<label class="ds-field">Clinic<select class="ds-input" name="clinic"><option>Unknown</option><option>North Clinic</option><option>Central Clinic</option><option>Coastal Clinic</option></select></label>
+<label class="ds-field">Initial note<textarea class="ds-input" name="note"></textarea></label><p id="duplicate" role="status"></p>
+<div class="actions"><button class="ds-button" type="button" data-close>Cancel</button><button class="ds-button" value="another">Save and add another</button><button class="ds-button" data-variant="primary" value="save">Save intake</button></div></form></dialog>
+<dialog class="ds-dialog record" id="record" aria-labelledby="record-title"><button class="ds-button" type="button" data-close>Close</button><div id="record-content"></div></dialog>
+<p id="announcement" class="visually-hidden" role="status"></p>
+<script type="module" src="hub.js"></script></body></html>
