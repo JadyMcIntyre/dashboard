@@ -139,7 +139,7 @@
   margin-block-end: var(--ds-4);
   padding: var(--ds-4);
 }
-.advisor-invitations summary { cursor: pointer; font-weight: 600; }
+.advisor-invitations h3 { margin: 0; }
 .advisor-invitations form {
   display: flex;
   flex-wrap: wrap;

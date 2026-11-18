@@ -10,6 +10,7 @@ function createAdvisorInvitations(client) {
   const send = form.querySelector("button");
   const status = panel.querySelector("[role=status]");
   const list = panel.querySelector("ul");
+  let canInvite = false;
   let accessRevision = 0;
   let listRevision = 0;
 
@@ -31,14 +32,16 @@ function createAdvisorInvitations(client) {
         return row;
       }));
     } catch {
-      if (request === listRevision) status.textContent = "Invitation history is unavailable. Reopen this section to retry.";
+      if (request === listRevision) status.textContent = "Invitation history is unavailable. Reopen Manage users to retry.";
     }
   }
 
-  panel.addEventListener("toggle", () => { if (panel.open && !panel.hidden) void load(); });
+  document.addEventListener("workspace-view-change", () => {
+    if (canInvite && !panel.hidden) void load();
+  });
   form.addEventListener("submit", async event => {
     event.preventDefault();
-    if (panel.hidden || send.disabled) return;
+    if (!canInvite || panel.hidden || send.disabled) return;
     const request = accessRevision;
     send.disabled = true;
     email.readOnly = true;
@@ -49,7 +52,7 @@ function createAdvisorInvitations(client) {
         const result = await error.context?.json?.().catch(() => null);
         const messages = {
           already_invited: "This email already has an invitation. Check its status below.",
-          account_exists: "This email already has an account. Use Add advisor or Link account.",
+          account_exists: "This email already has an account. Use Add advisor or Link account in Advisor hours.",
           email_limit: "The email service has reached its sending limit. Try again later.",
           manager_required: "Only managers and owners can invite advisors."
         };
@@ -69,11 +72,10 @@ function createAdvisorInvitations(client) {
     }
   });
 
-  return canInvite => {
+  return allowed => {
+    canInvite = allowed;
     ++accessRevision;
     ++listRevision;
-    panel.open = false;
-    panel.hidden = !canInvite;
     list.replaceChildren();
     form.reset();
     email.readOnly = false;

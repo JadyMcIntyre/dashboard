@@ -11,6 +11,7 @@ const viewNames = {
   "templates-title": "Manage templates",
   "advisor-hours-title": "Advisor hours",
   "manage-clinic-data-title": "Manage clinic data",
+  "manage-users-title": "Manage users",
   "voicemail-title": "Voicemail scripts",
   "travel-title": "Travel & transport",
   "hours-title": "Hours & contacts",
@@ -88,12 +89,13 @@ document.querySelector("#staff-sign-out").addEventListener("click", () => {
 
 const workspaceViewControl = document.querySelector("#workspace-view-control");
 const workspaceViewMode = document.querySelector("#workspace-view-mode");
+const managerViews = new Set(["manage-clinic-data-title", "manage-users-title"]);
 const advisorViews = new Set(["messages-title", "voicemail-title"]);
 const workspaceNav = document.querySelector("#workspace-nav");
 const workspaceManagementNav = document.querySelector("#workspace-management-nav");
 
 function isWorkspaceViewAvailable(view) {
-  if (view === "manage-clinic-data-title") return workspaceShell.dataset.mode === "manager";
+  if (managerViews.has(view)) return workspaceShell.dataset.mode === "manager";
   return workspaceShell.dataset.mode !== "manager" || !advisorViews.has(view);
 }
 
@@ -110,7 +112,7 @@ function applyWorkspaceViewMode(mode) {
   if (!isWorkspaceViewAvailable(requestedView)) {
     history.replaceState(history.state, "", "#insurance-title");
     showWorkspaceView("insurance-title");
-  } else if (requestedView === "manage-clinic-data-title") {
+  } else if (managerViews.has(requestedView)) {
     showWorkspaceView(requestedView);
   }
 }
@@ -235,7 +237,7 @@ const searchIcons = {
   "insurance-title": "insurance", "treatment-title": "treatment",
   "vitamins-title": "vitamins", "messages-title": "messages",
   "voicemail-title": "voicemail", "hours-title": "hours",
-  "manage-clinic-data-title": "clinic", "advisor-hours-title": "calendar", "resources-title": "resources",
+  "manage-clinic-data-title": "clinic", "manage-users-title": "user", "advisor-hours-title": "calendar", "resources-title": "resources",
   "travel-title": "travel", "financing-title": "financing", "templates-title": "templates"
 };
 const callShortcuts = ["insurance-title", "treatment-title", "messages-title", "hours-title"];

@@ -74,6 +74,7 @@ if (!window.supabase || !window.renueSupabaseConfig) {
 
   const { url, publishableKey } = window.renueSupabaseConfig;
   const client = window.supabase.createClient(url, publishableKey);
+  const setAdvisorInvitations = createAdvisorInvitations(client);
   const setAdvisorHoursOwner = createAdvisorHours(client);
   const setClinicContactEditor = createClinicContactEditor(client);
   const setTreatmentPricingEditor = createTreatmentPricingEditor(client);
@@ -95,6 +96,7 @@ if (!window.supabase || !window.renueSupabaseConfig) {
     setClinicContactEditor(visibleUserId, viewRole, clinicDirectory);
     setTreatmentPricingEditor(viewRole);
     setClinicHoursEditor(viewRole);
+    setAdvisorInvitations(mode === "manager");
     applyWorkspaceViewMode(mode);
   });
   let inviteSession = null;
@@ -162,6 +164,7 @@ if (!window.supabase || !window.renueSupabaseConfig) {
     setClinicHoursEditor(data.role, schedules);
     managerRole = ["manager", "owner"].includes(data.role) ? data.role : null;
     workspaceViewControl.hidden = !managerRole;
+    setAdvisorInvitations(Boolean(managerRole));
     applyWorkspaceViewMode(managerRole ? "manager" : "advisor");
     renderVoicemails();
     account.textContent = data.display_name + " · " + role;
@@ -206,6 +209,7 @@ if (!window.supabase || !window.renueSupabaseConfig) {
     templateEditors.setOwner(null);
     setCommunityOwner(null);
     setAdvisorHoursOwner(null);
+    setAdvisorInvitations(false);
     setClinicContactEditor(null);
     setTreatmentPricingEditor(null, null);
     setClinicHoursEditor(null, new Map());

@@ -76,7 +76,10 @@ test('managers can invite an advisor and see pending setup', async ({ page }) =>
   await page.addInitScript(() => { window.fixtureStaffRole = 'manager'; });
   await openWorkspace(page, 'light', 'advisor-hours-title');
   const invitations = page.locator('#advisor-invitations');
-  await invitations.locator('summary').click();
+  await expect(invitations).toBeHidden();
+  const manageUsers = page.getByRole('link', { name: 'Manage users' });
+  await manageUsers.click();
+  await expect(page).toHaveURL(/#manage-users-title$/);
   await invitations.getByLabel('Work email').fill('future-advisor@example.test');
   await invitations.getByRole('button', { name: 'Invite advisor' }).click();
   await expect(invitations.getByRole('status')).toHaveText('Invitation sent.');
@@ -87,6 +90,8 @@ test('managers can invite an advisor and see pending setup', async ({ page }) =>
   await page.getByLabel('Workspace view').selectOption('advisor');
   await page.keyboard.press('Escape');
   await expect(invitations).toBeHidden();
+  await expect(manageUsers).toBeHidden();
+  await expect(page).toHaveURL(/#insurance-title$/);
 });
 
 test('managers can link an existing schedule and add an advisor account to the roster', async ({ page }) => {

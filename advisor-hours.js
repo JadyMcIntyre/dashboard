@@ -6,7 +6,6 @@
 function createAdvisorHours(client) {
   const panel = document.querySelector("#advisor-hours-panel");
   const status = panel.querySelector("[role=status]");
-  const setAdvisorInvitations = createAdvisorInvitations(client);
   const table = panel.querySelector("table");
   const body = table.tBodies[0];
   const dialog = panel.querySelector("dialog");
@@ -285,7 +284,6 @@ function createAdvisorHours(client) {
     setAssigning(false);
     userId = owner;
     canEdit = role === "manager" || role === "owner";
-    setAdvisorInvitations(canEdit);
     editing = null;
     dialog.close();
     fields.disabled = false;
