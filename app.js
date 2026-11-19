@@ -296,6 +296,7 @@ const fallbackOfficeHours = [
 const insuranceCatalogByState = {
   "NY": {
     "inNetwork": [
+      "Emblem",
       "Fidelis",
       "Medicare",
       "Aetna",
@@ -313,7 +314,6 @@ const insuranceCatalogByState = {
       "NYSHIP"
     ],
     "outOfNetworkWithBenefits": [
-      "Emblem",
       "UHC",
       "Anthem",
       "Empire BCBS"
